@@ -1,19 +1,29 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block title %}Register{% endblock title %}
+ {%block content%}
+<div class="register-box">
 
-{% block title %}Register{% endblock title %}
-{%block content%}
-<fieldset>
+  <fieldset>
+    <div class="login-box">
+  <div class="login-logo">
+    <b>Event Tracking System</b>
+  </div>
+
+  <div class="login-box-body">
+ 
+    
     <form method="post" action="{% url 'register' %}">
-        {% csrf_token %}
-        <legend>Create your account</legend>
-        <center>
-            <h2>Sign up</h2>
-            {{form.as_p}}
+      {% csrf_token %}
+      <legend>Create your account</legend>
+      <center>
+        <h2>Sign up</h2>
+        {{form.as_p}}
 
-            <p><input type="submit" value="Register" name="register"></p> <br>
-            <p>Already have an account? <a href="{% url 'login' %}">Login</a>.</p>
-        </center>
-
+        <p><input type="submit" value="Register" name="register" onclick="function()"/></p>
+        <br />
+        <p>Already have an account? <a href="{% url 'login' %}">Login</a>.</p>
+      </center>
     </form>
-</fieldset>
-{%endblock content%}
+  </fieldset>
+</div>
+{% endblock content %}
+

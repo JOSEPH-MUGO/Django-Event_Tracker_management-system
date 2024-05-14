@@ -5,6 +5,7 @@ from django.views.generic import CreateView, TemplateView
 from django.urls import reverse_lazy
 from .forms import CustomUserCreationForm
 from .models import *
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 class CustomLoginView(LoginView):
@@ -23,6 +24,8 @@ class CustomRegisterView(CreateView):
         return CustomUser.objects.none()
 
 class DashboardView(TemplateView):
-    template_name= 'account/dashboard.html'
+    template_name= 'dashboard.html'
 
+class SidebarView(TemplateView):
+    template_name = 'sidebar.html'
 

@@ -1,12 +1,27 @@
 {% extends "base.html" %}
+{% block title %}Login{% endblock title %}
+{% block content %}
+<div class="login-box">
+  <div class="login-logo">
+    <b>Event Tracking System</b>
+  </div>
 
-{%block title%} Login{%endblock title%}
-{% block content%}
-<form method="post" action="{% url 'login' %}">
-    {% csrf_token %}
-    <h2>Login</h2>
-    {{form.as_p}}
-    <p><input type="submit" value="login" name="login"></p><p>Don't have an account? <a href="{% url 'register' %}">Register</a>.</p>
+  <div class="login-box-body">
+    {%if form.error %}
+    <p class="login-box-msg"> Your Email or Password is not correct. Try again</p>
+    {% else %} 
+    <p class="login-box-msg">Login to your account</p>
+    {% endif %}
+    <form class="form-control" method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      
+      {{ form.as_p }}
 
-</form>
+      <p><input type="submit" class="btn btn-primary" value="Login"></p>
+      <p>Don't have an account? <a href="{% url 'register' %}" class="text-primary">Register</a>.</p>
+    </form>
+  </div>
+</div>
 {% endblock content %}
+
+

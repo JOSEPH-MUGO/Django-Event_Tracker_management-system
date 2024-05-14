@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{%block title%}Dashboard| Event Tacker{%endblock title%}
+
+{%block content %} 
+<h1>Event Tracker management system</h1>
+
+<div class="wrapper">
+ <aside class="main-sidebar">
+  <!-- sidebar: style can be found in sidebar.less -->
+  <section class="sidebar">
+    
+      <div class="pull-left info">
+        <p>Welcome {{ request.user }}</p>
+        <a><i class="fa fa-circle text-success"></i> Online</a>
+      </div>
+    </div>
+    
+    <!-- sidebar menu: : style can be found in sidebar.less -->
+    <ul class="sidebar-menu" data-widget="tree">
+      {% if request.user.user_type == '2' %}
+      <li class=""><a href="#"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+      <li class=""><a href="#"><span class="glyphicon glyphicon-lock"></span> <span>Manage Users</span></a></li>
+      <li class="header">Event</li>
+      <li class=""><a href="#"><i class="fa fa-users"></i> <span>Category</span></a></li>
+      <li class=""><a href="#"><i class="fa fa-tasks"></i> <span>Report</span></a></li>
+      {% endif %}
+        
+      <li class="header">EXIT</li>
+      <li class=""><a href="{% url 'logout' %}"><i class="fa fa-power-off"></i> <span>Logout</span></a></li>
+
+    </ul>
+  </section>
+  <!-- /.sidebar -->
+</aside>
+</div>
+
+<p>Welcome to event tracking system {{request.user.email}}</p> <br>
+<p>You can logout now <a href="{% url 'logout' %}">logout</a>.</p>
+    
+{%endblock content%}
+
