@@ -1,31 +1,55 @@
-from django.db.models.query import QuerySet
 from django.shortcuts import render
-from django.contrib.auth.views import LoginView,LogoutView
-from django.views.generic import CreateView, TemplateView
-from django.urls import reverse_lazy
-from .forms import CustomUserCreationForm
-from .models import *
+from django.http import HttpResponse
+from django.contrib.auth import authenticate, login
+from .forms import LoginForm
 from django.contrib.auth.decorators import login_required
+from .forms import LoginForm, UserRegistrationForm
 
-# Create your views here.
-class CustomLoginView(LoginView):
-    template_name = 'account/login.html'
+from django.contrib import messages
 
-class CustomLogoutView(LogoutView):
-    template_name ='account/logout.html'
-    next_page = reverse_lazy('login')
 
-class CustomRegisterView(CreateView):
-    form_class = CustomUserCreationForm
-    template_name = 'account/reg.html'
-    success_url = reverse_lazy('login')
 
-    def get_queryset(self):
-        return CustomUser.objects.none()
+def register(request):
+    if request.method == 'POST':
+        user_form = UserRegistrationForm(request.POST)
+        if user_form.is_valid():
+            new_user = user_form.save(commit =False)
+            new_user.set_password(user_form.cleaned_data['password'])
+            new_user.save()
 
-class DashboardView(TemplateView):
-    template_name= 'dashboard.html'
+            messages.success(request,'You have successfully registered!')
+            return render(request, 'account/register_done.html',{'new_user': new_user})
+    else:
+        user_form = UserRegistrationForm()
+    return render(request, 'account/register.html', {'user_form': user_form})
+    
 
-class SidebarView(TemplateView):
-    template_name = 'sidebar.html'
 
+def user_login(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            user = authenticate(request,
+            username=cd['username'],
+            password=cd['password']
+            )
+            if user is not None:
+                if user.is_active:
+                    login(request,user)
+                    return HttpResponse('Login successfully')
+                else:
+                    return HttpResponse('Disabled account')
+
+            else:
+                return HttpResponse('wrong username or password!')
+    else:
+        form =LoginForm()
+        return render(request, 'account/login.html', {'form': form})
+        
+        
+@login_required
+def dashboard(request):
+    context = { 'section': 'dashboard'}
+    return render(request, 'account/dashboard.html',context)
+        
