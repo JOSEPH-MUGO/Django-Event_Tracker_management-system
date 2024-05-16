@@ -1,0 +1,21 @@
+{% load static %}
+
+<aside class="main-sidebar">
+   
+  <section class="sidebar">
+ <h1>Admin</h1>
+    <ul class="sidebar-menu" data-widget="tree">
+    <li class="header"><i class='bx bxs-calendar-event'></i>Events</li>
+      <li><a href="#">Events</a></li>
+      <li class="header"><i class='bx bxs-group' ></i>Manage</li>
+      <li><a href="#">Users</a></li>
+      <li class="header"><i class='bx bxs-category' ></i>Events Category</li>
+
+      <li><a href="#">Event Category</a></li>
+      <li class="header"><i class='bx bxs-report' ></i>Reports</li>
+      <li><a href="#">Reports on the Events</a></li>
+      <li class="header"><i class='bx bx-cog' ></i>Settings</li>
+      <li><a href="{% url 'logout' %}"><i class='bx bx-exit'></i>Logout</a></li>
+    </ul>
+  </section>
+</aside>

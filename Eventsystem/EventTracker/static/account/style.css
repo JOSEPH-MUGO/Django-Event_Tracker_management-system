@@ -203,3 +203,45 @@ ul.messages li a.close {
 .login-form {
     float: left;
 }
+
+/*styling sidebar*/
+.main-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 250px; 
+  background-color: #333; 
+  color: #fff;
+  padding-top: 50px; /* Adjust to match your header height */
+}
+
+.sidebar {
+  overflow-y: auto;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-menu li {
+  padding: 10px;
+}
+
+.sidebar-menu li.header {
+  font-weight: bold;
+}
+
+.sidebar-menu li a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.sidebar-menu li a:hover {
+  background-color: #555; /* Hover color */
+}
+
+.sidebar-menu li a.active {
+  background-color: #666; /* Active/selected color */
+}

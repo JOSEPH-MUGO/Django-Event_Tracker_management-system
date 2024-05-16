@@ -218,3 +218,55 @@ ul.messages li a.close {
     float: none;
     margin: 0 auto;
 }
+/*sidebar*/
+aside{
+    position: relative;
+    display: flex;
+    border-bottom: 2px solid rgba(0,0,0,0.05);
+}
+.main-sidebar {
+  position: fixed;
+  top: 0;
+  margin-top: 54px;
+  left: 0;
+  height: 100%;
+  width: 250px; /* Adjust as needed */
+  background-color: #333; /* Set your desired background color */
+  color: #fff;
+  padding-top: 50px; /* Adjust to match your header height */
+}
+
+.sidebar {
+  overflow-y: auto;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 5px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.sidebar-menu li {
+  padding: 10px;
+}
+
+.sidebar-menu li.header {
+  font-weight: bold;
+}
+
+.sidebar-menu li a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.sidebar-menu li a:hover {
+  background-color: #555; /* Hover color */
+}
+
+.sidebar-menu li a.active {
+  background-color: #666; /* Active/selected color */
+}
+.header{
+    background-color: darkgrey;
+}
