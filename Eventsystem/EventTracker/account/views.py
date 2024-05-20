@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from .forms import LoginForm
@@ -18,7 +18,7 @@ def register(request):
             new_user.save()
 
             messages.success(request,'You have successfully registered!')
-            return render(request, 'account/register_done.html',{'new_user': new_user})
+            return render(request, 'registration/login.html',{'new_user': new_user})
     else:
         user_form = UserRegistrationForm()
     return render(request, 'account/register.html', {'user_form': user_form})
@@ -46,10 +46,14 @@ def user_login(request):
     else:
         form =LoginForm()
         return render(request, 'account/login.html', {'form': form})
+
+def logout(request):
+    messages.warning( request, 'You have logout!')
+    return redirect('login') 
         
-        
-@login_required
+@login_required(login_url='login')
 def dashboard(request):
     context = { 'section': 'dashboard'}
     return render(request, 'account/dashboard.html',context)
+  
         

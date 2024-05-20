@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static '/account/css/style.css' %}">
+    <script type="javascript" src="{% static '/account/js/script.js' %}"></script>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+</head>
+
+<body>
+
+    <div id="content">
+        {% block content %}
+        {% endblock content %}
+
+    </div>
+</body>
+
+{%block script%}
+ <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+ <script type="module" src="https://upkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+ <script nomodule src="https://upkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+{% endblock script%}
+</html>
