@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static %}
+{%block title%}Create event{%endblock title%}
+{% block content %}
+<div class="container">
+    <h2>Create Event</h2>
+    <form method="post" action="{% url 'create_event'%}">
+        {% csrf_token %}
+        {{form.as_p}}
+        <p><input type="submit" value="create event"></p>
+    </form>
+</div>
+{% endblock content %}
+

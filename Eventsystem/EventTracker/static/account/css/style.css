@@ -5,6 +5,7 @@
     padding: 0;
     box-sizing: border-box;
 }
+/*
 
 :root{
     --blue: #2a2185;
@@ -120,7 +121,7 @@ h2 {
 
 
 
-/* forms */
+/* forms 
 .wrapper{
     background-color: var(--pink1);
     align-items: center;
@@ -183,7 +184,7 @@ a .button{
     clear: both;
     padding-left: 10px;
 }
-/* messages */
+/* messages 
 ul.messages {
     margin: 10px 100px;
     padding: 0;
@@ -247,7 +248,7 @@ ul.messages li a.close {
 
 
 
-/*sidebar*/
+/*sidebar
 
 
 .container{
@@ -440,4 +441,4 @@ line-height: 50px;
     object-fit: cover;
     align-items: end;
     
-}
+}*/

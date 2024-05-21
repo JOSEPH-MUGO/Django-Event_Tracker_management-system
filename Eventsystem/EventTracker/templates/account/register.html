@@ -1,6 +1,48 @@
 {% extends "base.html" %}
 {% block title %}Create an account{% endblock %}
 {% block content %}
+<div class="bg-gradient-primary">
+
+    <div class="container">
+
+        <div class="card o-hidden border-0 shadow-lg my-5">
+            <div class="card-body p-0">
+                <!-- Nested Row within Card Body -->
+                <div class="row">
+                    <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+                    <div class="col-lg-7">
+                        <div class="p-5">
+                            <div class="text-center">
+                                <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+                            </div>
+                            <form class="user" method="post" action="{%url 'register' %}">
+                                <div class="form-group row">
+                                   {{user_form.as_p }}
+                                   
+                                </div>
+                             
+                                </div>
+                                 <p> <input class="btn btn-primary btn-user btn-block" type="submit" value="Register"></p>
+                                
+                            </form>
+                            <hr>
+                            <div class="text-center">
+                                <a class="small" href="{% url 'password_reset'%}">Forgot Password?</a>
+                            </div>
+                            <div class="text-center">
+                               
+                                <a class="small" href="{% url 'login' %}">Already have an account? Login!</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<!--
 <div class="wrapper">
     <h1> Create an account</h1>
     <p>Please, fill in your details to register:</p>
@@ -15,4 +57,5 @@
 
     </form>
 </div>
+-->
 {% endblock %}
