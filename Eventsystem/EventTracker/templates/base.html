@@ -15,7 +15,7 @@
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
     />
-    
+
     <meta name="description" content="" />
     <meta name="author" content="" />
 
@@ -30,35 +30,44 @@
       rel="stylesheet"
     />
 
+    <link
+      href="{% static 'fontawesomefree/css/all.min.css' %}"
+      rel="stylesheet"
+      type="text/css"
+    />
+
     <!-- Custom styles for this template-->
-    <link href="{% static 'account/css/sb-admin-2.min.css' %}" rel="stylesheet" />
+    <link
+      href="{% static 'account/css/sb-admin-2.min.css' %}"
+      rel="stylesheet"
+    />
   </head>
 
-  <body  class="bg-gradient-primary">
+  <body>
     <div id="page-top">
-        {% block content %} 
-        {% endblock content %}
+      {% block content %} 
+      {% endblock content %}
     </div>
   </body>
 
   {%block script%}
-     <!-- Bootstrap core JavaScript-->
-    <script src="{% static 'account/vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'account/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
+  <script src="{% static 'fontawesomefree/js/fontawesome.js' %}"></script>
+  <script src="{% static 'fontawesomefree/js/solid.js' %}"></script>
+  <script src="{% static 'fontawesomefree/js/brands.js' %}"></script>
+  <!-- Bootstrap core JavaScript-->
+  <script src="{% static 'account/vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'account/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
-    <!-- Core plugin JavaScript-->
-    <script src="{%static 'account/vendor/jquery-easing/jquery.easing.min.js'%}"></script>
+  <!-- Core plugin JavaScript-->
+  <script src="{%static 'account/vendor/jquery-easing/jquery.easing.min.js'%}"></script>
+  <script src="{% static 'account/vendor/chart.js/Chart.min.js' %}"></script>
+  <!-- Custom scripts for all pages-->
+  <script src="{% static 'account/js/sb-admin-2.min.js' %}"></script>
+  <script src="{% static 'account/js/demo/chart-area-demo.js' %}"></script>
+  <script src="{% static 'account/js/demo/chart-pie-demo.js'%}"></script>
 
-    <!-- Custom scripts for all pages-->
-    <script src="{% static 'account/js/sb-admin-2.min.js' %}"></script>
-  <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
-  <script
-    type="module"
-    src="https://upkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
-  ></script>
-  <script
-    nomodule
-    src="https://upkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
-  ></script>
-  {% endblock script%}
+
+  {% endblock script%} 
+  {% include 'footer.html' %}
 </html>

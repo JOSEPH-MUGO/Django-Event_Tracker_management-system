@@ -48,9 +48,9 @@
                 </a>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Components:</h6>
-                        <a class="collapse-item" href="buttons.html">Buttons</a>
-                        <a class="collapse-item" href="cards.html">Cards</a>
+                        <h6 class="collapse-header">Record:</h6>
+                        <a class="collapse-item" href="{%url 'create_event'%}">Add event</a>
+                        <a class="collapse-item" href="{% url 'event_list'%}">See all events</a>
                     </div>
                 </div>
             </li>
@@ -60,12 +60,12 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
                     aria-expanded="true" aria-controls="collapseUtilities">
                     <i class="fas fa-fw fa-wrench"></i>
-                    <span>Utilities</span>
+                    <span>Event Categories</span>
                 </a>
                 <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Utilities:</h6>
+                        <h6 class="collapse-header">Categories:</h6>
                         <a class="collapse-item" href="utilities-color.html">Colors</a>
                         <a class="collapse-item" href="utilities-border.html">Borders</a>
                         <a class="collapse-item" href="utilities-animation.html">Animations</a>
@@ -79,7 +79,7 @@
 
             <!-- Heading -->
             <div class="sidebar-heading">
-                Event categories
+             Manage account:
             </div>
 
             <!-- Nav Item - Pages Collapse Menu -->
@@ -87,14 +87,15 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
                     aria-expanded="true" aria-controls="collapsePages">
                     <i class="fas fa-fw fa-folder"></i>
-                    <span>Create category</span>
+                    <span>Account</span>
                 </a>
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Login Screens:</h6>
-                        <a class="collapse-item" href="login.html">Login</a>
-                        <a class="collapse-item" href="register.html">Register</a>
-                        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+                        <a class="collapse-item" href="{% url 'login'%}">Login</a>
+                        <a class="collapse-item" href="{% url 'register' %}">Register</a>
+                        <a class="collapse-item" href="{% url 'password_reset'%}">Forgot Password</a>
+                        <a class="collapse-item" href="{% url 'logout'%}">Logout</a>
                         <div class="collapse-divider"></div>
 
                     </div>
@@ -215,8 +216,8 @@
                                         </div>
                                     </div>
                                     <div>
-                                        <div class="small text-gray-500">December 7, 2019</div>
-                                        $290.29 has been deposited into your account!
+                                        <div class="small text-gray-500">#</div>
+                                        #
                                     </div>
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
@@ -226,7 +227,7 @@
                                         </div>
                                     </div>
                                     <div>
-                                        <div class="small text-gray-500">December 2, 2019</div>
+                                        <div class="small text-gray-500">#</div>
                                         Spending Alert: We've noticed unusually high spending for your account.
                                     </div>
                                 </a>
@@ -250,7 +251,7 @@
                                 </h6>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_1.svg"
+                                        <img class="rounded-circle" src="{% static 'account/image/id0.jpg'%}"
                                             alt="...">
                                         <div class="status-indicator bg-success"></div>
                                     </div>
@@ -258,7 +259,7 @@
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_2.svg"
+                                        <img class="rounded-circle" src="{% static 'account/image/id0.jpg'%}"
                                             alt="...">
                                         <div class="status-indicator"></div>
                                     </div>
@@ -266,7 +267,7 @@
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_3.svg"
+                                        <img class="rounded-circle" src="{% static 'account/image/id0.jpg'%}"
                                             alt="...">
                                         <div class="status-indicator bg-warning"></div>
                                     </div>
@@ -292,7 +293,7 @@
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{request.user.username}}</span>
                                 <img class="img-profile rounded-circle"
-                                    src="img/undraw_profile.svg">
+                                    src="{% static 'account/image/id0.jpg'%}">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -343,10 +344,11 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                                 Events</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">32</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{event_count}}</div>
+                                            <span><a href="{% url 'event_list'%}">more info?</a></span>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                            <i class="fa-solid fa-list text-gray-300"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -364,7 +366,7 @@
                                             <div class="h5 mb-0 font-weight-bold text-gray-800">23</div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                            <i class="fa-solid fa-layer-group text-gray-300"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -393,7 +395,7 @@
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                            <i class="fa-regular fa-pen-to-square text-gray-300"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -501,13 +503,7 @@
             <!-- End of Main Content -->
 
             <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; eventtracker</span>
-                    </div>
-                </div>
-            </footer>
+
             <!-- End of Footer -->
 
         </div>
@@ -542,21 +538,20 @@
     </div>
 
     <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'account/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'account/vendor/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
 
     <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="{% static 'account/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
 
     <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
+    <script src="{% static 'account/js/sb-admin-2.min.js' %}"></script>
 
     <!-- Page level plugins -->
-    <script src="vendor/chart.js/Chart.min.js"></script>
+
 
     <!-- Page level custom scripts -->
-    <script src="js/demo/chart-area-demo.js"></script>
-    <script src="js/demo/chart-pie-demo.js"></script>
+
     <!--
 {% include 'header.html'%}
 {% include  'sidebar.html'%}

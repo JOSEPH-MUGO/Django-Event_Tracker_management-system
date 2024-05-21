@@ -50,7 +50,7 @@
 html {
   font-family: sans-serif;
   line-height: 1.15;
-  
+  -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
@@ -191,7 +191,7 @@ pre {
   margin-top: 0;
   margin-bottom: 1rem;
   overflow: auto;
- 
+  -ms-overflow-style: scrollbar;
 }
 
 figure {
@@ -222,25 +222,13 @@ caption {
 
 th {
   text-align: inherit;
-
+  text-align: -webkit-match-parent;
 }
 
 label {
-  
-  
-    float: left;
-    clear: both;
-    color:var(--black1);
-    display: block;
-    padding: auto;
+  display: inline-block;
+  margin-bottom: 0.5rem;
 }
-form p {
-    width: 100%;
-    overflow: auto;
-    text-align: center;
-}
-
-
 
 button {
   border-radius: 0;
@@ -283,7 +271,7 @@ button,
 [type="button"],
 [type="reset"],
 [type="submit"] {
- -webkit-appearance: button;
+  -webkit-appearance: button;
 }
 
 button:not(:disabled),
@@ -10873,7 +10861,7 @@ a:focus {
 }
 
 .bg-login-image {
-  background: url("account/image/id0.jpg");
+  background: url("https://source.unsplash.com/K4mSJ7kc0As/600x800");
   background-position: center;
   background-size: cover;
 }

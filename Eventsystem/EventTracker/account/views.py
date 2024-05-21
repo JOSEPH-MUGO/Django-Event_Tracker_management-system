@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login
 from .forms import LoginForm
 from django.contrib.auth.decorators import login_required
 from .forms import LoginForm, UserRegistrationForm
-
+from EventRecord.models import Event
 from django.contrib import messages
 
 
@@ -51,9 +51,10 @@ def logout(request):
     messages.warning( request, 'You have logout!')
     return redirect('login') 
         
-@login_required(login_url='login')
+
 def dashboard(request):
-    context = { 'section': 'dashboard'}
+    event_count = Event.objects.count()
+    context = { 'event_count': event_count}
     return render(request, 'account/dashboard.html',context)
   
         
