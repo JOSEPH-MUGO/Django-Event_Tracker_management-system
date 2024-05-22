@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     # local apps
     'account.apps.AccountConfig',
     'EventRecord',
+    'employee',
    
 ]
 
@@ -57,6 +58,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #my middleware on how account should be done.
+    'account.middleware.AccountCheckMiddleWare',
 ]
 
 ROOT_URLCONF = 'EventTracker.urls'
@@ -146,10 +149,27 @@ AUTHENTICATION_BACKENDS = [
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-#AUTH_USER_MODEL = 'account.CustomUser'
+AUTH_USER_MODEL = 'account.CustomUser'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_URL = 'logout'
 LOGIN_URL ='login'
 
 
 
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
+}

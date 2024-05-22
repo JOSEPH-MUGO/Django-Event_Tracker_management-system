@@ -1,47 +1,107 @@
-{% extends "base.html" %}
+{% extends "base1.html" %}
 {% block title %}Create an account{% endblock %}
 {% block content %}
-<div class="bg-gradient-primary">
-
-    <div class="container">
-
-        <div class="card o-hidden border-0 shadow-lg my-5">
-            <div class="card-body p-0">
-                <!-- Nested Row within Card Body -->
-                <div class="row">
-                    <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
-                    <div class="col-lg-7">
-                        <div class="p-5">
-                            <div class="text-center">
-                                <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
-                            </div>
-                            <form class="user" method="post" action="{%url 'register' %}">
-                                <div class="form-group row">
-                                   {{user_form.as_p }}
-                                   
-                                </div>
-                             
-                                </div>
-                                 <p> <input class="btn btn-primary btn-user btn-block" type="submit" value="Register"></p>
-                                
-                            </form>
-                            <hr>
-                            <div class="text-center">
-                                <a class="small" href="{% url 'password_reset'%}">Forgot Password?</a>
-                            </div>
-                            <div class="text-center">
-                               
-                                <a class="small" href="{% url 'login' %}">Already have an account? Login!</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+ <div class="login-box">
+        <div class="login-logo">
+            <b>Event Tracker System</b>
         </div>
 
+        <div class="login-box-body">
+             <p class="login-box-msg">Register an account</p> 
+    <form action="{% url 'register' %}" method="POST">
+                {% csrf_token %}
+
+             
+                <div class="modal-body">
+                    {% for field in form1  %}
+                    <div class="form-group has-feedback">
+                        <span class="text-danger">{{field.errors}}</span>
+                        {{field.label_tag}}
+                        {{field}}
+                    </div>
+                    {% endfor %}
+
+                    {% for field in form2  %}
+                    <div class="form-group has-feedback">
+                        <span class="text-danger">{{field.errors}}</span>
+                        {{field.label_tag}}
+                        {{field}}
+                    </div>
+                    {% endfor %}
+                    <p><a href="{% url 'password_reset'%}" style={"text-decoration: none"}>forget password?</a></p>
+
+
+               
+
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button type="submit" class="btn btn-primary btn-block btn-flat" name="login"><i
+                                    class="fa fa-user-plus"></i> Register</button>
+                        </div>
+                        <div class="pull-right col-xs-6">
+                            <a  class="btn btn-success btn-block btn-flat" href="{% url 'login' %}"><i class="fa fa-sign-in"></i> Log In</a>
+                        </div>
+                    </div> 
+                </div>
+        </div>
+        
+        </form>
+        </div>
+            </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="register" tabindex="-1" role="dialog" aria-labelledby="register" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="{% url 'register' %}" method="POST">
+                    {% csrf_token %}
+                    <p> forget password</p>
+
+                    <div class="modal-header">
+                        <p class="modal-title" id="register">Create New Account <span class="float-right">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </span></p>
+                       
+                    </div>
+                    <div class="modal-body">
+                        {% for field in form1  %}
+                        <div class="form-group has-feedback">
+                            {{field.errors}}
+                            {{field.label_tag}}
+                            {{field}}
+                        </div>
+                        {% endfor %}
+
+                        {% for field in form2  %}
+                        <div class="form-group has-feedback">
+                            {{field.errors}}
+                            {{field.label_tag}}
+                            {{field}}
+                        </div>
+                        {% endfor %}
+
+
+                   
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="none" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        <button type="submit" name="reg"
+                            onclick="return confirm('Are you sure the details provided are correct?\nYou will NOT be allowed to make modifications.')"
+                            class="btn btn-success">Save</button>
+                    </div>
+            </div>
+            
+            </form>
+        </div>
     </div>
 
-</div>
+
+
+                           
+    {% endblock content%}                    
 <!--
 <div class="wrapper">
     <h1> Create an account</h1>
@@ -58,4 +118,3 @@
     </form>
 </div>
 -->
-{% endblock %}

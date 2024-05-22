@@ -2,8 +2,8 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
 urlpatterns = [
-    path('', auth_views.LoginView.as_view(), name='login'),
-    path('logout/', views.logout, name ='logout'),
+    path('', views.custom_login, name='login'),
+    path('logout/', views.custom_logout, name ='logout'),
     path('dashboard/',views.dashboard, name='dashboard'),
     #change password
     path('password_change/', auth_views.PasswordChangeView.as_view(),name='password_change'),

@@ -44,10 +44,15 @@
   </head>
 
   <body>
-    <div id="page-top">
-      {% block content %} 
-      {% endblock content %}
+    <!--main content-->
+
+    <div id="content-wrapper" class="d-flex flex-column">
+      <div id="content">
+        {% block content %} 
+        {% endblock content %}
+      </div>
     </div>
+    {% include 'footer.html' %}
   </body>
 
   {%block script%}
@@ -67,7 +72,5 @@
   <script src="{% static 'account/js/demo/chart-area-demo.js' %}"></script>
   <script src="{% static 'account/js/demo/chart-pie-demo.js'%}"></script>
 
-
-  {% endblock script%} 
-  {% include 'footer.html' %}
+  {% endblock script%}
 </html>
