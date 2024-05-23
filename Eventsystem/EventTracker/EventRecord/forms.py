@@ -1,12 +1,13 @@
 from django import forms
-from .models import Event
+from .models import *
+from account.forms import FormSettings
 
 
-EventCategory = [('training', 'Training'), ('workshop', 'Workshop'), ('seminar', 'Seminar')]
 
 
-class EventForm(forms.ModelForm):
-    event_type = forms.ChoiceField(choices=EventCategory,widget=forms.Select(attrs={'class':'form-control'}),required=True)
+
+class EventForm(FormSettings):
+    event_type = forms.ModelChoiceField(queryset=EventCategory.objects.all(),widget=forms.Select(attrs={'class':'form-control'}),required=True)
     class Meta:
         model= Event
         fields = ['event_type','title','description','venue','location','start_date', 'end_date']
@@ -19,3 +20,24 @@ class EventForm(forms.ModelForm):
             'end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
         }
 
+class AssignForm(FormSettings):
+    class Meta:
+        model = Assignment
+        fields = ['event','employee']
+
+class ReportForm(FormSettings):
+    Notes = forms.CharField(widget=forms.Textarea(attrs={'rows':5}))
+    class Meta:
+        model = Report
+        fields = ['Notes']
+
+
+class EventCategoryForm(FormSettings):
+    class Meta:
+        model = EventCategory
+        fields = ['event_type']
+
+class ReportFileForm(FormSettings):
+    class Meta:
+        model= ReportFile
+        fields = ['file']

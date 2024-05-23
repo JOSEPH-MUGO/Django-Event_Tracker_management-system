@@ -15,4 +15,3 @@ class Employee(models.Model):
 
     def __str__(self):
         return self.admin.last_name + ", " + self.admin.first_name
-

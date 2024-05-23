@@ -1,0 +1,145 @@
+{% extends 'admin/root.html' %}
+{% load static %}
+{% block content %}
+<!-- Main content -->
+<section class="content">
+    <!-- Small boxes (Stat box) -->
+    <div class="row">
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+                <div class="inner">
+                    <h3>{{ event_category_count }}</h3>
+                    <p>No. of Event Categories</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-tasks"></i>
+                </div>
+                <a href="{% url 'admin_dashboard' %}" class="small-box-footer">More Info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-green">
+                <div class="inner">
+                    <h3>{{ event_count }}</h3>
+                    <p>No. of Events</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <a href="{% url 'admin_dashboard' %}" class="small-box-footer">More Info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-blue">
+                <div class="inner">
+                    <h3>{{ assignment_count }}</h3>
+                    <p>No. of Assignments</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-briefcase"></i>
+                </div>
+                <a href="{% url 'admin_dashboard' %}" class="small-box-footer">More Info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-maroon">
+                <div class="inner">
+                    <h3>{{ report_count }}</h3>
+                    <p>No. of Reports</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-file-text"></i>
+                </div>
+                <a href="{% url 'admin_dashboard' %}" class="small-box-footer">More Info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>Events Overview
+                <span class="pull-right">
+                    <a href="{% url 'admin_dashboard' %}" class="btn btn-success btn-sm btn-flat"><span class="glyphicon glyphicon-print"></span> Print/Download PDF <i class="fa fa-download"></i></a>
+                </span>
+            </h3>
+        </div>
+    </div>
+
+    {% for category in event_categories %}
+    {% if not forloop.counter|divisibleby:2 %}
+    <div class='row'>
+    {% endif %}
+    <div class='col-sm-6'>
+        <div class='box box-solid'>
+            <div class='box-header with-border'>
+                <h4 class='box-title'><b>{{ category.event_type }}</b></h4>
+            </div>
+            <div class='box-body'>
+                <div class='chart'>
+                    <canvas id='{{ category.event_type|slugify }}' style='height:200px'></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if forloop.counter|divisibleby:2 %}
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% if not forloop.counter|divisibleby:2 %}
+    </div>
+    {% endif %}
+</section>
+{% endblock content %}
+
+{% block custom_js %}
+<script src="{% static 'bower_components/chart.js/Chart.js' %}"></script>
+<script src="{% static 'bower_components/chart.js/Chart.HorizontalBar.js' %}"></script>
+
+{% for category in event_categories %}
+<script>
+  $(function() {
+    var description = '{{ category.event_type|slugify }}';
+    var barChartCanvas = $('#' + description).get(0).getContext('2d');
+    var barChart = new Chart(barChartCanvas);
+    var barChartData = {
+      labels: ['Event 1', 'Event 2', 'Event 3'], // Replace with actual data
+      datasets: [{
+        label: 'Events',
+        fillColor: 'rgba(60,141,188,0.9)',
+        strokeColor: 'rgba(60,141,188,0.8)',
+        pointColor: '#3b8bba',
+        pointStrokeColor: 'rgba(60,141,188,1)',
+        pointHighlightFill: '#fff',
+        pointHighlightStroke: 'rgba(60,141,188,1)',
+        data: [5, 10, 15] // Replace with actual data
+      }]
+    };
+    var barChartOptions = {
+      scaleBeginAtZero: true,
+      scaleShowGridLines: true,
+      scaleGridLineColor: 'rgba(0,0,0,.05)',
+      scaleGridLineWidth: 1,
+      scaleShowHorizontalLines: true,
+      scaleShowVerticalLines: true,
+      barShowStroke: true,
+      barStrokeWidth: 2,
+      barValueSpacing: 5,
+      barDatasetSpacing: 1,
+      responsive: true,
+      maintainAspectRatio: true
+    };
+
+    barChartOptions.datasetFill = false;
+    barChart.HorizontalBar(barChartData, barChartOptions);
+  });
+</script>
+{% endfor %}
+{% endblock custom_js %}

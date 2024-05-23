@@ -23,7 +23,8 @@ from . import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('account.urls')),
-    path('EventRecord/', include('EventRecord.urls')),
+    path('EventRecord/',include('EventRecord.urls')),
+    path('administrator/',include('administrator.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     
 

@@ -17,12 +17,12 @@ class AccountCheckMiddleWare(MiddlewareMixin):
                     else:
                         messages.error(
                             request, "You do not have access to this resource")
-                        return redirect(reverse('adminDashboard'))
+                        return redirect(reverse('admin_dashboard'))
             elif user.user_type == '2':  # Employee
                 if modulename == 'administrator.views':
                     messages.error(
                         request, "You do not have access to this resource")
-                    return redirect(reverse('EmployeeDashboard'))
+                    return redirect(reverse('dashboard'))
             else:  # None of the aforementioned ? Please take the user to login page
                 return redirect(reverse('login'))
         else:

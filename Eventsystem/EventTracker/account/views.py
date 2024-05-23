@@ -42,7 +42,7 @@ def register(request):
 def custom_login(request):
     if request.user.is_authenticated:
         if request.user.user_type =='1':
-            return redirect(reverse("dashboard"))
+            return redirect(reverse("admin_dashboard"))
         else:
             return redirect(reverse("dashboard"))
     
@@ -59,7 +59,7 @@ def custom_login(request):
         if user is not None:
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             if user.user_type == '1':
-                return redirect(reverse("dashboard"))
+                return redirect(reverse("admin_dashboard"))
             else:
                 return redirect(reverse("dashboard"))
         else:

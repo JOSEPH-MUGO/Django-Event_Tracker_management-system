@@ -1,48 +1,42 @@
 {% load static %}
+<aside class="main-sidebar">
+  <!-- sidebar: style can be found in sidebar.less -->
+  <section class="sidebar">
+    <!-- Sidebar user panel -->
+    <div class="user-panel">
+      <div class="pull-left image">
+        <img src="{% static 'images/userplaceholder.png' %}" class="img-circle" alt="User Image">
+      </div>
+      <div class="pull-left info">
+        <p>{{ request.user }}</p>
+        <a><i class="fa fa-circle text-success"></i> Online</a>
+      </div>
+    </div>
+    <!-- sidebar menu: : style can be found in sidebar.less -->
+    <ul class="sidebar-menu" data-widget="tree">
+      {% if request.user.user_type == '1' %}
+  
+      
+      <li class="header">EVENTS</li>
+      <li class=""><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+      <li class=""><a href="#"><span class="glyphicon glyphicon-lock"></span> <span>Create Event</span></a></li>
+      <li class="header">MANAGE</li>
+      <li class=""><a href="#"><i class="fa fa-users"></i> <span>Event Category</span></a></li>
+      <li class=""><a href="#"><i class="fa fa-tasks"></i> <span>Assign Event</span></a></li>
+      <li class=""><a href="#"><i class="fa fa-black-tie"></i> <span>Event List</span></a></li>
+      <li class=""><a href="#"><i class="fa fa-black-tie"></i> <span>Reports</span></a></li>
+       <li class=""><a href="#"><i class="fa fa-file-text"></i> <span>Employee</span></a></li>
+      
 
-<div class="container">
-  <div class="nav-bar">
-    <ul>
-      <li>
-        <a href="#">
-          <span class="icon">
-            <ion-icon name="logo-apple"></ion-icon>
-          </span>
-          <span class="title">Event Tracker</span>
-        </a>
-      </li>
-      <li>
-        <a href="{% url 'event_list'%}">
-          <span class="icon">
-            <ion-icon name="logo-apple"></ion-icon>
-          </span>
-          <span class="title">Create Event</span>
-        </a>
-      </li>
-      <li>
-        <a href="#">
-          <span class="icon"><ion-icon name="logo-apple"></ion-icon></span>
-          <span class="title">Event category</span>
-        </a>
-      </li>
-      <li>
-        <a href="#">
-          <span class="icon"><ion-icon name="logo-apple"></ion-icon></span>
-          <span class="title">Assign Event</span>
-        </a>
-      </li>
-      <li>
-        <a href="#">
-          <span class="icon"><ion-icon name="logo-apple"></ion-icon></span>
-          <span class="title">reports</span>
-        </a>
-      </li>
-      <li>
-        <a href="#">
-          <span class="icon"><ion-icon name="logo-apple"></ion-icon></span>
-          <span class="title">logout</span>
-        </a>
-      </li>
+      <li class="header">SETTINGS</li>
+     
+            
+      {% endif %}
+        
+      <li class="header">EXIT</li>
+      <li class=""><a href="{% url 'logout' %}"><i class="fa fa-power-off"></i> <span>Logout</span></a></li>
+
     </ul>
-  </div>
-</div>
+  </section>
+  <!-- /.sidebar -->
+</aside>
