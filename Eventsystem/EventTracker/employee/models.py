@@ -7,8 +7,8 @@ from account.models import CustomUser
 class Employee(models.Model):
     admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=13, unique=True)  # Used for OTP
-    Employee_ID = models.CharField(max_length=10, null=True, unique=True)
+    phone = models.CharField(max_length=13, unique=True)  
+    
     verified = models.BooleanField(default=False)
     
    

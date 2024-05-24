@@ -111,9 +111,6 @@
   {% if messages %}
   {% for message in messages %}
 
-  <!-- <script>
-        swal("{{ message.tags|title }}", "{{ message }}", "{{ message.tags }}");
-    </script> -->
 
   <script>
     toastr['{{ message.tags }}']('{{ message }}', '{{ message.tags|title }}');

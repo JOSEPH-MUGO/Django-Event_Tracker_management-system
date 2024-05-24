@@ -2,8 +2,10 @@ from django.urls import path
 from .import views
 
 urlpatterns = [
-    path('create_event/', views.create_event, name='create_event'),
-    path('event_list/', views.list_event, name='event_list'),
-    path('event_chart/', views.event_chart, name='event_chart'),
+    path('event/view', views.view_event_by_id, name='viewEvent'),
+    path('event/view', views.viewEvents, name='viewEvents'),
+    path('event/update',views.updateEvent, name='updateEvent'),
+    path('event/delete', views.deleteEvent, name='deleteEvent'),
+
 
 ]

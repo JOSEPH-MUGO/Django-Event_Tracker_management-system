@@ -1,6 +1,7 @@
 from django import forms
 from .models import *
 #from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
 
 
 class FormSettings(forms.ModelForm):
@@ -13,7 +14,7 @@ class FormSettings(forms.ModelForm):
 
 class CustomUserForm(FormSettings):
     email = forms.EmailField(required=True)
-    # email = forms.EmailField(required=True)
+    
     password = forms.CharField(widget=forms.PasswordInput)
 
     widget = {
@@ -59,7 +60,7 @@ class CustomUserForm(FormSettings):
 
     class Meta:
         model = CustomUser
-        fields = ['last_name', 'first_name', 'email', 'password' ]
+        fields = ['last_name', 'first_name', 'email', 'password', ]
 
 
 

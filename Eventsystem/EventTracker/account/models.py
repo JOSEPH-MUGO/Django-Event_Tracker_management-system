@@ -35,7 +35,7 @@ class CustomUserManager(UserManager):
 
 class CustomUser(AbstractUser):
     USER_TYPE = ((1, "Admin"), (2, "Employee"))
-    username = None  # Removed username, using email instead
+    username = None  # use email instead
     email = models.EmailField(unique=True)
     user_type = models.CharField(default=2, choices=USER_TYPE, max_length=1)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -43,6 +43,10 @@ class CustomUser(AbstractUser):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
     objects = CustomUserManager()
+
+    def delete(self, *args, **kwargs):
+        self.related_object.delete()
+        super().delete(*args, **kwargs)
 
 
     groups = models.ManyToManyField(

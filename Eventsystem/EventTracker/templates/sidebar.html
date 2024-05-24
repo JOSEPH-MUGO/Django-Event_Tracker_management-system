@@ -18,20 +18,24 @@
   
       
       <li class="header">EVENTS</li>
-      <li class=""><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
-      <li class=""><a href="#"><span class="glyphicon glyphicon-lock"></span> <span>Create Event</span></a></li>
+      <li class=""><a href="{% url 'admin_dashboard' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+      <li class=""><a href="{% url 'viewEvents' %}"><span class="glyphicon glyphicon-lock"></span> <span>Create Event</span></a></li>
       <li class="header">MANAGE</li>
       <li class=""><a href="#"><i class="fa fa-users"></i> <span>Event Category</span></a></li>
       <li class=""><a href="#"><i class="fa fa-tasks"></i> <span>Assign Event</span></a></li>
       <li class=""><a href="#"><i class="fa fa-black-tie"></i> <span>Event List</span></a></li>
       <li class=""><a href="#"><i class="fa fa-black-tie"></i> <span>Reports</span></a></li>
-       <li class=""><a href="#"><i class="fa fa-file-text"></i> <span>Employee</span></a></li>
+       <li class=""><a href="{% url 'adminViewEmployee'%}"><i class="fa fa-file-text"></i> <span>Employee</span></a></li>
       
 
       <li class="header">SETTINGS</li>
      
             
       {% endif %}
+      <li class="header">Reports</li>
+      <li class=""><a href="#"><i class="fa fa-report"></i> <span>Write Report</span></a></li>
+      <li class=""><a href="#"><i class="fa fa-black-tie"></i> <span>See event</span></a></li>
+
         
       <li class="header">EXIT</li>
       <li class=""><a href="{% url 'logout' %}"><i class="fa fa-power-off"></i> <span>Logout</span></a></li>

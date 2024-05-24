@@ -1,14 +1,246 @@
-{% extends "base.html" %}
+{% extends "admin/root.html" %}
 {% load static %}
 {%block title%}Create event{%endblock title%}
 {% block content %}
-<div class="container">
-    <h2>Create Event</h2>
-    <form class="form-group" method="post" action="{% url 'create_event'%}">
-        {% csrf_token %}
-        {{form.as_p}}
-        <p><input type="submit"class="btn btn-primary btn-user btn-block" value="+Add"></p>
-    </form>
-</div>
+<section class="content">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-header with-border">
+          <a href="#addnew" data-toggle="modal" class="btn btn-success btn-sm btn-flat"><i class="fa fa-plus"></i> Add
+            New event</a>
+        </div>
+        <div class="box-body">
+          <table id="example1" class="table table-bordered table-hover table-striped">
+            <thead style="background-color: #222D32; color:white;">
+              <th>Category</th>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Venue</th>
+              <th>Location</th>
+              <th>Start date</th>
+              <th>End Date</th>
+              <th>Action</th>
+            </thead>
+            <tbody>
+              {% for event in events %}
+
+              <tr>
+                <td>{{ event.event_type }}</td>
+                <td>{{ event.title }}</td>
+                <td>{{ event.description }}</td>
+                <td>{{ event.venue }}</td>
+                <td>{{ event.location }}</td>
+                <td>{{ event.start_date }}</td>
+                <td>{{ event.end_date }}</td>
+
+                <td>
+                  <button class='btn btn-primary btn-sm edit btn-flat' data-id='{{ event.id }}'><i
+                      class='fa fa-edit'></i> Edit</button>
+                  <button class='btn btn-danger btn-sm delete btn-flat' data-id='{{ event.id }}'><i
+                      class='fa fa-trash'></i> Delete</button>
+                </td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock content %}
 
+{% block modal %}
+<div class="modal fade" id="addnew">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><b>Add New Event</b></h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" method="POST" action="{% url 'create_event' %}">
+          {% csrf_token %}
+
+
+          <div class="modal-body">
+            {% for field in form1 %}
+            <div class="form-group has-feedback">
+              <span class="text-danger">{{field.errors}}</span>
+              {{field.label_tag}}
+              {{field}}
+            </div>
+            {% endfor %}
+
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger btn-flat pull-left" data-dismiss="modal"><i
+                class="fa fa-close"></i> Close</button>
+            <button type="submit" class="btn btn-success btn-flat" name="add"><i class="fa fa-save"></i> Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit -->
+<div class="modal fade" id="edit">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><b>Edit Event</b></h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" method="POST" action="{% url 'updateEvent' %}">
+          {% csrf_token %}
+          <input type="hidden" class="id" name="id">
+          <div class="form-group">
+            <label for="event_type" class="col-sm-3 control-label">Category</label>
+
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="event_type" name="event_type">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="title" class="col-sm-3 control-label">Title</label>
+
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="title" name="title">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="description" class="col-sm-3 control-label">Description</label>
+
+            <div class="col-sm-9">
+              <input type="textarea" class="form-control" id="description" name="description">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="venue" class="col-sm-3 control-label">Venue</label>
+
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="venue" name="venue">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="location" class="col-sm-3 control-label">Location</label>
+
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="location" name="location">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="start_date" class="col-sm-3 control-label">Start Date</label>
+
+            <div class="col-sm-9">
+              <input type="date" class="form-control" id="start_date" name="start_date">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="end_date" class="col-sm-3 control-label">End Date</label>
+
+            <div class="col-sm-9">
+              <input type="date" class="form-control" id="end_date" name="end_date">
+            </div>
+          </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i>
+          Close</button>
+        <button type="submit" class="btn btn-success btn-flat" name="edit"><i class="fa fa-check-square-o"></i>
+          Update</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete -->
+<div class="modal fade" id="delete">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><b>Deleting...</b></h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" method="POST" action="{% url 'deleteEvent' %}">
+          <input type="hidden" class="id" name="id">
+          {% csrf_token %}
+          <div class="text-center">
+            <p>DELETE EVENT</p>
+            <h2 class="bold fullname"></h2>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal"><i
+            class="fa fa-close"></i> Close</button>
+        <button type="submit" class="btn btn-danger btn-flat" name="delete"><i class="fa fa-trash"></i> Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock modal %}
+
+
+{% block custom_js %}
+
+<script>
+  $(function () {
+    $(document).on('click', '.edit', function (e) {
+      e.preventDefault();
+      $('#edit').modal('show');
+      var id = $(this).data('id');
+      getRow(id);
+    });
+
+    $(document).on('click', '.delete', function (e) {
+      e.preventDefault();
+      $('#delete').modal('show');
+      var id = $(this).data('id');
+      getRow(id);
+    });
+
+
+  });
+
+  function getRow(id) {
+    $.ajax({
+      type: 'GET',
+      url: '{% url "viewEvent" %}',
+      data: {
+        id: id
+      },
+      dataType: 'json',
+      success: function (response) {
+        $('.id').val(response.id);
+        $('#event_type').val(response.event_type);
+        $('#title').val(response.title);
+        $('#description').val(response.description);
+        $('#venue').val(response.venue);
+        $('#location').val(response.location);
+        $('#start_date').val(response.start_date);
+        $('#end_date').val(response.end_date);
+        $('.fullname').html(response.title);
+      }
+    });
+  }
+</script>
+{% endblock custom_js %}

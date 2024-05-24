@@ -32,6 +32,20 @@
                 <a href="{% url 'admin_dashboard' %}" class="small-box-footer">More Info <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
+        <!--col-->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-red">
+                <div class="inner">
+                    <h3>{{ employee_count }}</h3>
+                    <p>No. of employee</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-users"></i>
+                </div>
+                <a href="{% url 'admin_dashboard' %}" class="small-box-footer">More Info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
         <!-- ./col -->
         <div class="col-lg-3 col-xs-6">
             <!-- small box -->
@@ -110,7 +124,7 @@
     var barChartCanvas = $('#' + description).get(0).getContext('2d');
     var barChart = new Chart(barChartCanvas);
     var barChartData = {
-      labels: ['Event 1', 'Event 2', 'Event 3'], // Replace with actual data
+      labels: ['Event 1', 'Event 2', 'Event 3'], 
       datasets: [{
         label: 'Events',
         fillColor: 'rgba(60,141,188,0.9)',
@@ -119,7 +133,7 @@
         pointStrokeColor: 'rgba(60,141,188,1)',
         pointHighlightFill: '#fff',
         pointHighlightStroke: 'rgba(60,141,188,1)',
-        data: [5, 10, 15] // Replace with actual data
+        data: [5, 10, 15] 
       }]
     };
     var barChartOptions = {
