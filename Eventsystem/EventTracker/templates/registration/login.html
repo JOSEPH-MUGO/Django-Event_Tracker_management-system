@@ -7,21 +7,26 @@
     <div class="login-logo">
         <b>Event Tracker System</b>
     </div>
-    <!--<p class="login-box-msg">Sign in to start to cast your vote</p>-->
-
+    
 
     <div class="login-box-body">
         <p class="login-box-msg">Sign in to your session</p>
+          <div> 
+                {% for message in messages %}
+                <li {% if message.tags %} class="alert alert-{{message.tags}}"{% endif %}>
+                    {{message|safe}}</li>
+                {% endfor %}
+
+            </div>
    
 
 
         <form action="{% url 'login' %}" method="POST">
             {% csrf_token %}
-                {% for message in messages %}
-           <div class="alert alert-{{ message.tags }}">
-                {{ message }}
-            </div>
-               {% endfor %}
+            
+          
+          
+               
            
             <div class="form-group has-feedback">
                 <input type="text" class="form-control" name="email" placeholder="Email" required>

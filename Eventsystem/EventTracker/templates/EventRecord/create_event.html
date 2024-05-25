@@ -62,7 +62,7 @@
         <h4 class="modal-title"><b>Add New Event</b></h4>
       </div>
       <div class="modal-body">
-        <form class="form-horizontal" method="POST" action="{% url 'create_event' %}">
+        <form class="form-horizontal" method="POST" action="{% url 'viewEvents' %}">
           {% csrf_token %}
 
 
@@ -224,7 +224,7 @@
   function getRow(id) {
     $.ajax({
       type: 'GET',
-      url: '{% url "viewEvent" %}',
+      url: '{% url "viewEvents" %}',
       data: {
         id: id
       },

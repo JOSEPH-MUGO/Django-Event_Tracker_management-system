@@ -64,13 +64,14 @@ def custom_login(request):
         if user is not None:
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             if user.user_type == '1':
+                messages.success(request, "You have successfully login ")
                 return redirect(reverse("admin_dashboard"))
             else:
                 return redirect(reverse("dashboard"))
         else:
             messages.error(request, "Invalid credentials provided, Try again!") 
-            return redirect("/")
-    context['messages'] = messages.get_messages(request)
+            
+   
     return render(request, 'registration/login.html', context)
 
 def custom_logout(request):

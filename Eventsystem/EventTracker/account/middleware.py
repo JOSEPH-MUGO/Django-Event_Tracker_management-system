@@ -12,7 +12,7 @@ class AccountCheckMiddleWare(MiddlewareMixin):
             if user.user_type == '1':  # Admin
                 if modulename == 'EventRecord.views':
                     error = True
-                    if request.path == reverse('event_list'):
+                    if request.path == reverse('viewEvents'):
                         pass
                     else:
                         messages.error(

@@ -10,23 +10,23 @@ from django.contrib import messages
 
 # Create your views here.
 
-def view_event_by_id(request):
-    event_id = request.GET.get('id',None)
-    event = Event.objects.filter(id=event_id)
-    context = {}
-    if not event.exists():
-        context['code'] = 404
-    else:
-        context['code'] = 200
-        event = event[0]
-        context['event_type']=event.event_type
-        context['title']=event.title
-        context['description']=event.description
-        context['venue']=event.venue
-        context['locaton']=event.location
-        context['start_date']=event.start_date
-        context['end_date']=event.end_date
-        context['id']=event.id
+
+def view_event_by_id(request, id):
+    try:
+        event = Event.objects.get(id=id)
+        context = {
+            'code': 200,
+            'event_type': event.event_type,
+            'title': event.title,
+            'description': event.description,
+            'venue': event.venue,
+            'location': event.location,
+            'start_date': event.start_date,
+            'end_date': event.end_date,
+            'id': event.id
+        }
+    except Event.DoesNotExist:
+        context = {'code': 404}
 
     return JsonResponse(context)
 
@@ -44,6 +44,7 @@ def viewEvents(request):
             form.title = events.count()+1 #if it is empty
             form.save()
             messages.success(request,"New Event created ")
+            return redirect(reverse('viewEvents'))
         else:
             messages.error(request, "Oops! Form error")
 
