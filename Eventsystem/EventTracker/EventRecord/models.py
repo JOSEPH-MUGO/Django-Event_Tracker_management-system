@@ -1,5 +1,5 @@
 from django.db import models
-from account.models import CustomUser
+from account.models import User
 
 # Create your models here.
 class EventCategory(models.Model):
@@ -15,18 +15,18 @@ class Event(models.Model):
     venue = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
     start_date = models.DateField(auto_created=True)
-    end_date = models.DateField(auto_created=True)
+    end_date = models.DateField()
 
     def __str__(self):
         return self.title
     
 class Assignment(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    employee = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    employee = models.ForeignKey(User,on_delete=models.CASCADE)
 
 class Report(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    employee = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    employee = models.ForeignKey(User, on_delete=models.CASCADE)
     Notes  = models.TextField()
     submitted_at = models.DateTimeField(auto_now_add=True)
     proof = models.FileField(upload_to='reports/')

@@ -7,7 +7,7 @@ from account.forms import FormSettings
 
 
 class EventForm(FormSettings):
-    event_type = forms.ModelChoiceField(queryset=EventCategory.objects.all(),widget=forms.Select(attrs={'class':'form-control'}),required=True)
+    event_type = forms.ModelChoiceField(queryset=EventCategory.objects.all(),widget=forms.Select(attrs={'class':'form-control'}),required=True,label='Category')
     class Meta:
         model= Event
         fields = ['event_type','title','description','venue','location','start_date', 'end_date']

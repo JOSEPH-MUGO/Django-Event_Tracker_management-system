@@ -1,17 +1,14 @@
-from django.contrib.auth.models import AbstractUser, UserManager, Group, Permission
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Group, Permission
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.contrib.auth.hashers import make_password
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-# Create your models here.
-
-
-class CustomUserManager(UserManager):
+class UserManager(BaseUserManager):
     def _create_user(self, email, password, **extra_fields):
         email = self.normalize_email(email)
-        user = CustomUser(email=email, **extra_fields)
+        user = self.model(email=email, **extra_fields)
         user.password = make_password(password)
         user.save(using=self._db)
         return user
@@ -32,17 +29,29 @@ class CustomUserManager(UserManager):
         assert extra_fields["is_superuser"]
         return self._create_user(email, password, **extra_fields)
 
-
-class CustomUser(AbstractUser):
+class User(AbstractBaseUser):
     USER_TYPE = ((1, "Admin"), (2, "Employee"))
+    active = models.BooleanField(default=True)
     username = None  # use email instead
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
     email = models.EmailField(unique=True)
     user_type = models.CharField(default=2, choices=USER_TYPE, max_length=1)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
-    objects = CustomUserManager()
+
+    objects = UserManager()
+
+    def is_active(self):
+        return self.active
+
+    def __str__(self):
+        return self.last_name + " " + self.first_name
+
 
     def delete(self, *args, **kwargs):
         self.related_object.delete()
@@ -66,6 +75,5 @@ class CustomUser(AbstractUser):
         },
     )
 
-    def __str__(self):
-        return self.last_name + " " + self.first_name
+    
 

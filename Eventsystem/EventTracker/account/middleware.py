@@ -27,7 +27,7 @@ class AccountCheckMiddleWare(MiddlewareMixin):
                 return redirect(reverse('login'))
         else:
          # If the path is login or has anything to do with authentication, pass
-            if request.path == reverse('login') or request.path == reverse('register') or modulename == 'django.contrib.auth.views' or request.path == reverse('login'):
+            if request.path in [reverse('login'), reverse('register')] or modulename == 'django.contrib.auth.views':
                 pass
             elif modulename == 'administrator.views' or modulename == 'employee.views':
                 # If visitor tries to access administrator or employee functions

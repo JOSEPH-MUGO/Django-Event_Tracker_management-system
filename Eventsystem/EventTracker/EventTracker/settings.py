@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -151,12 +152,18 @@ AUTHENTICATION_BACKENDS = [
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-AUTH_USER_MODEL = 'account.CustomUser'
+AUTH_USER_MODEL = 'account.User'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_URL = 'logout'
 LOGIN_URL ='login'
 
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Replace with your SMTP server
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'josephithanwa@gmail.com'
+EMAIL_HOST_PASSWORD = 'evgu qqca bbuy qpbm'
 
 
 LOGGING = {

@@ -1,14 +1,14 @@
-from django.shortcuts import render, reverse, redirect, get_object_or_404
-from account.forms import CustomUserForm
+from django.shortcuts import render, redirect, get_object_or_404
+from account.forms import UserForm
 from django.contrib import messages
-from django.http import JsonResponse, HttpResponseNotFound
+#from django.http import JsonResponse, HttpResponseNotFound
 from django.conf import settings
 from EventRecord.models import *
 from EventRecord.forms import *
 from employee.models import Employee
 from employee.forms import EmployeeForm
 from django.db import IntegrityError,transaction
-
+from django.core.mail import send_mail
 
 
 # Create your views here.
@@ -20,7 +20,7 @@ def admin_dashboard(request):
     assignments = Assignment.objects.all()
     reports = Report.objects.all()
     report_files = ReportFile.objects.all()
-    employee = CustomUser.objects.all()
+    employee = Employee.objects.all()
 
 
     context = {
@@ -42,7 +42,7 @@ def admin_dashboard(request):
 
 def employees(request):
     employees = Employee.objects.all()
-    userForm = CustomUserForm(request.POST or None)
+    userForm = UserForm(request.POST or None)
     employeeForm = EmployeeForm(request.POST or None)
     context = {
         'form1': userForm,
@@ -54,13 +54,21 @@ def employees(request):
         if userForm.is_valid() and employeeForm.is_valid():
             try:
                 with transaction.atomic():
-                    user = userForm.save(commit=False)
+                    user, password = userForm.save(commit=False)
                     user.save()
 
                     employee = employeeForm.save(commit=False)
                     employee.admin = user
                     employee.email =user.email
                     employee.save()
+
+                    send_mail(
+                        'Your account credentials',
+                        f'Your account has been created. Email: {user.email}, Password: {password}',
+                        'josephithanwa@gmail.com',
+                        [user.email],
+                        fail_silently=False,
+                    )
 
                     messages.success(request, "New employee created")
             except IntegrityError as e:
@@ -75,71 +83,30 @@ def employees(request):
 
 
 
-def view_employee_by_id(request):
-    employee_id = request.GET.get('id', None)
-    context = {}
-
-    if not employee_id:
-        context['code'] = 400
-        context['message'] = 'Bad Request: Employee ID is required.'
-        return JsonResponse(context, status=400)
-
-    try:
-        employee = get_object_or_404(Employee, id=employee_id)
-
-        context['code'] = 200
-        context['id'] = employee.id
-        context['first_name'] = employee.admin.first_name
-        context['last_name'] = employee.admin.last_name
-        context['phone'] = employee.phone
-        
-        context['email'] = employee.admin.email
-        
-    except:
-        context['code'] = 404
-        context['message'] = 'Employee not found.'
-        return HttpResponseNotFound()
-
-    return JsonResponse(context)
-def updateEmployee(request):
-    if request.method != 'POST':
-        messages.error(request, "Access Denied")
-        return redirect(reverse('adminViewEmployee'))
-
-    try:
-        employee_id = request.POST.get('id')
-        instance = get_object_or_404(Employee, id=employee_id)
-        user_form = CustomUserForm(request.POST, instance=instance.admin)
-        employee_form = EmployeeForm(request.POST, instance=instance)
-
+def updateEmployee(request, employee_id):
+    employee = get_object_or_404(Employee, id=employee_id)
+    user = employee.admin
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, instance=user)
+        employee_form = EmployeeForm(request.POST, instance=employee)
         if user_form.is_valid() and employee_form.is_valid():
             user_form.save()
             employee_form.save()
-            messages.success(request, "Employee updated")
-        else:
-            messages.error(request, "Form validation failed")
-    except Employee.DoesNotExist:
-        messages.error(request, "Employee does not exist")
-    except Exception as e:
-        messages.error(request, f"An error occurred: {str(e)}")
+            messages.success(request, "Employee updated successfully")
+            return redirect('adminViewEmployee')
+    else:
+        user_form = UserForm(instance=user)
+        employee_form = EmployeeForm(instance=employee)
+    return render(request, 'admin/adminV/edit_employee.html', {'user_form': user_form, 'employee_form': employee_form})
 
-    return redirect(reverse('adminViewEmployee'))
 
-def deleteEmployee(request):
-    if request.method != 'POST':
-        messages.error(request, "Access Denied")
-        return redirect(reverse('adminViewEmployee'))
+def deleteEmployee(request, employee_id):
+    employee = get_object_or_404(Employee, id=employee_id)
+    if request.method == 'POST':
+        employee.delete()
+        messages.success(request, "Employee deleted successfully")
+        return redirect('employee_list')
+    return render(request, 'admin/adminVdelete_employee.html', {'employee': employee})
 
-    try:
-        employee_id = request.POST.get('id')
-        employee = get_object_or_404(Employee, id=employee_id)
-        employee.admin.delete()  
-        messages.success(request, "Employee has been deleted")
-    except Employee.DoesNotExist:
-        messages.error(request, "Employee does not exist")
-    except Exception as e:
-        messages.error(request, f"An error occurred: {str(e)}")
-
-    return redirect(reverse('adminViewEmployee'))
 
 

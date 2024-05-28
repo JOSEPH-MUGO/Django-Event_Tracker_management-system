@@ -1,0 +1,58 @@
+{%extends "admin/root.html" %}
+{%load static%}
+{%block title %}edit employee{%endblock title%}
+{%block content%}
+<div class="modal fade" id="edit">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title"><b>Edit Employee</b></h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal" method="POST" action="{% url 'updateEmployee' employee.id %}">
+              {% csrf_token %}
+              <input type="hidden" class="id" name="id" value="{{employee.id}}">
+              <div class="form-group">
+                  <label for="edit_firstname" class="col-sm-3 control-label">Firstname</label>
+
+                  <div class="col-sm-9">
+                    <input type="text"  value="{{employee.first_name}}" class="form-control" id="edit_firstname" name="first_name">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label for="edit_lastname" class="col-sm-3 control-label">Lastname</label>
+
+                  <div class="col-sm-9">
+                    <input type="text" value="{{employee.last_name}}" class="form-control" id="edit_lastname" name="last_name">
+                  </div>
+              </div>
+              <div class="form-group">
+                <label for="edit_email" class="col-sm-3 control-label">Email</label>
+
+                <div class="col-sm-9">
+                  <input type="email" value="{{employee.email}}" class="form-control" id="edit_email" name="email">
+                </div>
+            </div>
+            <div class="form-group">
+              <label for="edit_phone" class="col-sm-3 control-label">Phone</label>
+
+              <div class="col-sm-9">
+                <input type="text" value="{{employee.phone}}" class="form-control" id="edit_phone" name="phone">
+              </div>
+          </div> 
+          
+
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
+            <button type="submit" class="btn btn-success btn-flat" name="edit"><i class="fa fa-check-square-o"></i> Update</button>
+            </form>
+          </div>
+      </div>
+  </div>
+</div>
+
+{%endblock content%}

@@ -8,40 +8,58 @@ from EventRecord.models import Event
 from django.contrib import messages
 from .auth_backends import EmailAuthBackend
 from employee.forms import EmployeeForm
-from django.db import IntegrityError,transaction
+from django.db import transaction
 from employee.models import Employee
+from django.core.mail import send_mail
 
- 
+
+
+
 def register(request):
-    userForm = CustomUserForm(request.POST or None)
-    employeeForm = EmployeeForm(request.POST or None)
-    context = {
-        'form1': userForm,
-        'form2': employeeForm
-    }
+    if not request.user.is_staff:
+        return redirect('login')  # Only admin can register employees
 
     if request.method == 'POST':
-        if userForm.is_valid() and employeeForm.is_valid():
+        
+       
+        employee_form = EmployeeForm(request.POST)
+        if employee_form.is_valid():
             try:
                 with transaction.atomic():
-                    user = userForm.save(commit=False)
-                    user.save()
+                    employee = employee_form.save()
+                    password = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+                    employee.admin.set_password(password)
+                    employee.admin.save()
                     
-                    employee = employeeForm.save(commit=False)
-                    employee.admin = user
-                    employee.email = user.email  # Assuming email should be the same as the user's email
-                    employee.save()
+                    print(f"User: {employee}, Password: {password}")
+                    #password = CustomUser.objects.make_random_password()
+                   
 
-                messages.success(request, "Your account was created successfully. You can now login.")
-                return redirect(reverse('login'))
-            except IntegrityError:
-                messages.error(request, "An error occurred while creating the account. Please try again.")
+
+
+                    # Send email with credentials
+                    send_mail(
+                        'Your account credentials',
+                        f'Your account has been created. Email: {employee.admin.email}, Password: {password}',
+                        'josephithanwa@gmail.com',
+                        [employee.admin.email],
+                        fail_silently=False,
+                    )
+
+                    messages.success(request, 'Employee registered successfully.')
+                    return redirect('adminViewEmployee')
+            except Exception as e:
+                messages.error(request, f'An error occurred while creating the employee: {e}')
         else:
-            messages.error(request, "Provided credentials failed validation.")
-    context['messages'] = messages.get_messages(request)
-    
-    return render(request, 'account/register.html', context)
-    
+             
+             print(employee_form.errors)
+             messages.error(request, 'Invalid form data.')
+    else:
+       
+        
+        employee_form = EmployeeForm()
+
+    return render(request, 'admin/adminV/employee.html', {'form2': employee_form})    
 
 
 def custom_login(request):
