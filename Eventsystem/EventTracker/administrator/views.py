@@ -24,7 +24,7 @@ def admin_dashboard(request):
 
 
     context = {
-        'page_tittle':'Dashboard',
+        
         'event_categories': event_categories,
         'events': events,
         'assignments': assignments,
@@ -35,7 +35,9 @@ def admin_dashboard(request):
         'assignment_count': assignments.count(),
         'report_count': reports.count(),
         'report_file_count': report_files.count(),
-        'employee_count':employee.count()
+        'employee_count':employee.count(),
+        'page_title':"Dashboard"
+
     }
     return render(request, 'admin/adminV/home.html',context)
 

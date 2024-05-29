@@ -1,9 +1,14 @@
 from django import forms
 from .models import *
+from .utils import validatePassword
+
+from django.core.exceptions import ValidationError
 #from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 import random
 import string
+from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth.forms import PasswordResetForm
 
 class FormSettings(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -29,6 +34,32 @@ class UserForm(FormSettings):
             user.save()
         return user,password
 
+class CustomPasswordResetForm(PasswordResetForm):
+    def __init__(self, user_email, user_first_name, user_last_name, user_phone, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user_email = user_email
+        self.user_first_name = user_first_name
+        self.user_last_name = user_last_name
+        self.user_phone = user_phone
+
+    def clean_new_password(self):
+        cleaned_data = super().clean()
+        new_password1 = self.cleaned_data.get('new_password1')
+        new_password2 = self.cleaned_data.get('new_password2')
+
+        # Check if passwords match
+        if new_password1 != new_password2:
+            raise forms.ValidationError("The passwords do not match.")
+
+        password = new_password1
+
+        # Validate password
+        try:
+            validatePassword(password, self.user_email, self.user_first_name, self.user_last_name, self.user_phone)
+        except ValidationError as e:
+            raise forms.ValidationError(e.messages)
+
+        return cleaned_data
 
 
 

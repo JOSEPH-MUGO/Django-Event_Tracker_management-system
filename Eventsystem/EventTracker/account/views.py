@@ -1,15 +1,23 @@
 from django.shortcuts import render, redirect, reverse
-#from django.http import HttpResponse
-from django.contrib.auth import  login, logout as auth_logout
-#from .forms import LoginForm
-#from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import PasswordResetView
+
+from django.contrib.auth import  login, logout as auth_logout,get_user_model
 from .forms import *
 from EventRecord.models import Event
 from django.contrib import messages
 from .auth_backends import EmailAuthBackend
 from employee.forms import EmployeeForm
 from django.db import transaction
-from employee.models import Employee
+from django.contrib.auth.tokens import default_token_generator
+from django.urls import reverse
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+from django.contrib.sites.shortcuts import get_current_site
+import logging
+
+
+
+
 from django.core.mail import send_mail
 
 
@@ -32,12 +40,7 @@ def register(request):
                     employee.admin.save()
                     
                     print(f"User: {employee}, Password: {password}")
-                    #password = CustomUser.objects.make_random_password()
-                   
-
-
-
-                    # Send email with credentials
+                   # Send email with credentials
                     send_mail(
                         'Your account credentials',
                         f'Your account has been created. Email: {employee.admin.email}, Password: {password}',
@@ -82,7 +85,7 @@ def custom_login(request):
         if user is not None:
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             if user.user_type == '1':
-                messages.success(request, "You have successfully login ")
+               
                 return redirect(reverse("admin_dashboard"))
             else:
                 return redirect(reverse("dashboard"))
@@ -91,7 +94,7 @@ def custom_login(request):
             
    
     return render(request, 'registration/login.html', context)
-
+#logout view 
 def custom_logout(request):
     user = request.user
     context = {}
@@ -103,9 +106,45 @@ def custom_logout(request):
         messages.error(request, "You need to login to perform this action")
     context['messages'] = messages.get_messages(request)
     return redirect(reverse("login")) 
-    
+
+
+#password reset
+logger = logging.getLogger(__name__)
+class CustomPasswordResetView(PasswordResetView):
+    def form_valid(self, form):
+        logger.debug("Form is Valid")
+        UserModel = get_user_model()
+        email=form.cleaned_data['email']
+        user =UserModel.objects.filter(email=email, is_active = True).first()
+        if user:
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+
+            current_site = get_current_site(self.request)
+            reset_url = reverse('password_reset_confirm',kwargs={'uidb64':uid, 'token': token})
+            reset_url = f'http://{current_site.domain}{reset_url}'
+
+            send_mail(
+                'Password Reset',
+                f' We received your request to reset password, Please follow this link to reset your password:{reset_url}',
+                'josephithanwa@gmail.com',
+                [user.email],
+                fail_silently= False,
+            )
+            return super().form_valid(form)
+        else:
+            logger.debug("No active user found for email: %s", email)
+            form.add_error('email', 'There is no active user associated with this email address. Please provide the correct email address')
+            form.is_valid = False
+            return self.form_invalid(form)
         
 
+
+
+
+
+
+#employee dashboard
 def dashboard(request):
     user = request.user
     if user is not None:

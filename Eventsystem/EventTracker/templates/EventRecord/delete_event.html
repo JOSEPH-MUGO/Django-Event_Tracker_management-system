@@ -1,0 +1,55 @@
+{%extends "admin/root.html"%}
+{% load static %}
+{%block title%} delete event{% endblock title%}
+{%block content%}
+{%block modal%}
+<!-- Delete -->
+<div class="modal fade" id="delete">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><b>Deleting...</b></h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" method="POST" action="">
+          <input type="hidden" class="id" name="id">
+          {% csrf_token %}
+          <div class="text-center">
+            <p>DELETE EVENT</p>
+            <h2 class="bold fullname"></h2>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal"><i
+            class="fa fa-close"></i> Close</button>
+        <button type="submit" class="btn btn-danger btn-flat" name="delete"><i class="fa fa-trash"></i> Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock modal %}
+
+{%endblock content%}
+{% block custom_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    $('#delete').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        var modal = $(this);
+        var url = "{% url 'deleteEvent' 0 %}".replace('0', id);
+        modal.find('form').attr('action', url);
+        modal.find('#delete-id').val(id);
+      
+    });
+});
+</script>
+
+
+
+
+{% endblock custom_js %}

@@ -17,11 +17,11 @@
       {% if request.user.user_type == '1' %}
   
       
-      <li class="header">EVENTS</li>
-      <li class=""><a href="{% url 'admin_dashboard' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+      <li class="header">HOME</li>
+      <li class=""><a href="{% url 'admin_dashboard' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>      
+      <li class="header">MANAGE EVENT</li>
+      <li class=""><a href="{% url 'createEventCategory' %}"><i class="fa fa-users"></i> <span>Event Category</span></a></li>
       <li class=""><a href="{% url 'viewEvents' %}"><span class="glyphicon glyphicon-lock"></span> <span>Create Event</span></a></li>
-      <li class="header">MANAGE</li>
-      <li class=""><a href="#"><i class="fa fa-users"></i> <span>Event Category</span></a></li>
       <li class=""><a href="#"><i class="fa fa-tasks"></i> <span>Assign Event</span></a></li>
       <li class=""><a href="#"><i class="fa fa-black-tie"></i> <span>Event List</span></a></li>
       <li class=""><a href="#"><i class="fa fa-black-tie"></i> <span>Reports</span></a></li>

@@ -7,8 +7,6 @@
     <div class="login-logo">
         <b>Event Tracker System</b>
     </div>
-    
-
     <div class="login-box-body">
         <p class="login-box-msg">Sign in to your session</p>
           <div> 
@@ -18,16 +16,10 @@
                 {% endfor %}
 
             </div>
-   
-
 
         <form action="{% url 'login' %}" method="POST">
             {% csrf_token %}
-            
-          
-          
-               
-           
+                  
             <div class="form-group has-feedback">
                 <input type="text" class="form-control" name="email" placeholder="Email" required>
                 <span class="glyphicon glyphicon-envelope form-control-feedback"></span>

@@ -12,7 +12,12 @@ class AccountCheckMiddleWare(MiddlewareMixin):
             if user.user_type == '1':  # Admin
                 if modulename == 'EventRecord.views':
                     error = True
-                    if request.path == reverse('viewEvents'):
+                    if request.path in [
+                        reverse('viewEvents'), 
+                        reverse('createEventCategory'),
+                        reverse('password_reset'),
+                        reverse('password_reset_confirm'),
+                        reverse('deleteEvent',kwargs={'id':view_kwargs.get('id')}) if view_kwargs.get('id') else None]:
                         pass
                     else:
                         messages.error(
@@ -27,7 +32,11 @@ class AccountCheckMiddleWare(MiddlewareMixin):
                 return redirect(reverse('login'))
         else:
          # If the path is login or has anything to do with authentication, pass
-            if request.path in [reverse('login'), reverse('register')] or modulename == 'django.contrib.auth.views':
+            if request.path in [
+                reverse('login'), 
+                reverse('password_reset')
+                
+                ] or modulename == 'django.contrib.auth.views':
                 pass
             elif modulename == 'administrator.views' or modulename == 'employee.views':
                 # If visitor tries to access administrator or employee functions

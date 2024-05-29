@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect,reverse,get_object_or_404
-from .forms import EventForm
-from .models import Event
+from .forms import *
+from .models import *
 from django.http import JsonResponse
 
 from django.db.models import Count
@@ -67,17 +67,33 @@ def updateEvent(request):
     return redirect(reverse('viewEvents'))
 
 
-def deleteEvent(request):
-    if request.method != 'POST':
-        messages.error(request, "Access Denied")
-    try:
-        event = Event.objects.get(id=request.POST.get('id'))
+
+def deleteEvent(request, id):
+    event = get_object_or_404(Event, id=id)
+    if request.method == 'POST':
+        
         event.delete()
-        messages.success(request, "Event Has Been Deleted")
-    except:
-        messages.error(request, "Access To This Resource Denied")
-
-    return redirect(reverse('viewEvents'))
+        messages.success(request, "Event deleted successfully")
+        return redirect(reverse('viewEvents'))
+    return render(request, 'EventRecord/delete_event.html',{'event':event})
 
 
-
+#create event category views
+def eventCategory(request):
+    category = EventCategory.objects.all()
+    form = EventCategoryForm(request.POST or None)
+    context = {'category': category,
+               'form': form,
+               'page_title':"Event Category"
+               }
+    
+    if request.method == 'POST':       
+        if form.is_valid():
+           form = form.save(commit=False)
+           form.save()
+           messages.success(request, "New category created successfully")
+           return redirect(reverse('createEventCategory'))
+        else:
+            print(form.errors)
+            messages.error(request,' Error occured!')
+    return render(request, 'EventRecord/event_category.html', context)
