@@ -3,7 +3,7 @@ import re
 
 
 def validatePassword(password, email,first_name,last_name,phone):
-    if email.lower() in password.lower() or first_name.lower() in password.lower() or last_name.lower() in password.lower() or phone.lower() in password.lower():
+    if email.lower() in password.lower() or first_name.lower() in password.lower() or last_name.lower() in password.lower():
         raise ValidationError("Your password can't be too similar to your other personal information.")
    
 
@@ -15,7 +15,3 @@ def validatePassword(password, email,first_name,last_name,phone):
         raise ValidationError("Your password can't be a commonly used password.")
     if re.match(r'^\d+$', password):
         raise ValidationError("Your password can't be entirely numeric.")
-    
-
-
-

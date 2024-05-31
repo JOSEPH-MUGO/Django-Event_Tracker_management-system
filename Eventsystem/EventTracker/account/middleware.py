@@ -16,7 +16,7 @@ class AccountCheckMiddleWare(MiddlewareMixin):
                         reverse('viewEvents'), 
                         reverse('createEventCategory'),
                         reverse('password_reset'),
-                        reverse('password_reset_confirm'),
+                        reverse('password_reset_confirm',kwargs=view_kwargs) if 'uidb64' in view_kwargs and 'token' in view_kwargs else None,
                         reverse('deleteEvent',kwargs={'id':view_kwargs.get('id')}) if view_kwargs.get('id') else None]:
                         pass
                     else:
@@ -34,7 +34,9 @@ class AccountCheckMiddleWare(MiddlewareMixin):
          # If the path is login or has anything to do with authentication, pass
             if request.path in [
                 reverse('login'), 
-                reverse('password_reset')
+                reverse('password_reset'),
+                reverse('password_reset_confirm', kwargs=view_kwargs) if 'uidb64' in view_kwargs and 'token' in view_kwargs else None,
+                reverse('password_reset_complete'),
                 
                 ] or modulename == 'django.contrib.auth.views':
                 pass

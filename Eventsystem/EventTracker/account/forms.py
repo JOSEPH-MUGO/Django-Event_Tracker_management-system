@@ -7,8 +7,8 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import make_password
 import random
 import string
-from django.contrib.auth.password_validation import validate_password
-from django.contrib.auth.forms import PasswordResetForm
+
+from django.contrib.auth.forms import SetPasswordForm
 
 class FormSettings(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -34,31 +34,29 @@ class UserForm(FormSettings):
             user.save()
         return user,password
 
-class CustomPasswordResetForm(PasswordResetForm):
-    def __init__(self, user_email, user_first_name, user_last_name, user_phone, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.user_email = user_email
-        self.user_first_name = user_first_name
-        self.user_last_name = user_last_name
-        self.user_phone = user_phone
 
-    def clean_new_password(self):
+class CustomSetPasswordForm(SetPasswordForm):
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(user, *args, **kwargs)
+        self.fields['new_password1'].widget.attrs['class'] = 'form-control'
+        self.fields['new_password1'].widget.attrs['placeholder'] = 'Enter new password'
+        self.fields['new_password2'].widget.attrs['class'] = 'form-control'
+        self.fields['new_password2'].widget.attrs['placeholder'] = 'Confirm new password entered'
+
+    def clean_new_password1(self):
+        password = self.cleaned_data.get('new_password1')
+        user = self.user
+        validatePassword(password, user.email, user.first_name, user.last_name,user.employee.phone)
+        return password
+
+    def clean(self):
         cleaned_data = super().clean()
-        new_password1 = self.cleaned_data.get('new_password1')
-        new_password2 = self.cleaned_data.get('new_password2')
+        password1 = cleaned_data.get('new_password1')
+        password2 = cleaned_data.get('new_password2')
 
-        # Check if passwords match
-        if new_password1 != new_password2:
-            raise forms.ValidationError("The passwords do not match.")
-
-        password = new_password1
-
-        # Validate password
-        try:
-            validatePassword(password, self.user_email, self.user_first_name, self.user_last_name, self.user_phone)
-        except ValidationError as e:
-            raise forms.ValidationError(e.messages)
-
+        if password1 and password2 and password1 != password2:
+            self.add_error('new_password2', "The passwords do not match.")
+        
         return cleaned_data
 
 
@@ -77,40 +75,3 @@ class CustomPasswordResetForm(PasswordResetForm):
 
 
 
-"""
-class LoginForm(forms.ModelForm):
-
-    username = forms.CharField(widget=forms.TimeInput(attrs={'class':'form-control'}))
-    Employee_ID = forms.CharField(max_length=100)
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}))
-    
-
-
-class UserRegistrationForm(forms.ModelForm):
-    password = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput)
-
-    class Meta:
-        model = User
-        fields = ('username','first_name','email')
-        widgets = {
-            'username': forms.TextInput(attrs={'class': 'form-control'}),
-            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),
-        }
-    def clean_password2(self):
-        cd = self.cleaned_data
-        if cd['password']!= cd['password2']:
-            raise forms.ValidationError('Password don\'t match.')
-        return cd['password2'] 
-  #allowing users edit their profile eg. firstname,lastname,email        
-class UserEditForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ('first_name', 'last_name', 'email')
-        widgets = {
-            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),
-        }
-        """

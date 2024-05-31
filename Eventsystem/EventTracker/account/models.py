@@ -35,6 +35,7 @@ class User(AbstractBaseUser):
     username = None  # use email instead
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
+
     email = models.EmailField(unique=True)
     user_type = models.CharField(default=2, choices=USER_TYPE, max_length=1)
     is_staff = models.BooleanField(default=False)
@@ -44,6 +45,7 @@ class User(AbstractBaseUser):
     updated_at = models.DateTimeField(auto_now=True)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
+
 
     objects = UserManager()
     

@@ -9,13 +9,15 @@
     </div>
     <div class="login-box-body">
         <p class="login-box-msg">Sign in to your session</p>
+        {%if messages %}
           <div> 
                 {% for message in messages %}
-                <li {% if message.tags %} class="alert alert-{{message.tags}}"{% endif %}>
-                    {{message|safe}}</li>
+                <li class="alert alert-{{message.tags}}">
+                    {{message}}</li>
                 {% endfor %}
 
             </div>
+            {% endif %}
 
         <form action="{% url 'login' %}" method="POST">
             {% csrf_token %}
