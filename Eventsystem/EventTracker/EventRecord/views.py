@@ -12,11 +12,13 @@ from django.contrib import messages
 
 def viewEvents(request):
     events = Event.objects.order_by('-id').all()
+    category = EventCategory.objects.all()
     
     form = EventForm(request.POST or None)
     context ={
         'events':events,
         'form1':form,
+        'category':category,
         'page_title':"Events"
     }
     if request.method == 'POST':
@@ -31,7 +33,7 @@ def viewEvents(request):
             messages.error(request, "Oops! Form error")
 
     return render(request, "EventRecord/create_event.html", context)
-
+"""
 def getEvent(request):
     event_id = request.GET.get('id',None)
     event = Event.objects.filter(id=event_id)
@@ -41,7 +43,7 @@ def getEvent(request):
     else:
         context['code'] = 200
         context['id'] = event.id
-        context['event_type'] = event.event_type
+        context['event_type'] = event.event_type.id
         context['title'] = event.title
         context['description'] = event.description
         context['venue'] = event.venue
@@ -50,17 +52,44 @@ def getEvent(request):
         context['end_date'] = event.end_date
     return JsonResponse(context)
 
+"""
+def getEvent(request):
+    event_id = request.GET.get('id')
+    context = {}
+    try:
+        event = Event.objects.get(id=event_id)
+        context['code'] = 200
+        context['id'] = event.id
+        context['event_type'] = event.event_type.id # Assuming event_type is a ForeignKey
+        context['title'] = event.title
+        context['description'] = event.description
+        context['venue'] = event.venue
+        context['location'] = event.location
+        context['start_date'] = event.start_date.strftime('%Y-%m-%d')  # Format date
+        context['end_date'] = event.end_date.strftime('%Y-%m-%d')      # Format date
+    except Event.DoesNotExist:
+        context['code'] = 404
+    return JsonResponse(context)
 
-def updateEvent(request):
+def updateEvent(request ):
     if request.method != 'POST':
         messages.error(request, "Access denied")
+        return redirect(reverse('viewEvents'))
     try:  
-        event = Event.objects.get(id=request.POST.get('id'))
+        event_id =request.POST.get('id')
+        event = Event.objects.get(id=event_id)
         form = EventForm(request.POST or None, instance=event)
-        form.save()
-        messages.success(request, "Event updated successfully")
-    except:
-        messages.error(request, "Unexpected Problem Occured!")
+
+        if form.is_valid():
+           form.save()
+           messages.success(request, "Event updated successfully")
+        else:
+            messages.error(request, "Form validation failed")
+            print(form.errors)
+    except Event.DoesNotExist:
+        messages.error(request, "Event not found")
+    except Exception as e:
+        messages.error(request, f"Unexpected Problem Occured:{str(e)}")
     return redirect(reverse('viewEvents'))
         
         
@@ -68,15 +97,17 @@ def updateEvent(request):
 
 
      
-def deleteEvent(request, pk):
+def deleteEvent(request):
     if request.method != 'POST':
         messages.error(request, "Access Denied")
+        return redirect(reverse('viewEvents'))
     try:
         event= Event.objects.get(id=request.POST.get('id'))
         event.delete()
         messages.success(request, "Event delete successfully")
-    except:
-        messages.error(request, "Unable to delete the event")
+    except Event.DoesNotExist:
+        messages.error(request, "Event not found")
+   
     return redirect('viewEvents') 
 
 
