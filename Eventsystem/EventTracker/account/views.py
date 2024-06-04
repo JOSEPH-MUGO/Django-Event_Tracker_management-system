@@ -42,16 +42,7 @@ def register(request):
                     password = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
                     employee.admin.set_password(password)
                     employee.admin.save()
-                    
-                    print(f"User: {employee}, Password: {password}")
-                   # Send email with credentials
-                    send_mail(
-                        'Your account credentials',
-                        f'Hello! {employee.admin.first_name}, Your account for Event tracker system has been created successfully using Email: {employee.admin.email},Use this Password: {password} to login to the system. You can change it later if you want. Thanks',
-                        'josephithanwa@gmail.com',
-                        [employee.admin.email],
-                        fail_silently=False,
-                    )
+                   
 
                     messages.success(request, 'Employee registered successfully.')
                     return redirect('adminViewEmployee')

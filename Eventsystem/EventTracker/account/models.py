@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Group, Permission
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Group, Permission,PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.contrib.auth.hashers import make_password
@@ -29,7 +29,7 @@ class UserManager(BaseUserManager):
         assert extra_fields["is_superuser"]
         return self._create_user(email, password, **extra_fields)
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser,PermissionsMixin):
     USER_TYPE = ((1, "Admin"), (2, "Employee"))
    
     username = None  # use email instead
@@ -52,9 +52,7 @@ class User(AbstractBaseUser):
     def __str__(self):
         return self.last_name + " " + self.first_name
 
-    def delete(self, *args, **kwargs):
-        self.related_object.delete()
-        super().delete(*args, **kwargs)
+
 
 
     groups = models.ManyToManyField(

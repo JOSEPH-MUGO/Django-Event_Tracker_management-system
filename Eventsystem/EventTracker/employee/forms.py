@@ -8,7 +8,7 @@ class EmployeeForm(FormSettings):
     class Meta:
         model = Employee
         fields = ['phone']
-
+"""
     def save(self, commit=True):
         employee = super().save(commit=False)
         if commit:
@@ -17,3 +17,4 @@ class EmployeeForm(FormSettings):
             employee.save()
         return employee
 
+"""
