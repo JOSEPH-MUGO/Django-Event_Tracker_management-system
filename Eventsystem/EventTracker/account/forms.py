@@ -8,7 +8,7 @@ from django.contrib.auth.hashers import make_password
 import random
 import string
 
-from django.contrib.auth.forms import SetPasswordForm
+from django.contrib.auth.forms import SetPasswordForm,PasswordResetForm
 
 class FormSettings(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -64,6 +64,15 @@ class UserForm(FormSettings):
             user.save()
         return user,password
 
+class PasswordResetForm(PasswordResetForm):
+    email = forms.EmailField(
+        label='Email',
+        max_length=254,
+        widget=forms.TextInput(attrs={
+            'class':'form-control',
+            'required':'required',
+        })
+    )
 
 class CustomSetPasswordForm(SetPasswordForm):
     def __init__(self, user, *args, **kwargs):

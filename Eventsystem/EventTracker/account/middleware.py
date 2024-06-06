@@ -23,7 +23,7 @@ class AccountCheckMiddleWare(MiddlewareMixin):
                         reverse('deleteEvent'),
                         reverse('createEventCategory'),
                         reverse('password_reset'),
-                        reverse('password_reset_confirm',kwargs=view_kwargs) if 'uidb64' in view_kwargs and 'token' in view_kwargs else None,
+                        reverse('password_reset_confirm',kwargs={'uidb64': view_kwargs.get('uidb64'), 'token': view_kwargs.get('token')})
                         ]:
                         logger.debug("Access granted to admin")
                     else:
@@ -43,7 +43,7 @@ class AccountCheckMiddleWare(MiddlewareMixin):
                 reverse('login'), 
                 
                 reverse('password_reset'),
-                reverse('password_reset_confirm', kwargs=view_kwargs) if 'uidb64' in view_kwargs and 'token' in view_kwargs else None,
+                reverse('password_reset_confirm', kwargs={'uidb64': view_kwargs.get('uidb64'), 'token': view_kwargs.get('token')}),
                 reverse('password_reset_complete'),
                 
                 ] or modulename == 'django.contrib.auth.views':

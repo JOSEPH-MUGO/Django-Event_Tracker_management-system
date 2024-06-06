@@ -11,13 +11,15 @@
           </a>
         </div>
         <div class="box-body">
-          {% if messages %}
-          <div class="alert alert-{{ message.tags }}">
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-          </div>
-          {% endif %}
+            {% if messages %}
+        <ul class="messages">
+          {% for message in messages %}
+          <li{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %} id="message_{{ forloop.counter }}">
+            {{ message }}
+          </li>
+          {% endfor %}
+        </ul>
+        {% endif %}
           <table id="example1" class="table table-bordered table-hover table-striped display" >
             <thead style="background-color: #222d32; color: white">
               <tr>
@@ -190,6 +192,9 @@
           var id = $(this).data('id');
           getRow(id);
       });
+      setTimeout(function() {
+        $('.messages').fadeOut('slow'); // Fade out the message container
+      }, 3000);
 
 
   });
