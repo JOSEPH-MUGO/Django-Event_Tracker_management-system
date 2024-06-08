@@ -77,17 +77,6 @@ Categories{% endblock title %} {% block content %}
         <h4 class="modal-title"><b>Add New Event Category</b></h4>
       </div>
 
-      <div>
-        {% for message in messages %}
-        <li
-          {% if message.tags %}
-          class="alert alert-{{message.tags}}"
-          {% endif %}
-        >
-          {{message|safe}}
-        </li>
-        {% endfor %}
-      </div>
       <div class="modal-body">
         <form
           class="form-horizontal"

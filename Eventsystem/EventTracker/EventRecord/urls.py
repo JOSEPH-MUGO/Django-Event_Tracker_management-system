@@ -13,5 +13,9 @@ urlpatterns = [
     path('event/category/update/', views.updateCategory, name='updateCategory'),
     path('event/category/delete/', views.deleteCategory, name='deleteCategory'),
     # assign event to employee
-    path('assign/event/view/', views.assign_employee, name='assignedEvent'),
+    path('assign/employee/view/', views.assign_employee, name='assignedEvent'),
+    path('assign/get/assigned', views.getAssigned, name='getAssigned'),
+    path('assign/update/', views.updateAssigned, name='updateAssigned'),
+    path('assign/delete/', views.deleteAssigned, name='deleteAssigned'),
+
 ]

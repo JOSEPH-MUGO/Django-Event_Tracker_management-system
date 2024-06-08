@@ -27,9 +27,10 @@ class Assignment(models.Model):
     employee = models.ForeignKey(Employee,on_delete=models.CASCADE)
     assign_date = models.DateField(default=timezone.now)
     time = models.TimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'{self.employee.admin.email} assigned to {self.event.title}'
+        return f'{self.employee} assigned to {self.event.title}'
 
 class Report(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)

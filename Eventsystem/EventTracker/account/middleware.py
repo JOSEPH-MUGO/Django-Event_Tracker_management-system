@@ -28,6 +28,10 @@ class AccountCheckMiddleWare(MiddlewareMixin):
                         reverse('password_reset'),
                         reverse('password_reset_confirm',kwargs={'uidb64': view_kwargs.get('uidb64'), 'token': view_kwargs.get('token')}),
                         reverse('assignedEvent'),
+                        reverse('getAssigned'),
+                        reverse('updateAssigned'),
+                        reverse('deleteAssigned')
+
                         ]:
                         logger.debug("Access granted to admin")
                     else:

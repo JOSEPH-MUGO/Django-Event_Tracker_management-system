@@ -1,26 +1,39 @@
 from django.dispatch import receiver
 from django.core.mail import send_mail
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from .models import Assignment
 from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
-@receiver(post_save,sender=Assignment)
-def event_mail(sender,instance,created,**kwargs):
+@receiver(pre_save, sender=Assignment)
+def save_old_employee(sender, instance, **kwargs):
+    if instance.pk:
+        instance._old_employee = Assignment.objects.get(pk=instance.pk).employee
+    else:
+        instance._old_employee = None
+
+@receiver(post_save, sender=Assignment)
+def event_mail(sender, instance, created, **kwargs):
+    employee = instance.employee
+    event = instance.event
+    subject = f'You have been assigned to an event: {event.title}'
+    
+    # Email content template
+    email_content = render_to_string('emails/assignment_email.html', {'employee': employee, 'event': event})
+    plain_message = strip_tags(email_content)
+
     if created:
-        employee = instance.employee
-        event = instance.event
-
-        subject =f'You have been assigned to an event: {event.title}'
-        mail_template = 'EventRecord/event_details.txt'
-        details = {f'The event is under the category of: {event.event_type.id}\n',
-                   f'Title of the event: {event.title}\n'
-                   f'Description of the event: {event.description}\n'
-                   f'Venue where the event will be held: {event.venue}\n'
-                   f'Location of the event: {event.location}\n'
-                   f'Event will commerce on date: {event.start_date}\n'
-                   f'Event will end on date: {event.end_date}\n'                   
-                   }
-        email = render_to_string(mail_template, details)
-        send_mail(
-            subject, email, '' ,[employee.admin.email],fail_silently=False
-        )
+        # Send email to new employee if assignment is created
+        send_mail(subject, plain_message, '', [employee.admin.email], fail_silently=False)
+    else:
+        # Check if employee has changed
+        old_employee = instance._old_employee
+        if old_employee and old_employee != employee:
+            # Notify old employee of reassignment
+            old_subject = f'You have been reassigned from an event: {event.title}'
+            old_email_content = render_to_string('emails/assignment_reassigned.html', {'employee': old_employee, 'event': event})
+            old_plain_message = strip_tags(old_email_content)
+            send_mail(old_subject, old_plain_message, '', [old_employee.admin.email], fail_silently=False)
+        
+        # Notify new employee of updated assignment
+        send_mail(subject, plain_message, '', [employee.admin.email], fail_silently=False)

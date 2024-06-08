@@ -177,11 +177,70 @@ def assign_employee(request):
 
 
 
+def getAssigned(request):
+    assign_id = request.GET.get('id')
+    context = {}
+    try:
+        assign = Assignment.objects.get(id=assign_id)
+        context['code'] = 200
+        context['id'] = assign.id
+        context['event'] = {
+            'id': assign.event.id,
+            'title': assign.event.title,
+            'description': assign.event.description,
+            'venue': assign.event.venue,
+            'location': assign.event.location,
+            'start_date': assign.event.start_date,
+            'end_date': assign.event.end_date
+        }
+        context['employee'] = {
+            'id': assign.employee.id,
+            'first_name': assign.employee.admin.first_name,
+            'last_name': assign.employee.admin.last_name,
+            'email': assign.employee.admin.email,
+            'phone': assign.employee.phone
+        }
+        
+        context['assign_date'] = assign.assign_date
+        context['time'] = assign.time.strftime('%H:%M')
+    except Assignment.DoesNotExist:
+        context['code'] = 404
+    return JsonResponse(context)
+
+def updateAssigned(request):
+    if request.method != 'POST':
+        messages.error(request, 'Access Denied!')
+        return redirect(reverse('assignedEvent'))
+    try:
+        assign_id = request.POST.get('id')
+        assignments = Assignment.objects.get(id =assign_id)
+       
+        form = AssignForm(request.POST or None, instance=assignments)
+        
+        if form.is_valid():
+            form.save()
+            
+            messages.success(request, 'Assigment updated!')
+            return redirect(reverse('assignedEvent'))
+    except Assignment.DoesNotExist:
+        messages.error(request, 'Assignment not found')
+        return redirect(reverse('assignedEvent'))
+    
 
 
-
-
-
+def deleteAssigned(request):
+    if request.method == 'POST':
+        assign_id = request.POST.get('id')
+        try:
+            assignment = get_object_or_404(Assignment, id=assign_id)
+            assignment.delete()
+            messages.success(request, 'Assignment deleted successfully!')
+        except Assignment.DoesNotExist:
+            messages.error(request, 'Assignment not found.')
+        return redirect(reverse('assignedEvent'))
+    else:
+        messages.error(request, 'Invalid request method.')
+        return redirect(reverse('assignedEvent'))
 
 
 

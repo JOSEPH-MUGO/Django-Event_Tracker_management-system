@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+    <p>Dear {{ employee.admin.first_name }},</p>
+    <p>I'm delighted to inform you that you have been assigned an event to attend.</p>
+    <p>The event details are listed below:</p>
+    <ul>
+        <li><b>Category:</b>{{ event.event_type }}</li>
+        <li><strong>Description:</strong> {{ event.description }}</li>
+        <li><strong>Venue:</strong> {{ event.venue }}</li>
+        <li><strong>Location:</strong> {{ event.location }}</li>
+        <li><strong>Start Date:</strong> {{ event.start_date }}</li>
+        <li><strong>End Date:</strong> {{ event.end_date }}</li>
+    </ul>
+    <p>Kindly Note: After the event, you will be required to write a report and send proof of the same.</p>
+    <p>Best regards,<br>The Event Tracker Team</p>
+</body>
+</html>
