@@ -1,5 +1,4 @@
-{% extends "admin/root.html" %} {% load static %} {% block title %}Event
-Categories{% endblock title %} {% block content %}
+{% extends "admin/root.html" %} {% load static %} {% block title %}Event assignments{% endblock title %} {% block content %}
 <section class="content">
   <div class="row">
     <div class="col-xs-12">
@@ -9,7 +8,7 @@ Categories{% endblock title %} {% block content %}
             href="#addnew"
             data-toggle="modal"
             class="btn btn-success btn-sm btn-flat"
-            ><i class="fa fa-plus"></i> Add New Event Category</a
+            ><i class="fa fa-plus"></i> Add New Assignment</a
           >
         </div>
           {% if messages %}
@@ -22,29 +21,38 @@ Categories{% endblock title %} {% block content %}
         </ul>
         {% endif %}
         <div class="box-body">
-          {% if category %}
+          {% if assigns %}
           <table
             id="example1"
             class="table table-bordered table-hover table-striped"
           >
             <thead style="background-color: #222d32; color: white">
-              <th>Event Category</th>
+              <th>Event</th>
+              <th>Employee</th>
+              <th>Assigned Date</th>
+              <th>Time Assigned</th>
+
               <th>Action</th>
             </thead>
             <tbody>
-              {% for category in category %}
+              {% for assigned in assigns %}
               <tr>
-                <td>{{ category.event_type }}</td>
+                <td>{{ assigned.event }}</td>
+                <td>{{ assigned.employee }}</td>
+                <td>{{ assigned.assign_date }}</td>
+                <td>{{ assigned.time }}</td>
+
+
                 <td>
                   <button
                     class="btn btn-primary btn-sm edit btn-flat"
-                    data-id="{{ category.id }}"
+                    data-id="{{ assigned.id }}"
                   >
                     <i class="fa fa-edit"></i> Edit
                   </button>
                   <button
                     class="btn btn-danger btn-sm delete btn-flat"
-                    data-id="{{ category.id }} onclick="return confirm('Are you sure you want to delete this event Category?')""
+                    data-id="{{ assigned.id }}" onclick="return confirm('Are you sure you want to delete this event Category?')"
                   >
                     <i class="fa fa-trash"></i> Delete
                   </button>
@@ -54,7 +62,7 @@ Categories{% endblock title %} {% block content %}
             </tbody>
           </table>
           {% else %}
-          <p>No event categories available</p>
+          <p>No assignment available</p>
           {% endif %}
         </div>
       </div>
@@ -74,25 +82,17 @@ Categories{% endblock title %} {% block content %}
         >
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title"><b>Add New Event Category</b></h4>
+        <h4 class="modal-title"><b>add a new assignment</b></h4>
       </div>
 
       <div>
-        {% for message in messages %}
-        <li
-          {% if message.tags %}
-          class="alert alert-{{message.tags}}"
-          {% endif %}
-        >
-          {{message|safe}}
-        </li>
-        {% endfor %}
+
       </div>
       <div class="modal-body">
         <form
           class="form-horizontal"
           method="POST"
-          action="{% url 'createEventCategory' %}"
+          action="{% url 'assignedEvent' %}"
         >
           {% csrf_token %}
           <div class="modal-body">
@@ -129,7 +129,7 @@ Categories{% endblock title %} {% block content %}
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title"><b>Edit Event Category</b></h4>
+        <h4 class="modal-title"><b>Edit assignment</b></h4>
       </div>
       <div class="modal-body">
 

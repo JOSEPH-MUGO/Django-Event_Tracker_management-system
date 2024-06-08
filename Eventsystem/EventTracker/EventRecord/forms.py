@@ -17,9 +17,16 @@ class EventForm(FormSettings):
          
        
 class AssignForm(FormSettings):
+    assign_date = forms.DateField(widget=forms.DateInput(attrs={'type':'date', 'class':'form-control'}))
+    time = forms.TimeField(widget=forms.TimeInput(attrs={'type':'time','class':'form-control'}))
     class Meta:
         model = Assignment
-        fields = ['event','employee']
+        fields = ['event','employee','assign_date','time']
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.fields['event'].queryset = Event.objects.all()
+            self.fields['employee'].queryset = Employee.objects.all()
+            
 
 class ReportForm(FormSettings):
     Notes = forms.CharField(widget=forms.Textarea(attrs={'rows':5}))

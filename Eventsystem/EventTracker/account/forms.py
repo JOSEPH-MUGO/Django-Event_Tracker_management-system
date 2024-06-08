@@ -75,12 +75,14 @@ class PasswordResetForm(PasswordResetForm):
     )
 
 class CustomSetPasswordForm(SetPasswordForm):
-    def __init__(self, user, *args, **kwargs):
-        super().__init__(user, *args, **kwargs)
-        self.fields['new_password1'].widget.attrs['class'] = 'form-control'
-        self.fields['new_password1'].widget.attrs['placeholder'] = 'Enter new password'
-        self.fields['new_password2'].widget.attrs['class'] = 'form-control'
-        self.fields['new_password2'].widget.attrs['placeholder'] = 'Confirm new password entered'
+    new_password1 = forms.CharField(
+        label='New password',
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'New password'}),
+    )
+    new_password2 = forms.CharField(
+        label='Confirm new password',
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm new password'}),
+    )
 
     def clean_new_password1(self):
         password = self.cleaned_data.get('new_password1')

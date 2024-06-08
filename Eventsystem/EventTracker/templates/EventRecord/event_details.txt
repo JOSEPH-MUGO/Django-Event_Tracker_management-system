@@ -1,0 +1,7 @@
+{% autoescape on %}
+Dear {{employee.admin.first_name}},
+
+I'm delighted to inform you that you have been assigned an event.
+The event details are listed below:-
+
+{% endautoescape %}

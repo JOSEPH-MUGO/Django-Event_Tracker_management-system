@@ -1,5 +1,7 @@
 from django.db import models
 from account.models import User
+from employee.models import Employee
+from django.utils import timezone 
 
 # Create your models here.
 class EventCategory(models.Model):
@@ -22,7 +24,12 @@ class Event(models.Model):
     
 class Assignment(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    employee = models.ForeignKey(User,on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee,on_delete=models.CASCADE)
+    assign_date = models.DateField(default=timezone.now)
+    time = models.TimeField(default=timezone.now)
+
+    def __str__(self):
+        return f'{self.employee.admin.email} assigned to {self.event.title}'
 
 class Report(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)

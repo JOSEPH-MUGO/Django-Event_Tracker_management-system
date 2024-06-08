@@ -7,6 +7,7 @@ from django.db.models import Count
 from django.contrib import messages
 
 
+
 # Create your views here.
 
 
@@ -33,26 +34,7 @@ def viewEvents(request):
             messages.error(request, "Oops! Form error")
 
     return render(request, "EventRecord/create_event.html", context)
-"""
-def getEvent(request):
-    event_id = request.GET.get('id',None)
-    event = Event.objects.filter(id=event_id)
-    context = {}
-    if not event.exists():
-        context['code'] = 404
-    else:
-        context['code'] = 200
-        context['id'] = event.id
-        context['event_type'] = event.event_type.id
-        context['title'] = event.title
-        context['description'] = event.description
-        context['venue'] = event.venue
-        context['location'] = event.location
-        context['start_date'] = event.start_date
-        context['end_date'] = event.end_date
-    return JsonResponse(context)
 
-"""
 def getEvent(request):
     event_id = request.GET.get('id')
     context = {}
@@ -60,13 +42,13 @@ def getEvent(request):
         event = Event.objects.get(id=event_id)
         context['code'] = 200
         context['id'] = event.id
-        context['event_type'] = event.event_type.id # Assuming event_type is a ForeignKey
+        context['event_type'] = event.event_type.id # event_type is a ForeignKey
         context['title'] = event.title
         context['description'] = event.description
         context['venue'] = event.venue
         context['location'] = event.location
-        context['start_date'] = event.start_date.strftime('%Y-%m-%d')  # Format date
-        context['end_date'] = event.end_date.strftime('%Y-%m-%d')      # Format date
+        context['start_date'] = event.start_date.strftime('%Y-%m-%d') 
+        context['end_date'] = event.end_date.strftime('%Y-%m-%d')      
     except Event.DoesNotExist:
         context['code'] = 404
     return JsonResponse(context)
@@ -91,12 +73,7 @@ def updateEvent(request ):
     except Exception as e:
         messages.error(request, f"Unexpected Problem Occured:{str(e)}")
     return redirect(reverse('viewEvents'))
-        
-        
-
-
-
-     
+            
 def deleteEvent(request):
     if request.method != 'POST':
         messages.error(request, "Access Denied")
@@ -112,81 +89,13 @@ def deleteEvent(request):
 
 
 
-
-
-
-
-"""
-def getEvent(request):
-    event_id = request.GET.get('id')
-    print(f"Received request for event ID:{event_id}")
-    if event_id is None:
-        return JsonResponse({'code': 400, 'message': 'Event ID not provided '}, status =400)    
-    try:
-        event = Event.objects.get(pk=event_id)
-        data ={
-            'code': 200,
-            'event_type': event.event_type.id,  # Use ID to set in the dropdown
-            'title': event.title,
-            'description': event.description,
-            'venue': event.venue,
-            'location': event.location,
-            'start_date': event.start_date.strftime('%Y-%m-%d'),
-            'end_date': event.end_date.strftime('%Y-%m-%d'),
-            'id': event.id
-            
-        }
-        print(f"Returning event data:{data}")
-        return JsonResponse(data)
-    except Event.DoesNotExist:
-         print(f"Event with ID {event_id} does not exist")
-
-        
-         return JsonResponse({'code': 404, 'message':'Event not found'}, status = 404)
-"""
-
-"""
-def updateEvent(request):
-    if request.method != 'POST':
-        messages.error(request, "Access Denied")
-        return redirect(reverse('viewEvents'))
-    event_id = request.POST.get('id')
-    instance = get_object_or_404(Event, id=event_id)
-    form = EventForm(request.POST, instance=instance)
-
-    if form.is_valid():
-        form.save()
-        messages.success(request, "Event has been updated")
-    else:
-        messages.error(request, "Form is invalid")
-        print(form.errors)  
-
-    return redirect(reverse('viewEvents'))
-
-def deleteEvent(request):
-    if request.method != 'POST':
-        messages.error(request, "Access Denied")
-    try:
-        event = Event.objects.get(id=request.POST.get('id'))
-        event.delete()
-        messages.success(request, "Event Has Been Deleted")
-    except:
-        messages.error(request, "Access To This Resource Denied")
-
-    return redirect(reverse('viewEvents'))
-
-"""
-   
-
-    
-
 #create event category views
 def eventCategory(request):
     category = EventCategory.objects.all()
     form = EventCategoryForm(request.POST or None)
     context = {'category': category,
                'form': form,
-               'page_title':"Event Category"
+               'page_title':"Events Categories"
                }
     
     if request.method == 'POST':       
@@ -199,3 +108,81 @@ def eventCategory(request):
             print(form.errors)
             messages.error(request,' Error occured!')
     return render(request, 'EventRecord/event_category.html', context)
+
+
+def getCategory(request):
+    category_id =request.GET.get('id')
+    context = {}
+    try:
+        category = EventCategory.objects.get(id=category_id)
+        context['code'] = 200
+        context['id'] = category.id
+        context['event_type'] = category.event_type
+    except EventCategory.DoesNotExist:
+        context['code'] =404
+    return JsonResponse(context)
+
+def updateCategory(request):
+    if request.method != 'POST':
+        messages.error(request, 'Access Denied!')
+        return redirect(reverse('createEventCategory'))
+    try:
+        category_id = request.POST.get('id')
+        category = EventCategory.objects.get(id =category_id)
+        form = EventCategoryForm(request.POST or None, instance=category)
+        
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Event category updated!')
+            return redirect(reverse('createEventCategory'))
+    except EventCategory.DoesNotExist:
+        messages.error(request, 'Event category not found')
+        return redirect(reverse('createEventCategory'))
+    
+def deleteCategory(request):
+    if request.method != 'POST':
+        messages.error(request, 'Access denied')
+        return redirect(reverse('createEventCategory'))
+    try:
+        category = EventCategory.objects.get(id = request.POST.get('id'))
+        category.delete()
+        messages.success(request, 'Event category deleted successfully')
+        return redirect(reverse('createEventCategory'))
+    except EventCategory.DoesNotExist:
+        messages.error(request, 'Event Category not found')
+        return redirect(reverse('createEventCategory'))
+
+    #assigning employees the events
+
+def assign_employee(request):
+    assigns = Assignment.objects.all()
+    if request.method == 'POST':
+        form = AssignForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Employee assigned to the event successfully.')
+            return redirect(reverse('assignedEvent'))
+        else:
+            messages.error(request, 'There was an error with your form. Please check the details.')
+            return redirect(reverse('assignedEvent'))
+    else:
+        form = AssignForm()
+    context = {
+        'assigns': assigns,
+        'form': form,
+        'page_title': "Assigned Events"
+    }
+    return render(request, 'EventRecord/assign_event_employee.html', context)
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -22,8 +22,12 @@ class AccountCheckMiddleWare(MiddlewareMixin):
                         reverse('updateEvent'),
                         reverse('deleteEvent'),
                         reverse('createEventCategory'),
+                        reverse('getCategory'),
+                        reverse('updateCategory'),
+                        reverse('deleteCategory'),
                         reverse('password_reset'),
-                        reverse('password_reset_confirm',kwargs={'uidb64': view_kwargs.get('uidb64'), 'token': view_kwargs.get('token')})
+                        reverse('password_reset_confirm',kwargs={'uidb64': view_kwargs.get('uidb64'), 'token': view_kwargs.get('token')}),
+                        reverse('assignedEvent'),
                         ]:
                         logger.debug("Access granted to admin")
                     else:
