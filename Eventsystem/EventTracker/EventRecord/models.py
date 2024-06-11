@@ -31,13 +31,19 @@ class Assignment(models.Model):
 
     def __str__(self):
         return f'{self.employee} assigned to {self.event.title}'
-
+DEFAULT_ASSIGNMENT_ID = 1 
 class Report(models.Model):
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, default=DEFAULT_ASSIGNMENT_ID)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    employee = models.ForeignKey(User, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     Notes  = models.TextField()
     submitted_at = models.DateTimeField(auto_now_add=True)
-    proof = models.FileField(upload_to='reports/')
+    proof = models.FileField(upload_to='reports/', blank=False,null=False)
+    approved = models.BooleanField(default=False)  # Approval status
+    approved_at = models.DateTimeField(null=True, blank=True) 
+
+    def __str__(self):
+        return f'Report for {self.event.title} by {self.employee}'
 
 class ReportFile(models.Model):
     report = models.ForeignKey(Report, on_delete=models.CASCADE)

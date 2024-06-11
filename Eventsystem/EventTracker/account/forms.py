@@ -13,9 +13,10 @@ from django.contrib.auth.forms import SetPasswordForm,PasswordResetForm
 class FormSettings(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(FormSettings, self).__init__(*args, **kwargs)
-        # Here make some changes such as:
+   # Setting class attribute for consistent styling
         for field in self.visible_fields():
             field.field.widget.attrs['class'] = 'form-control'
+            
 
 
 class UserForm(FormSettings):
@@ -32,6 +33,9 @@ class UserForm(FormSettings):
             if self.instance.pk is not None:
                 self.fields['password'].widget.attrs['placeholder'] = "Fill this only if you wish to update password"
         else:
+            self.fields['first_name'].widget.attrs['placeholder'] = 'Enter employee first name'
+            self.fields['last_name'].widget.attrs['placeholder'] = 'Enter employee last name'
+            self.fields['email'].widget.attrs['placeholder'] = 'Enter employee email'
             self.fields['first_name'].required = True
             self.fields['last_name'].required = True
 
@@ -55,6 +59,7 @@ class UserForm(FormSettings):
     class Meta:
         model = User
         fields = ['last_name', 'first_name', 'email']
+        
 
     def save(self, commit=True):
         user = super(UserForm, self).save(commit=False)

@@ -1,5 +1,5 @@
 {% load static %}
-<aside class="main-sidebar">
+<aside class="fixed main-sidebar">
   <!-- sidebar: style can be found in sidebar.less -->
   <section class="sidebar">
     <!-- Sidebar user panel -->
@@ -18,27 +18,32 @@
   
       
       <li class="header">HOME</li>
-      <li class=""><a href="{% url 'admin_dashboard' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>      
-      <li class="header">MANAGE EVENT</li>
-      <li class=""><a href="{% url 'createEventCategory' %}"><i class="fa fa-users"></i> <span>Event Category</span></a></li>
-      <li class=""><a href="{% url 'viewEvents' %}"><span class="glyphicon glyphicon-lock"></span> <span>Create Event</span></a></li>
-      <li class=""><a href="{% url 'assignedEvent' %}"><i class="fa fa-tasks"></i> <span>Assign Event</span></a></li>
-     
+      <li class=""><a href="{% url 'admin_dashboard' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>  
+      <li class="header">MANAGE EMPLOYEES</li> 
+      <li class=""><a href="{% url 'department' %}"><i class="fa fa-users"></i> <span>Departments</span></a></li> 
+      <li class=""><a href="{% url 'adminViewEmployee'%}"><i class="fa fa-users"></i> <span>Employees</span></a></li>  
+      <li class="header">MANAGE EVENTS</li>
+      <li class=""><a href="{% url 'createEventCategory' %}"><i class="fa fa-file-text"></i> <span>Events Category</span></a></li>
+      <li class=""><a href="{% url 'viewEvents' %}"><span class="glyphicon glyphicon-pencil"></span> <span>Events Management</span></a></li>
+      <li class=""><a href="{% url 'assignedEvent' %}"><i class="fa fa-tasks"></i> <span>Assigned Events</span></a></li>
+     <li class="header">EMPLOYEE REPORTS</li>
       <li class=""><a href="#"><i class="fa fa-black-tie"></i> <span>Reports</span></a></li>
-       <li class=""><a href="{% url 'adminViewEmployee'%}"><i class="fa fa-file-text"></i> <span>Employee</span></a></li>
-      
 
-      <li class="header">SETTINGS</li>
-     
+       
+      <li class="header">EXIT</li>
+      <li class=""><a href="{% url 'logout' %}"><i class="fa fa-power-off"></i> <span>Logout</span></a></li>
+
             
       {% endif %}
-      <li class="header">Reports</li>
+      {% if request.user.user_type == '2'%}
+      <li class="header">REPORT</li>
       <li class=""><a href="#"><i class="fa fa-report"></i> <span>Write Report</span></a></li>
       <li class=""><a href="#"><i class="fa fa-black-tie"></i> <span>See event</span></a></li>
 
         
       <li class="header">EXIT</li>
       <li class=""><a href="{% url 'logout' %}"><i class="fa fa-power-off"></i> <span>Logout</span></a></li>
+      {%endif%}
 
     </ul>
   </section>

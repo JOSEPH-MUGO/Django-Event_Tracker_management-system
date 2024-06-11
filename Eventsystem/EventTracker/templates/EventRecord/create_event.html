@@ -44,6 +44,9 @@
                 <td>{{ event.start_date }}</td>
                 <td>{{ event.end_date }}</td>
                 <td>
+                  <button class='btn btn-info btn-sm view-assignments btn-flat' data-id='{{ event.id }}'>
+                    <i class='fa fa-edit'></i> View
+                  </button>
                   <button class='btn btn-primary btn-sm edit btn-flat' data-id='{{ event.id }}'>
                     <i class='fa fa-edit'></i> Edit
                   </button>
@@ -110,6 +113,28 @@
     </div>
   </div>
 </div>
+<!--view-->
+<div class="modal fade" id="view-assignments">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><b>Event assigned to individual employee</b></h4>
+      </div>
+      <div class="modal-body">
+        <div id="assignments-content">
+         
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger btn-flat pull-left" data-dismiss="modal">
+          <i class="fa fa-close"></i> Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Edit Event Modal -->
 <div class="modal fade" id="edit">
@@ -131,6 +156,7 @@
             <div class="col-sm-9">
               <select class="form-control" id="event_type" name="event_type">
                 {% for eventcategory in category %}
+                <option value="" disabled selected hidden>Select an event category</option>
                 <option value="{{ eventcategory.id }}">{{ eventcategory.event_type }}</option>
                 {% endfor %}
               </select>
@@ -139,37 +165,37 @@
           <div class="form-group">
             <label for="title" class="col-sm-3 control-label">Title</label>
             <div class="col-sm-9">
-              <input type="text" class="form-control" id="title" name="title" />
+              <input type="text" class="form-control" id="title" name="title" placeholder="enter title of the event" />
             </div>
           </div>
           <div class="form-group">
             <label for="description" class="col-sm-3 control-label">Description</label>
             <div class="col-sm-9">
-              <textarea class="form-control" id="description" name="description"></textarea>
+              <textarea class="form-control" id="description" name="description" placeholder="Write a description of the event..."></textarea>
             </div>
           </div>
           <div class="form-group">
-            <label for="venue" class="col-sm-3 control-label">Venue</label>
+            <label for="venue" class="col-sm-3 control-label" >Venue</label>
             <div class="col-sm-9">
-              <input type="text" class="form-control" id="venue" name="venue" />
+              <input type="text" class="form-control" id="venue" placeholder="enter the venue where event will be held" name="venue" />
             </div>
           </div>
           <div class="form-group">
             <label for="location" class="col-sm-3 control-label">Location</label>
             <div class="col-sm-9">
-              <input type="text" class="form-control" id="location" name="location" />
+              <input type="text" class="form-control" id="location" name="location" placeholder="enter the location of event" />
             </div>
           </div>
           <div class="form-group">
             <label for="start_date" class="col-sm-3 control-label">Start Date</label>
             <div class="col-sm-9">
-              <input type="date" class="form-control" id="start_date" name="start_date" />
+              <input type="date" class="form-control" id="startdate" name="start_date" placeholder="enter the  event date" />
             </div>
           </div>
           <div class="form-group">
             <label for="end_date" class="col-sm-3 control-label">End Date</label>
             <div class="col-sm-9">
-              <input type="date" class="form-control" id="end_date" name="end_date" />
+              <input type="date" class="form-control" id="end_date" name="end_date" placeholder="enter the date when event will end"/>
             </div>
           </div>
           <div class="modal-footer">
@@ -223,6 +249,13 @@
 {% block custom_js %}
 <script>
   $(function () {
+     $(document).on('click', '.view-assignments', function(e) {
+      e.preventDefault();
+      $('#view-assignments').modal('show');
+      var id = $(this).data('id');
+      loadAssignments(id);
+    });
+
     $(document).on('click', '.edit', function (e) {
       e.preventDefault();
       $('#edit').modal('show');
@@ -268,5 +301,35 @@
       }
     });
   }
+
+  function loadAssignments(id) {
+    $.ajax({
+        type: 'GET',
+        url: '{% url "getAssignment" %}',
+        data: { id: id },
+        dataType: 'json',
+        success: function(response) {
+            if (response.code === 200) {
+                var assignments = response.assignments;
+
+                var html = '<ul>';
+                for (var i = 0; i < assignments.length; i++) {
+                    var assignment = assignments[i];
+                    var employeeName = assignment.employee ? assignment.employee.first_name + ' ' + assignment.employee.last_name : 'Unassigned';
+                    html += '<li>' + assignment.title + ' assigned to ' + employeeName + ' in '+ assignment.start_date+ ' at ' +assignment.assign_time+ '</li>';
+                }
+                html += '</ul>';
+                $('#assignments-content').html(html);
+            } else {
+                $('#assignments-content').html('<p>No assignments found.</p>');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.log('Error:' + error);
+        }
+  });
+}
+
+      
 </script>
 {% endblock custom_js %}

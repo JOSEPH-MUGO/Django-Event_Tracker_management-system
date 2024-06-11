@@ -152,7 +152,7 @@ def customPasswordResetConfirm(request,uidb64= None, token=None):
             if form.is_valid():
                 form.save()
                 messages.success(request,'Your new password has been set')
-                return redirect('login')
+                return redirect(reverse('login'))
         else:
             form = CustomSetPasswordForm(user)
         

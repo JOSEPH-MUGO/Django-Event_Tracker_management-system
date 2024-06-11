@@ -30,7 +30,9 @@ class AccountCheckMiddleWare(MiddlewareMixin):
                         reverse('assignedEvent'),
                         reverse('getAssigned'),
                         reverse('updateAssigned'),
-                        reverse('deleteAssigned')
+                        reverse('deleteAssigned'),
+                        reverse('getAssignments'),
+                        reverse('getAssignment'),
 
                         ]:
                         logger.debug("Access granted to admin")
@@ -39,6 +41,9 @@ class AccountCheckMiddleWare(MiddlewareMixin):
                             request, "You do not have access to this resource")
                         return redirect(reverse('admin_dashboard'))
             elif user.user_type == '2':  # Employee
+                if modulename == 'employee.views':
+                    error =True
+                    pass
                 if modulename == 'administrator.views':
                     messages.error(
                         request, "You do not have access to this resource")

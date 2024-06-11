@@ -154,11 +154,22 @@ def deleteCategory(request):
 
     #assigning employees the events
 
+
+
 def assign_employee(request):
     assigns = Assignment.objects.all()
     if request.method == 'POST':
         form = AssignForm(request.POST)
         if form.is_valid():
+            event = form.cleaned_data['event']
+            employee = form.cleaned_data['employee']
+            assign_date = form.cleaned_data['assign_date']
+            
+            # Check if the employee is already assigned to an event on the same date
+            if Assignment.objects.filter(employee=employee, event=event, assign_date=assign_date).exists():
+                messages.error(request, 'Employee is already assigned another event on the same date.')
+                return redirect(reverse('assignedEvent'))
+            
             form.save()
             messages.success(request, 'Employee assigned to the event successfully.')
             return redirect(reverse('assignedEvent'))
@@ -173,8 +184,6 @@ def assign_employee(request):
         'page_title': "Assigned Events"
     }
     return render(request, 'EventRecord/assign_event_employee.html', context)
-
-
 
 
 def getAssigned(request):
@@ -243,5 +252,22 @@ def deleteAssigned(request):
         return redirect(reverse('assignedEvent'))
 
 
-
-
+def get_assignments(request):
+    event_id = request.GET.get('id')
+    try:
+        
+        assignments = Assignment.objects.filter(event_id=event_id)
+        
+        assignments_list = [{
+            'id': assignment.id,
+            'title': assignment.event.title,
+            'start_date': assignment.assign_date,
+            'assign_time': assignment.time,
+            'employee': {
+                'first_name': assignment.employee.admin.first_name if assignment.employee else None,
+                'last_name': assignment.employee.admin.last_name if assignment.employee else None
+            }
+        } for assignment in assignments]
+        return JsonResponse({'code': 200, 'assignments': assignments_list})
+    except Assignment.DoesNotExist:
+        return JsonResponse({'code': 404, 'message': 'Assignments not found'})

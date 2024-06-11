@@ -7,5 +7,6 @@ urlpatterns = [
     path('employee/view', views.get_employee, name='getEmployee'),
     path('employees/delete', views.deleteEmployee, name="deleteEmployee"),
     path('employees/update', views.updateEmployee, name="updateEmployee"),
+    path('get-assignments/', views.get_assignments, name='getAssignments'),
     
 ]

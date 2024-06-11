@@ -38,6 +38,9 @@
                 <td>{{ employee.admin.email }}</td>
                 <td>{{ employee.phone }}</td>
                 <td>
+                  <button class='btn btn-info btn-sm view-assignments btn-flat' data-id='{{ employee.id }}'>
+                    <i class='fa fa-edit'></i> View
+                  </button>
                   <button class="btn btn-primary btn-sm edit btn-flat" data-id="{{ employee.id }}">
                     <i class="fa fa-edit"></i> Edit
                   </button>
@@ -92,6 +95,31 @@
             <button type="button" class="btn btn-danger btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
             <button type="submit" class="btn btn-success btn-flat" name="add"><i class="fa fa-save"></i> Save</button>
           </div></form></div></div></div></div>
+
+<!--view-->
+<div class="modal fade" id="view-assignments">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title"><b>Events assigned to employee <span id="employee-name"></span></b></h4>    
+      </div>
+      <div class="modal-body">
+        <ul id="assignments-content">
+                 
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger btn-flat pull-left" data-dismiss="modal">
+          <i class="fa fa-close"></i> Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 <!-- Edit -->
 <div class="modal fade" id="edit">
@@ -192,12 +220,49 @@
           var id = $(this).data('id');
           getRow(id);
       });
+      $(document).on('click', '.view-assignments', function(e) {
+      e.preventDefault();
+      $('#view-assignments').modal('show');
+      var id = $(this).data('id');
+      loadAssignments(id);
+    });
       setTimeout(function() {
         $('.messages').fadeOut('slow'); // Fade out the message container
       }, 3000);
 
 
   });
+
+  function loadAssignments(id) {
+    $.ajax({
+        type: 'GET',
+        url: '{% url "getAssignments" %}',
+        data: { id: id },
+        dataType: 'json',
+        success: function(response) {
+            if (response.code === 200) {
+                var assignments = response.assignments;
+
+                var html = '<ul>';
+                for (var i = 0; i < assignments.length; i++) {
+                    var assignment = assignments[i];
+                    html += '<li>' + assignment.title + ' assigned at ' +assignment.start_date + '</li>'; 
+                }
+                html += '</ul>';
+                $('#assignments-content').html(html);
+
+                var employeeName = assignments[0].employee_first_name + ' ' + assignments[0].employee_last_name;
+                $('#employee-name').text(employeeName);
+            } else {
+                $('#assignments-content').html('<p>No assignments found.</p>');
+                $('#employee-name').text('Unknown');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.log('Error:' + error);
+        }
+    });
+}
 
   function getRow(id) {
       $.ajax({
@@ -226,6 +291,7 @@
             console.log('Error:' +error);
           }
       });
+      
   }
   </script>
 {% endblock custom_js %}

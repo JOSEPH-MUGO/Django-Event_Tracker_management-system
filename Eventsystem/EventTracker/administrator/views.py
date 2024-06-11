@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from EventRecord.models import *
 from EventRecord.forms import *
-from employee.models import Employee
+from employee.models import Employee,Department
 from employee.forms import EmployeeForm
 from django.core.mail import send_mail
 from django.core.exceptions import ObjectDoesNotExist
@@ -21,6 +21,7 @@ def admin_dashboard(request):
     reports = Report.objects.all()
     report_files = ReportFile.objects.all()
     employee = Employee.objects.all()
+    department =Department.objects.all()
 
 
     context = {
@@ -36,6 +37,7 @@ def admin_dashboard(request):
         'report_count': reports.count(),
         'report_file_count': report_files.count(),
         'employee_count':employee.count(),
+        'department_count':department.count(),
         'page_title':"Dashboard"
 
     }
@@ -134,3 +136,21 @@ def deleteEmployee(request):
         
     return redirect(reverse('adminViewEmployee'))
 
+def get_assignments(request):
+    employee_id = request.GET.get('id')
+    context = {}
+    try:
+        employee = Employee.objects.get(id = employee_id)
+        # Fetch assignments based on the employee ID
+        assignments = Assignment.objects.filter(employee=employee)
+        # Convert assignments to a list of dictionaries with event title
+        assignments_list = [{'title': assignment.event.title, 'start_date': assignment.assign_date,
+                             'employee_first_name': assignment.employee.admin.first_name,
+                             'employee_last_name': assignment.employee.admin.last_name} for assignment in assignments]
+        context['code'] =200
+        context['assignments'] = assignments_list
+       
+    except Employee.DoesNotExist:
+        context['code'] = 404
+        context['message'] = 'Employee not found'
+    return JsonResponse(context)
