@@ -1,0 +1,64 @@
+{% extends "admin/root.html" %}
+{% load static %}
+{% block title %}Event Assignments{% endblock title %}
+{% block content %}
+<section class="content">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-header with-border">
+          <h3 class="box-title">Assignments for Event:<b> {{ event.title }}</b></h3>
+        </div>
+        <div class="box-body">
+          <p><strong>Category:</strong> {{ event.event_type }}</p>
+          <p><strong>Description:</strong> {{ event.description }}</p>
+          <p><strong>Venue:</strong> {{ event.venue }}</p>
+          <p><strong>Location:</strong> {{ event.location }}</p>
+          <p><strong>Start Date:</strong> {{ event.start_date }}</p>
+          <p><strong>End Date:</strong> {{ event.end_date }}</p>
+
+          <h4><b>Assigned Employees</b></h4>
+          
+        <div class="box-body">
+          {% if assignments %}
+          <table
+            id="example1"
+            class="table table-bordered table-hover table-striped"
+          >
+            <thead style="background-color: #222d32; color: white">
+              <th>Name</th>
+              <th>Date assigned</th>
+              <th>Time assigned</th>
+              <th>Department</th>
+              <th>Action</th>
+            </thead>
+            <tbody>
+              {% for assignment in assignments %}
+              <tr>
+                <td>{{ assignment.employee.admin.first_name }} {{ assignment.employee.admin.last_name }}</td>
+                <td>{{ assignment.assign_date }}</td>
+                <td>{{ assignment.time }}</td>
+                <td>{{ assignment.employee.department }}</td>
+                <td>
+                  <button
+                    class="btn btn-success btn-sm download btn-flat"
+                    data-id="{{ assignment.id }}"
+                  >
+                    <i class="fa fa-download"></i> Report
+                  </button>
+                 
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p>No assignment available</p>
+          {% endif %}
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}

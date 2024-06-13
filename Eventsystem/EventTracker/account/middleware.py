@@ -15,31 +15,36 @@ class AccountCheckMiddleWare(MiddlewareMixin):
         if user.is_authenticated:
             if user.user_type == '1':  # Admin
                 if modulename == 'EventRecord.views':
-                    error = True
-                    if request.path in [
-                        reverse('viewEvents'),
-                        reverse('getEvent'),
-                        reverse('updateEvent'),
-                        reverse('deleteEvent'),
-                        reverse('createEventCategory'),
-                        reverse('getCategory'),
-                        reverse('updateCategory'),
-                        reverse('deleteCategory'),
-                        reverse('password_reset'),
-                        reverse('password_reset_confirm',kwargs={'uidb64': view_kwargs.get('uidb64'), 'token': view_kwargs.get('token')}),
-                        reverse('assignedEvent'),
-                        reverse('getAssigned'),
-                        reverse('updateAssigned'),
-                        reverse('deleteAssigned'),
-                        reverse('getAssignments'),
-                        reverse('getAssignment'),
+                    if 'employee_id' in view_kwargs:
+                        if request.path == reverse('getAssigned', kwargs={'employee_id': view_kwargs['employee_id']}):
+                            return None
+                    if 'event_id' in view_kwargs:
+                        if request.path == reverse('getAssignment', kwargs={'event_id': view_kwargs['event_id']}):
+                            return None
+                            if request.path in [
+                                reverse('viewEvents'),
+                                reverse('getEvent'),
+                                reverse('updateEvent'),
+                                reverse('deleteEvent'),
+                                reverse('createEventCategory'),
+                                reverse('getCategory'),
+                                reverse('updateCategory'),
+                                reverse('deleteCategory'),
+                                reverse('password_reset'),
+                                reverse('password_reset_confirm',kwargs={'uidb64': view_kwargs.get('uidb64'), 'token': view_kwargs.get('token')}),
+                                reverse('assignedEvent'),
+                                reverse('getAssigned'),
+                                reverse('updateAssigned'),
+                                reverse('deleteAssigned'),
+                                reverse('getAssignments'),
+                        
 
-                        ]:
-                        logger.debug("Access granted to admin")
-                    else:
-                        messages.error(
-                            request, "You do not have access to this resource")
-                        return redirect(reverse('admin_dashboard'))
+                             ]:
+                             logger.debug("Access granted to admin")
+                    
+                            else:
+                              messages.error(request, "You do not have access to this resource")
+                              return redirect(reverse('admin_dashboard'))
             elif user.user_type == '2':  # Employee
                 if modulename == 'employee.views':
                     error =True

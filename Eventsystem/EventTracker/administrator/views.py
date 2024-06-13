@@ -89,6 +89,7 @@ def get_employee(request):
         context['last_name'] = employee.admin.last_name
         context['email'] = employee.admin.email
         context['phone'] = employee.phone
+        context['department'] = employee.department
         context['id'] = employee.id
     except Employee.DoesNotExist:
         context['code'] = 404

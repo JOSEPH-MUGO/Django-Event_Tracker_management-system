@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect,reverse,get_object_or_404
 from .forms import *
 from .models import *
+
 from django.http import JsonResponse
 
 from django.db.models import Count
@@ -159,7 +160,8 @@ def deleteCategory(request):
 def assign_employee(request):
     assigns = Assignment.objects.all()
     if request.method == 'POST':
-        form = AssignForm(request.POST)
+        department_id = request.POST.get('department')
+        form = AssignForm(department_id=department_id, data=request.POST)
         if form.is_valid():
             event = form.cleaned_data['event']
             employee = form.cleaned_data['employee']
@@ -202,6 +204,10 @@ def getAssigned(request):
             'start_date': assign.event.start_date,
             'end_date': assign.event.end_date
         }
+        context['department'] = {
+            'id':assign.department.id,
+            'name':assign.department.name
+        }
         context['employee'] = {
             'id': assign.employee.id,
             'first_name': assign.employee.admin.first_name,
@@ -212,30 +218,32 @@ def getAssigned(request):
         
         context['assign_date'] = assign.assign_date
         context['time'] = assign.time.strftime('%H:%M')
+        context['message'] = assign.message
     except Assignment.DoesNotExist:
         context['code'] = 404
     return JsonResponse(context)
+
 
 def updateAssigned(request):
     if request.method != 'POST':
         messages.error(request, 'Access Denied!')
         return redirect(reverse('assignedEvent'))
+    
     try:
         assign_id = request.POST.get('id')
-        assignments = Assignment.objects.get(id =assign_id)
-       
-        form = AssignForm(request.POST or None, instance=assignments)
-        
+        assignments = get_object_or_404(Assignment, id=assign_id)
+        department_id = assignments.department.id if assignments.department else None
+
+        form = AssignForm(department_id=department_id, data=request.POST, instance=assignments)
+
         if form.is_valid():
             form.save()
-            
-            messages.success(request, 'Assigment updated!')
+            messages.success(request, 'Assignment updated!')
             return redirect(reverse('assignedEvent'))
     except Assignment.DoesNotExist:
         messages.error(request, 'Assignment not found')
-        return redirect(reverse('assignedEvent'))
     
-
+    return redirect(reverse('assignedEvent'))
 
 def deleteAssigned(request):
     if request.method == 'POST':
@@ -252,22 +260,23 @@ def deleteAssigned(request):
         return redirect(reverse('assignedEvent'))
 
 
-def get_assignments(request):
-    event_id = request.GET.get('id')
-    try:
-        
-        assignments = Assignment.objects.filter(event_id=event_id)
-        
-        assignments_list = [{
-            'id': assignment.id,
-            'title': assignment.event.title,
-            'start_date': assignment.assign_date,
-            'assign_time': assignment.time,
-            'employee': {
-                'first_name': assignment.employee.admin.first_name if assignment.employee else None,
-                'last_name': assignment.employee.admin.last_name if assignment.employee else None
-            }
-        } for assignment in assignments]
-        return JsonResponse({'code': 200, 'assignments': assignments_list})
-    except Assignment.DoesNotExist:
-        return JsonResponse({'code': 404, 'message': 'Assignments not found'})
+
+def get_assignments(request, event_id):
+    event = get_object_or_404(Event, pk=event_id)
+    assignments = Assignment.objects.filter(event=event).select_related('employee')
+    context = {
+        'event': event,
+        'assignments': assignments,
+        'page_title': "View Event Assigment"
+    }
+    return render(request, 'EventRecord/view_assignment.html', context)
+
+def getAssignments(request, employee_id):
+    employee = get_object_or_404(Employee, pk=employee_id)
+    assignments = Assignment.objects.filter(employee=employee).select_related('event')
+    context = {
+        'employee': employee,
+        'assignments': assignments,
+        'page_title': "View Employee Assigment"
+    }
+    return render(request, 'EventRecord/view_employeeA.html', context)

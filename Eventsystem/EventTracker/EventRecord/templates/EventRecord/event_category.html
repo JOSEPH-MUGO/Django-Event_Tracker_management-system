@@ -1,6 +1,5 @@
-{% extends "admin/root.html" %} {% load static %}
- {% block title %}Departments{% endblock title %} 
- {% block content %}
+{% extends "admin/root.html" %} {% load static %} {% block title %}Event
+Categories{% endblock title %} {% block content %}
 <section class="content">
   <div class="row">
     <div class="col-xs-12">
@@ -10,7 +9,7 @@
             href="#addnew"
             data-toggle="modal"
             class="btn btn-success btn-sm btn-flat"
-            ><i class="fa fa-plus"></i> Add New Department</a
+            ><i class="fa fa-plus"></i> Add New Event Category</a
           >
         </div>
           {% if messages %}
@@ -23,31 +22,29 @@
         </ul>
         {% endif %}
         <div class="box-body">
-          {% if departments %}
+          {% if category %}
           <table
             id="example1"
             class="table table-bordered table-hover table-striped"
           >
             <thead style="background-color: #222d32; color: white">
-              <th>Department name</th>
-              <th>Date created</th>
+              <th>Event Category</th>
               <th>Action</th>
             </thead>
             <tbody>
-              {% for department in departments %}
+              {% for category in category %}
               <tr>
-                <td>{{ department.name }}</td>
-                <td>{{ department.created_at }}</td>
+                <td>{{ category.event_type }}</td>
                 <td>
                   <button
                     class="btn btn-primary btn-sm edit btn-flat"
-                    data-id="{{ department.id }}"
+                    data-id="{{ category.id }}"
                   >
                     <i class="fa fa-edit"></i> Edit
                   </button>
                   <button
                     class="btn btn-danger btn-sm delete btn-flat"
-                    data-id="{{ department.id }}" onclick="return confirm('Are you sure you want to delete this event Category?')"
+                    data-id="{{ category.id }}" onclick="return confirm('Are you sure you want to delete this event Category?')"
                   >
                     <i class="fa fa-trash"></i> Delete
                   </button>
@@ -57,15 +54,14 @@
             </tbody>
           </table>
           {% else %}
-          <p>No department available</p>
+          <p>No event categories available</p>
           {% endif %}
         </div>
       </div>
     </div>
   </div>
 </section>
-{% endblock content %} 
-{% block modal %}
+{% endblock content %} {% block modal %}
 <div class="modal fade" id="addnew">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -78,14 +74,14 @@
         >
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title"><b>Add New Department</b></h4>
+        <h4 class="modal-title"><b>Add New Event Category</b></h4>
       </div>
 
       <div class="modal-body">
         <form
           class="form-horizontal"
           method="POST"
-          action="{% url 'department' %}"
+          action="{% url 'createEventCategory' %}"
         >
           {% csrf_token %}
           <div class="modal-body">
@@ -122,20 +118,20 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title"><b>Edit department details</b></h4>
+        <h4 class="modal-title"><b>Edit Event Category</b></h4>
       </div>
       <div class="modal-body">
 
-        <form class="form-horizontal" method="POST" action="{% url 'updateDepartment'%}">
+        <form class="form-horizontal" method="POST" action="{% url 'updateCategory' %}">
           {% csrf_token %}
           <input type="hidden" class="id" name="id" value="" />
     
           <div class="form-group">
-            <label for="name" class="col-sm-3 control-label">Department name</label>
+            <label for="event_type" class="col-sm-3 control-label">Category</label>
             <div class="col-sm-9">
-              <input type="text" class="form-control" id="name" name="name" />
+              <input type="text" class="form-control" id="event_type" name="event_type" />
             </div>
-        
+          </div>
 
           <div class="modal-footer">
             <button type="button" class="btn btn-danger btn-flat pull-left" data-dismiss="modal">
@@ -153,34 +149,35 @@
 
 <!-- Delete Modal -->
 <div class="modal fade" id="delete">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title"><b>Deleting...</b></h4>
-            </div>
-            <div class="modal-body">
-                <form class="form-horizontal" method="POST" action="{% url 'deleteDepartment' %}">
-                    {% csrf_token %}
-                    <input type="hidden" class="id" name="id" />
-                    <div class="text-center">
-                        <p>DELETE THIS DEPARTMENT</p>
-                        <h2 class="bold name"></h2>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal">
-                            <i class="fa fa-close"></i> Close
-                        </button>
-                        <button type="submit" class="btn btn-danger btn-flat" name="delete">
-                            <i class="fa fa-trash"></i> Delete
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title"><b>Deleting...</b></h4>
+      </div>
+      <div class="modal-body">
+       
+        <form class="form-horizontal" method="POST" action="{% url 'deleteCategory' %}">
+          {% csrf_token %}
+          <input type="hidden" class="id" name="id" />
+          <div class="text-center">
+            <p>DELETE EVENT CATEGORY</p>
+            <h2 class="bold event_type"></h2>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal">
+              <i class="fa fa-close"></i> Close
+            </button>
+            <button type="submit" class="btn btn-danger btn-flat" name="delete">
+              <i class="fa fa-trash"></i> Delete
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock modal %}
 
@@ -189,6 +186,7 @@
   $(function () {
     $(document).on('click', '.edit', function (e) {
       e.preventDefault();
+      console.error('Event button:', id);
       $('#edit').modal('show');
       var id = $(this).data('id');
       getRow(id);
@@ -208,19 +206,18 @@
   function getRow(id) {
     $.ajax({
       type: 'GET',
-      url: '{% url "getDepartment" %}',
+      url: '{% url "getCategory" %}',
       data: { id: id },
       dataType: 'json',
       success: function (response) {
         console.log(response);
         if (response.code === 200) {
           $('.id').val(response.id);
-          $('#edit #name').val(response.name);
-          
-          $('#delete .name').html(response.name);
-          $('#delete').modal('show');
+          $('#edit #event_type').val(response.event_type);
+
+          $('.event_type').html(response.event_type);
         } else {
-          alert('Department not found');
+          alert('Event not found');
         }
       },
       error: function (xhr, status, error) {

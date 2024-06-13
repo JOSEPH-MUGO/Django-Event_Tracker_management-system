@@ -1,6 +1,6 @@
 from django.db import models
 from account.models import User
-from employee.models import Employee
+from employee.models import Employee,Department
 from django.utils import timezone 
 
 # Create your models here.
@@ -24,9 +24,12 @@ class Event(models.Model):
     
 class Assignment(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    department = models.ForeignKey(Department,on_delete=models.CASCADE)
     employee = models.ForeignKey(Employee,on_delete=models.CASCADE)
+    
     assign_date = models.DateField(default=timezone.now)
     time = models.TimeField(default=timezone.now)
+    message=models.TextField(max_length=225,default='make sure to submit a report')
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):

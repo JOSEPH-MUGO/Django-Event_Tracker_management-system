@@ -44,9 +44,9 @@
                 <td>{{ event.start_date }}</td>
                 <td>{{ event.end_date }}</td>
                 <td>
-                  <button class='btn btn-info btn-sm view-assignments btn-flat' data-id='{{ event.id }}'>
+                  <a href="{% url 'getAssignment' event_id=event.id %}" class='btn btn-info btn-sm btn-flat'>
                     <i class='fa fa-edit'></i> View
-                  </button>
+                  </a>
                   <button class='btn btn-primary btn-sm edit btn-flat' data-id='{{ event.id }}'>
                     <i class='fa fa-edit'></i> Edit
                   </button>
@@ -70,6 +70,8 @@
 
 {% block modal %}
 <!-- Add New Event Modal -->
+{% load custom_filters %}
+
 <div class="modal fade" id="addnew">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -79,27 +81,41 @@
         </button>
         <h4 class="modal-title"><b>Add New Event</b></h4>
       </div>
+      
       <div class="modal-body">
         <form class="form-horizontal" method="POST" action="{% url 'viewEvents' %}">
-          {% csrf_token %}
-          {% if messages %}
-          <ul class="messages">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-              {{ message }}
-            </li>
-            {% endfor %}
-          </ul>
-          {% endif %}
-          <div class="modal-body">
-            {% for field in form1 %}
-            <div class="form-group has-feedback">
-              <span class="text-danger">{{field.errors}}</span>
-              {{field.label_tag}}
-              {{field}}
+          {% csrf_token %}                    
+          <div class="row mb-4">
+            <div class="col-sm-6">
+              {% for field in form1 %}
+                {% if field.name != 'start_date' and field.name != 'end_date' and field.name != 'description' %}
+                  <div class="form-group px-4">
+                    <span class="text-danger">{{ field.errors }}</span>
+                    {{ field.label_tag }}
+                    {{ field }}
+                  </div>
+                {% endif %}
+              {% endfor %}
             </div>
-            {% endfor %}
+            <div class="col-sm-6">
+              <div class="form-group">
+                <span class="text-danger">{{ form1.start_date.errors }}</span>
+                {{ form1.start_date.label_tag }}
+                {{ form1.start_date }}
+              </div>
+              <div class="form-group">
+                <span class="text-danger">{{ form1.end_date.errors }}</span>
+                {{ form1.end_date.label_tag }}
+                {{ form1.end_date }}
+              </div>
+              <div class="form-group">
+                <span class="text-danger">{{ form1.description.errors }}</span>
+                {{ form1.description.label_tag }}
+                {{ form1.description }}
+              </div>
+            </div>
           </div>
+          
           <div class="modal-footer">
             <button type="button" class="btn btn-danger btn-flat pull-left" data-dismiss="modal">
               <i class="fa fa-close"></i> Close
@@ -110,31 +126,11 @@
           </div>
         </form>
       </div>
+      
     </div>
   </div>
 </div>
-<!--view-->
-<div class="modal fade" id="view-assignments">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"><b>Event assigned to individual employee</b></h4>
-      </div>
-      <div class="modal-body">
-        <div id="assignments-content">
-         
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger btn-flat pull-left" data-dismiss="modal">
-          <i class="fa fa-close"></i> Close
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+
 
 <!-- Edit Event Modal -->
 <div class="modal fade" id="edit">
@@ -289,7 +285,7 @@
           $('#edit #description').val(response.description);
           $('#edit #venue').val(response.venue);
           $('#edit #location').val(response.location);
-          $('#edit #start_date').val(response.start_date);
+          $('#edit #startdate').val(response.start_date);
           $('#edit #end_date').val(response.end_date);
           $('.title').html(response.title);
         } else {
@@ -302,33 +298,8 @@
     });
   }
 
-  function loadAssignments(id) {
-    $.ajax({
-        type: 'GET',
-        url: '{% url "getAssignment" %}',
-        data: { id: id },
-        dataType: 'json',
-        success: function(response) {
-            if (response.code === 200) {
-                var assignments = response.assignments;
+  
 
-                var html = '<ul>';
-                for (var i = 0; i < assignments.length; i++) {
-                    var assignment = assignments[i];
-                    var employeeName = assignment.employee ? assignment.employee.first_name + ' ' + assignment.employee.last_name : 'Unassigned';
-                    html += '<li>' + assignment.title + ' assigned to ' + employeeName + ' in '+ assignment.start_date+ ' at ' +assignment.assign_time+ '</li>';
-                }
-                html += '</ul>';
-                $('#assignments-content').html(html);
-            } else {
-                $('#assignments-content').html('<p>No assignments found.</p>');
-            }
-        },
-        error: function(xhr, status, error) {
-            console.log('Error:' + error);
-        }
-  });
-}
 
       
 </script>

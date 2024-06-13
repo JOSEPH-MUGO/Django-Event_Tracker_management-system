@@ -74,7 +74,11 @@ def deleteDepartment(request):
         return redirect(reverse('department'))
 
 
-
+def getEmployeeDepartment(request):
+    department_id = request.GET.get('department_id')
+    employees = Employee.objects.filter(department_id=department_id).values('id', 'admin__first_name', 'admin__last_name','admin__email')
+    employee_list = list(employees)
+    return JsonResponse(employee_list, safe=False)
 
 
 

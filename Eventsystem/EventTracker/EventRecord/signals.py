@@ -19,7 +19,7 @@ def event_mail(sender, instance, created, **kwargs):
     subject = f'You have been assigned to an event: {event.title}'
     
     # Email content template
-    email_content = render_to_string('emails/assignment_email.html', {'employee': employee, 'event': event})
+    email_content = render_to_string('emails/assignment_email.html', {'employee': employee, 'event': event, 'message':instance.message})
     plain_message = strip_tags(email_content)
 
     if created:
@@ -31,7 +31,7 @@ def event_mail(sender, instance, created, **kwargs):
         if old_employee and old_employee != employee:
             # Notify old employee of reassignment
             old_subject = f'You have been reassigned from an event: {event.title}'
-            old_email_content = render_to_string('emails/assignment_reassigned.html', {'employee': old_employee, 'event': event})
+            old_email_content = render_to_string('emails/assignment_reassigned.html', {'employee': old_employee, 'event': event, 'message':instance.message})
             old_plain_message = strip_tags(old_email_content)
             send_mail(old_subject, old_plain_message, '', [old_employee.admin.email], fail_silently=False)
         
