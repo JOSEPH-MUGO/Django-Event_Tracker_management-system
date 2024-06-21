@@ -260,8 +260,8 @@ def deleteAssigned(request):
 
 
 
-def get_assignments(request, event_id):
-    event = get_object_or_404(Event, pk=event_id)
+def get_assignments(request, evenT_id):
+    event = get_object_or_404(Event, pk=evenT_id)
     assignments = Assignment.objects.filter(event=event).select_related('employee')
     context = {
         'event': event,

@@ -5,7 +5,7 @@ from tinymce.widgets import TinyMCE
 
 
 class EventForm(FormSettings):
-    event_type = forms.ModelChoiceField(queryset=EventCategory.objects.all(),widget=forms.Select(attrs={'class':'form-control'}),required=True,label='Category', empty_label='Select a category')
+    event_type = forms.ModelChoiceField(queryset=EventCategory.objects.all(),widget=forms.Select(attrs={'class':'form-control','id':'category'}),required=True,label='Category', empty_label='Select a category')
     start_date = forms.DateField(widget=forms.DateInput(attrs={'type':'date'}))
     end_date = forms.DateField(widget=forms.DateInput(attrs={'type':'date'})) 
     title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control','placeholder': 'Enter title of the event'}))

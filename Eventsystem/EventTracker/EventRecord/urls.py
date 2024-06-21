@@ -7,7 +7,7 @@ urlpatterns = [
     path('events/', views.viewEvents, name='viewEvents'),
     path('event/update/',views.updateEvent, name='updateEvent'),
     path('event/delete/', views.deleteEvent, name='deleteEvent'),
-    path('event/<int:event_id>/assignments', views.get_assignments, name='getAssignment'),
+    path('event/<int:evenT_id>/assignments', views.get_assignments, name='getAssignment'),
     path('employee/<int:employee_id>/assignments', views.getAssignments, name='getAssigned'),
 
     # create event category
