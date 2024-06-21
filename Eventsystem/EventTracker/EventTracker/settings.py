@@ -43,6 +43,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #3rd party apps
     'fontawesomefree',
+    'reportlab',
+    'django_renderpdf',
+    'tinymce',
+    
     
     # local apps
     'account.apps.AccountConfig',

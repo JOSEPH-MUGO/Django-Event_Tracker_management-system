@@ -14,7 +14,7 @@ class Department(models.Model):
 class Employee(models.Model):
     admin = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=15, unique=True)
-    department = models.ForeignKey(Department,on_delete=models.CASCADE,default=1)
+    department = models.ForeignKey(Department,on_delete=models.CASCADE)
     def __str__(self):
         return f"{self.admin.last_name}, {self.admin.first_name}"
 

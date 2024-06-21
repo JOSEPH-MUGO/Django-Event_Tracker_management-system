@@ -18,17 +18,18 @@ def viewEvents(request):
     
     form = EventForm(request.POST or None)
     context ={
-        'events':events,
-        'form1':form,
-        'category':category,
-        'page_title':"Events"
+        'events': events,
+        'form1': form,
+        'category': category,
+        'page_title': "Events"
     }
     if request.method == 'POST':
         if form.is_valid():
             form = form.save(commit=False)
-            form.id= request.POST.get('id',events.count()+1) #if it is empty
+            # Ensure id is handled properly if needed, although Django auto-increments IDs
+            form.id = request.POST.get('id', events.count() + 1)  
             form.save()
-            messages.success(request,"New Event created ")
+            messages.success(request, "New Event created ")
             return redirect(reverse('viewEvents'))
         else:
             print(form.errors)
@@ -172,7 +173,7 @@ def assign_employee(request):
                 messages.error(request, 'Employee is already assigned another event on the same date.')
                 return redirect(reverse('assignedEvent'))
             
-            form.save()
+            form.save()  # Ensure that assignment is only saved when form is valid
             messages.success(request, 'Employee assigned to the event successfully.')
             return redirect(reverse('assignedEvent'))
         else:
@@ -186,8 +187,6 @@ def assign_employee(request):
         'page_title': "Assigned Events"
     }
     return render(request, 'EventRecord/assign_event_employee.html', context)
-
-
 def getAssigned(request):
     assign_id = request.GET.get('id')
     context = {}

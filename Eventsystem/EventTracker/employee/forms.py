@@ -7,7 +7,7 @@ import re
 
 class EmployeeForm(FormSettings):
     phone = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','type':'tel','placeholder':'Enter employee phone number'}))
-    department = forms.ModelChoiceField(queryset=Department.objects.all(),widget=forms.Select(attrs={'class':'form-control'}),required=True,label='Department', empty_label='Select a employee department')
+    department = forms.ModelChoiceField(queryset=Department.objects.all(),widget=forms.Select(attrs={'class':'form-control', 'id':'deparment_id'}),required=True,label='Department', empty_label='Select a employee department')
     department_id = forms.CharField(widget=forms.HiddenInput(), required=False,label='')
 
 

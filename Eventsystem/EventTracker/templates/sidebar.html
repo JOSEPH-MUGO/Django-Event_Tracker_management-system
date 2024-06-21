@@ -1,5 +1,5 @@
 {% load static %}
-<aside class="fixed main-sidebar">
+<aside class="main-sidebar">
   <!-- sidebar: style can be found in sidebar.less -->
   <section class="sidebar">
     <!-- Sidebar user panel -->
@@ -15,8 +15,6 @@
     <!-- sidebar menu: : style can be found in sidebar.less -->
     <ul class="sidebar-menu" data-widget="tree">
       {% if request.user.user_type == '1' %}
-  
-      
       <li class="header">HOME</li>
       <li class=""><a href="{% url 'admin_dashboard' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>  
       <li class="header">MANAGE EMPLOYEES</li> 
@@ -25,19 +23,14 @@
       <li class="header">MANAGE EVENTS</li>
       <li class=""><a href="{% url 'createEventCategory' %}"><i class="fa fa-file-text"></i> <span>Events Category</span></a></li>
       <li class=""><a href="{% url 'viewEvents' %}"><span class="glyphicon glyphicon-pencil"></span> <span>Events Management</span></a></li>
-      <li class=""><a href="{% url 'assignedEvent' %}"><i class="fa fa-tasks"></i> <span>Assigned Events</span></a></li>
+      <li class=""><a href="{% url 'assignedEvent' %}"><i class="fa fa-tasks"></i> <span>Assigned Events</span></a></li> 
      <li class="header">EMPLOYEE REPORTS</li>
-      <li class=""><a href="#"><i class="fa fa-black-tie"></i> <span>Reports</span></a></li>
-
-       
-      <li class="header">EXIT</li>
-      <li class=""><a href="{% url 'logout' %}"><i class="fa fa-power-off"></i> <span>Logout</span></a></li>
-
-            
+      <li class=""><a href="{% url 'report' %}"><i class="fa fa-black-tie"></i> <span>Reports</span></a></li> 
+      <li class=""><a href="{% url 'logout' %}"><i class="fa fa-power-off"></i> <span>Logout</span></a></li>  
       {% endif %}
       {% if request.user.user_type == '2'%}
       <li class="header">REPORT</li>
-      <li class=""><a href="#"><i class="fa fa-report"></i> <span>Write Report</span></a></li>
+      
       <li class=""><a href="#"><i class="fa fa-black-tie"></i> <span>See event</span></a></li>
 
         

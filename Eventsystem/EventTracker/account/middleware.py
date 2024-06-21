@@ -21,6 +21,7 @@ class AccountCheckMiddleWare(MiddlewareMixin):
                     if 'event_id' in view_kwargs:
                         if request.path == reverse('getAssignment', kwargs={'event_id': view_kwargs['event_id']}):
                             return None
+                
                             if request.path in [
                                 reverse('viewEvents'),
                                 reverse('getEvent'),
@@ -47,6 +48,9 @@ class AccountCheckMiddleWare(MiddlewareMixin):
                               return redirect(reverse('admin_dashboard'))
             elif user.user_type == '2':  # Employee
                 if modulename == 'employee.views':
+                    if 'assign_id' in view_kwargs:
+                        if request.path == reverse('submitReport', kwargs={'assign_id': view_kwargs['assign_id']}):
+                            return None
                     error =True
                     pass
                 if modulename == 'administrator.views':

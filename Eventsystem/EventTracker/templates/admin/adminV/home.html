@@ -71,7 +71,7 @@
                 <div class="icon">
                     <i class="fa fa-file-text"></i>
                 </div>
-                <a href="{% url 'admin_dashboard' %}" class="small-box-footer">More Info <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="{% url 'report' %}" class="small-box-footer">More Info <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
          <div class="col-lg-3 col-xs-6">
@@ -92,81 +92,97 @@
 
     <div class="row">
         <div class="col-xs-12">
-            <h3>Events Overview
-                <span class="pull-right">
-                    <a href="{% url 'admin_dashboard' %}" class="btn btn-success btn-sm btn-flat"><span class="glyphicon glyphicon-print"></span> Print/Download PDF <i class="fa fa-download"></i></a>
-                </span>
-            </h3>
+            <h3>Graphical Analytics and Insights</h3>
         </div>
     </div>
 
-    {% for category in event_categories %}
-    {% if not forloop.counter|divisibleby:2 %}
-    <div class='row'>
-    {% endif %}
-    <div class='col-sm-6'>
-        <div class='box box-solid'>
-            <div class='box-header with-border'>
-                <h4 class='box-title'><b>{{ category.event_type }}</b></h4>
-            </div>
-            <div class='box-body'>
-                <div class='chart'>
-                    <canvas id='{{ category.event_type|slugify }}' style='height:200px'></canvas>
+<div class="row">
+    <!-- Employee Assignment Overview Chart -->
+        <div class="col-xs-12 col-md-6">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <h4 class="box-title"><b>Employee Assignment Overview</b></h4>
+                </div>
+                <div class="box-body">
+                    <canvas id="employeeAssignmentChart" style="height:400px"></canvas>
                 </div>
             </div>
         </div>
+        <!-- Event Categories Overview Chart -->
+        <div class="col-xs-12 col-md-6">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <h4 class="box-title"><b>Event Categories Overview</b></h4>
+                </div>
+                <div class="box-body">
+                    <canvas id="categoriesChart" style="height:400px"></canvas>
+                </div>
+            </div>
+        </div>
+
+        
     </div>
-    {% if forloop.counter|divisibleby:2 %}
-    </div>
-    {% endif %}
-    {% endfor %}
-    {% if not forloop.counter|divisibleby:2 %}
-    </div>
-    {% endif %}
 </section>
 {% endblock content %}
 
 {% block custom_js %}
-<script src="{% static 'bower_components/chart.js/Chart.js' %}"></script>
-<script src="{% static 'bower_components/chart.js/Chart.HorizontalBar.js' %}"></script>
-
-{% for category in event_categories %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   $(function() {
-    var description = '{{ category.event_type|slugify }}';
-    var barChartCanvas = $('#' + description).get(0).getContext('2d');
-    var barChart = new Chart(barChartCanvas);
-    var barChartData = {
-      labels: ['Event 1', 'Event 2', 'Event 3'], 
-      datasets: [{
-        label: 'Events',
-        fillColor: 'rgba(60,141,188,0.9)',
-        strokeColor: 'rgba(60,141,188,0.8)',
-        pointColor: '#3b8bba',
-        pointStrokeColor: 'rgba(60,141,188,1)',
-        pointHighlightFill: '#fff',
-        pointHighlightStroke: 'rgba(60,141,188,1)',
-        data: [5, 10, 15] 
-      }]
-    };
-    var barChartOptions = {
-      scaleBeginAtZero: true,
-      scaleShowGridLines: true,
-      scaleGridLineColor: 'rgba(0,0,0,.05)',
-      scaleGridLineWidth: 1,
-      scaleShowHorizontalLines: true,
-      scaleShowVerticalLines: true,
-      barShowStroke: true,
-      barStrokeWidth: 2,
-      barValueSpacing: 5,
-      barDatasetSpacing: 1,
-      responsive: true,
-      maintainAspectRatio: true
-    };
+    // Event Categories Chart
+    var ctxCategories = document.getElementById('categoriesChart').getContext('2d');
+    var labelsCategories = [{% for category in event_categories %}'{{ category.category }}',{% endfor %}];
+    var dataCategories = [{% for category in event_categories %}{{ category.event_count }},{% endfor %}];
 
-    barChartOptions.datasetFill = false;
-    barChart.HorizontalBar(barChartData, barChartOptions);
+    var categoriesChart = new Chart(ctxCategories, {
+        type: 'bar',
+        data: {
+            labels: labelsCategories,
+            datasets: [{
+                label: 'Number of Events',
+                data: dataCategories,
+                backgroundColor: 'rgba(60,141,188,0.9)',
+                borderColor: 'rgba(60,141,188,0.8)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            responsive: true,
+            maintainAspectRatio: true
+        }
+    });
+
+    // Employee Assignment Chart
+    var ctxEmployees = document.getElementById('employeeAssignmentChart').getContext('2d');
+    var labelsEmployees = [{% for event in events %}'{{ event.title }}',{% endfor %}];
+    var dataEmployees = [{% for event in events %}{{ event.employee_count }},{% endfor %}];
+
+    var employeeAssignmentChart = new Chart(ctxEmployees, {
+        type: 'pie',
+        data: {
+            labels: labelsEmployees,
+            datasets: [{
+                label: 'Number of Employees Assigned',
+                data: dataEmployees,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.9)',
+                    'rgba(54, 162, 235, 0.9)',
+                    'rgba(255, 206, 86, 0.9)',
+                    'rgba(75, 192, 192, 0.9)',
+                    'rgba(153, 102, 255, 0.9)',
+                    'rgba(255, 159, 64, 0.9)',
+                    'rgba(255, 99, 132, 0.9)'
+                ],
+                hoverOffset: 4
+            }]
+        }, 
+        
+    });
   });
 </script>
-{% endfor %}
 {% endblock custom_js %}

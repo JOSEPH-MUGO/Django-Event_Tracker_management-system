@@ -1,0 +1,49 @@
+{% extends 'admin/root.html' %}
+{% load static %}
+
+{% block title %}
+  Create Report
+{% endblock title %}
+
+{% block content %}
+
+<div class="container-fluid">
+    
+  <div class="row justify-content-center align-items-center" style="height: 100vh;">
+    <div class="col-md-8">
+      <div class="box box-primary">
+        <div class="box-header with-border text-center">
+          {% if assigned %}
+            <h3 class="box-title"><b>Department of {{ assignment.employee.department }}</b></h3>
+            
+            <p></p>
+            <p><b>Report for the Event: {{ assignment.event }}</b> held in <b>{{assignment.event.venue}}</b> assigned on <b>{{assignment.assign_date}}</b></p>
+            <p><i>Written by {{ assignment.employee }}</i></p>
+          {% else %}
+            <h3 class="box-title">No Event Assigned</h3>
+            <p>You have no event to write a report on.</p>
+          {% endif %}
+        </div>
+        <!-- /.box-header -->
+        <!-- form start -->
+        <form method="post" enctype="multipart/form-data" action="{% if assigned %}{% url 'submitReport' assign_id=assignment.id %}{% endif %}" class="form-horizontal">
+          {% csrf_token %}
+          <div class="box-body">
+            {{ report_form.media }}
+            {{ report_form.content|safe }}
+            {{ report_form.image|safe }}
+          </div>
+          <!-- /.box-body -->
+          <div class="box-footer">
+            <button type="submit" class="btn btn-primary pull-right" {% if not assigned %}disabled{% endif %}>Submit Report</button>
+          </div>
+          <!-- /.box-footer -->
+        </form>
+        <!-- form end -->
+      </div>
+      <!-- /.box -->
+    </div>
+  </div>
+</div>
+{% endblock content %}
+

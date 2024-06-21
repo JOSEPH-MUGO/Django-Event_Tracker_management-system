@@ -1,0 +1,81 @@
+{%extends 'admin/root.html'%}
+{% load static %}
+{% block title %}Event Assignments{% endblock title %}
+{% block content %}
+<section class="content">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-header with-border">
+        {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+      <li{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %} id="message_{{ forloop.counter }}">
+          {{ message }}
+      </li>
+      {% endfor %}
+    </ul>
+{% endif %}
+          <h3 class="box-title"><b>Assigned Events</b></h3>
+        </div>
+        {%if assignments %}
+        <div class="box-body">
+          
+          <table
+            id="example1"
+            class="table table-bordered table-hover table-striped"
+          >
+            <thead style="background-color: #222d32; color: white">
+              <th>Event</th>
+              <th>Category</th>
+              <th>Description</th>
+              <th>Venue</th>
+              <th>Location</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Date assigned</th>
+              <th>Time assigned</th>
+              
+              <th>Action</th>
+            </thead>
+            <tbody>
+              {% for assignment in assignments %}
+              <tr>
+                <td>{{ assignment.event.title }}</td>
+                <td>{{ assignment.event.event_type }}</td>
+                <td>{{ assignment.event.description }}</td>
+                <td>{{ assignment.event.venue }}</td>
+                <td>{{ assignment.event.location }}</td>
+                <td>{{ assignment.event.start_date }}</td>
+                <td>{{ assignment.event.end_date }}</td>
+                <td>{{ assignment.assign_date }}</td>
+                <td>{{ assignment.time }}</td>
+                
+                <td>
+                  <a href="{% url 'submitReport' assign_id=assignment.id %}" class='btn btn-info btn-sm btn-flat'>
+                    <i class='fa fa-pencil'></i> write report
+                  </a>
+                 
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p>No assignment available for this employee</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}
+{% block custom_js %}
+<script>
+&(function(){
+  setTimeout(function() {
+    $('.messages').fadeOut('slow'); 
+});
+});
+</script>
+{% endblock custom_js %}

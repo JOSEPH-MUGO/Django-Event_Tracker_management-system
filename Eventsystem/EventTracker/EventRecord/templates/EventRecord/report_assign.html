@@ -1,0 +1,51 @@
+{% extends "admin/root.html" %} {% load static %} 
+{% block title %} submitted reports{% endblock title %} {% block content %}
+<section class="content">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box">
+       
+          {% if messages %}
+        <ul class="messages">
+          {% for message in messages %}
+          <li{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %} id="message_{{ forloop.counter }}">
+            {{ message }}
+          </li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        <div class="box-body">
+          {% if reports %}
+          <table
+            id="example1"
+            class="table table-bordered table-hover table-striped"
+          >
+            <thead style="background-color: #222d32; color: white">
+              <th>Report by</th>
+               <th>Event</th>
+              <th>Action</th>
+            </thead>
+            <tbody>
+              {% for report in reports %}
+              <tr>
+                <td>{{ report.assignment.employee }}</td>
+                <td>{{ report.assignment.event }}</td>
+                <td>
+                  <a href="{% url 'downloadReport' report_id=report.id %}" class="btn btn-success btn-sm download btn-flat">
+                    <i class="fa fa-download"></i> Download Report
+                  </a>
+                 
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p>No reports available</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %} 

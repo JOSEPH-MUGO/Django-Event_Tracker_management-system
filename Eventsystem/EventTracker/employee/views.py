@@ -1,11 +1,31 @@
 from django.shortcuts import render,redirect, get_object_or_404,reverse
 from EventRecord.models import *
-from EventRecord.forms import ReportForm
+from django.template.loader import render_to_string
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
+from django.urls import reverse
 from django.contrib import messages
+from EventRecord.forms import ReportForm
+from io import BytesIO
+from reportlab.pdfgen import canvas
+import os
+from django.utils.html import strip_tags
 from . models import *
 from . forms import *
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponse,FileResponse
 # Create your views here.
+
+# employee dashboard
+def dashboard(request):
+  user = request.user
+  assignments = Assignment.objects.filter(employee=user.employee)
+  if user.is_authenticated and user.user_type == '2':
+    context = {
+        'assignments': assignments,
+        'page_title':"Dashboard"
+    }
+    return render(request, 'account/employee_home.html', context)
+
 
 
 def department(request):
@@ -82,23 +102,49 @@ def getEmployeeDepartment(request):
 
 
 
+def submit_report(request, assign_id=None):
+    assignment = None
+    assigned = False
+    report_form = None
 
-def submitReport(request, assignment_id):
-    assignment = get_object_or_404(Assignment, id=assignment_id, employee=request.user.employee)
-    
-    if request.method =='POST':
-        form = ReportForm(request.POST, request.FILES)
-        if form.is_valid():
-            report = form.save(commit=False)
-            report.assignment = assignment
-            report.event = assignment.event
-            report.employee = request.user.employee
-            report.save()
-            messages.success(request, 'Report submitted successfully.')
-            return redirect('event_detail', event_id=assignment.event.id)
+    # Fetch the most recent assignment for the logged-in employee
+    if request.user.is_authenticated and assign_id is None:
+        assignments = Assignment.objects.filter(employee=request.user.employee).order_by('-assign_date')
+        if assignments.exists():
+            assignment = assignments.first()
+            assigned = True
+    elif assign_id:
+        try:
+            assignment = Assignment.objects.get(id=assign_id, employee=request.user.employee)
+            assigned = True
+        except Assignment.DoesNotExist:
+            assigned = False
+
+    if assigned:
+        if request.method == 'POST':
+            report_form = ReportForm(request.POST,request.FILES)
+            if report_form.is_valid():
+                report = report_form.save(commit=False)
+                report.assignment = assignment
+                report.submitted_by = assignment.employee
+                report.save()           
+                messages.success(request, 'Report submitted successfully.')
+                return redirect('dashboard')  # Replace with your appropriate URL
+            else:
+                messages.error(request, 'Error submitting report. Please check the form.')
+        else:
+            report_form = ReportForm()
     else:
-        form = ReportForm()
-    return render(request, 'submit_report.html', {'form': form, 'assignment': assignment})
+        messages.error(request, 'No assignment found or you are not authorized to submit this report.')
 
-        
-
+    context = {
+        'assignment': assignment,
+        'report_form': report_form,
+        'page_title': "Create Report",
+        'assigned': assigned
+    }
+    return render(request, 'report/submit_report.html', context)
+def report(request):
+    reports = Report.objects.all()
+    context ={'reports':reports,'page_title':"Submited Reports"}
+    return render(request, 'EventRecord/report_assign.html',context)

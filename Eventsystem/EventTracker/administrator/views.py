@@ -1,4 +1,4 @@
-from django.shortcuts import render,reverse, redirect
+from django.shortcuts import render,reverse, redirect,get_object_or_404
 from account.forms import UserForm
 from django.contrib import messages
 from django.http import JsonResponse
@@ -7,42 +7,44 @@ from EventRecord.forms import *
 from employee.models import Employee,Department
 from employee.forms import EmployeeForm
 from django.core.mail import send_mail
-from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.auth.models import PermissionsMixin
-
-
+from django.urls import reverse
+from django.template.loader import get_template
+from django_renderpdf.views import PDFView
+import os
+from django.conf import settings
 # Create your views here.
 
 
 def admin_dashboard(request):
     event_categories = EventCategory.objects.all()
-    events = Event.objects.all()
+    events = Event.objects.all().annotate(employee_count=models.Count('assignment')).values('title', 'employee_count')
     assignments = Assignment.objects.all()
     reports = Report.objects.all()
-    report_files = ReportFile.objects.all()
-    employee = Employee.objects.all()
-    department =Department.objects.all()
+    employees = Employee.objects.all()
+    departments = Department.objects.all()
 
+    # Aggregate event counts per category
+    category_event_counts = [
+        {
+            'category': category.event_type,
+            'event_count': events.filter(event_type=category).count()
+        } for category in event_categories
+    ]
 
     context = {
-        
-        'event_categories': event_categories,
+        'event_categories': category_event_counts,
         'events': events,
         'assignments': assignments,
         'reports': reports,
-        'report_files': report_files,
         'event_category_count': event_categories.count(),
         'event_count': events.count(),
         'assignment_count': assignments.count(),
         'report_count': reports.count(),
-        'report_file_count': report_files.count(),
-        'employee_count':employee.count(),
-        'department_count':department.count(),
-        'page_title':"Dashboard"
-
+        'employee_count': employees.count(),
+        'department_count': departments.count(),
+        'page_title': "Dashboard"
     }
-    return render(request, 'admin/adminV/home.html',context)
-
+    return render(request, 'admin/adminV/home.html', context)
 
 def employees(request):
     employees = Employee.objects.all()
@@ -89,10 +91,15 @@ def get_employee(request):
         context['last_name'] = employee.admin.last_name
         context['email'] = employee.admin.email
         context['phone'] = employee.phone
-        context['department'] = employee.department
+        department = {
+            'id': employee.department.id,
+            'name': employee.department.name,
+        }
+        context['department'] = department
         context['id'] = employee.id
     except Employee.DoesNotExist:
         context['code'] = 404
+    
     return JsonResponse(context)
 
 
@@ -155,3 +162,24 @@ def get_assignments(request):
         context['code'] = 404
         context['message'] = 'Employee not found'
     return JsonResponse(context)
+
+
+#Download and view the pdf
+class ReportPDFView(PDFView):
+    template_name = 'report/report_pdf.html'
+    prompt_download = True
+
+    @property
+    def download_name(self):
+        return 'report.pdf'
+    def get_context_data(self, **kwargs):
+        report_id = kwargs.get('report_id')
+        report = get_object_or_404(Report, pk=report_id)
+        context = super().get_context_data(**kwargs)
+        context['report'] = report
+        return context
+
+
+   
+
+

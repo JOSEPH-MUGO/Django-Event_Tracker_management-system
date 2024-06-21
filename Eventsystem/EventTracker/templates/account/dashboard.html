@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -20,10 +21,11 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="{% url 'dashboard'%}"><i class="fa fa-dashboard"></i> Home</a></li>
+        
         <li class="active">{{ page_title }}</li>
       </ol>
     </section>
-    {%include 'main.html'%}
+     
 
          {% block content %}
         {% endblock content %}
@@ -34,8 +36,7 @@
       {% endblock modal %}
     </div>
     {% include "admin/scripts.html"%} 
-    {% block custom_js %}
-     {% endblock custom_js %}
+
   </body>
 </html>
 

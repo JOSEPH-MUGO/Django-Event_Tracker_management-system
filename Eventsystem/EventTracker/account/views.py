@@ -125,7 +125,8 @@ def customPasswordResetView(request):
                               user.email], fail_silently=False)
                         messages.success(request, 'We have sent instructions to your email for resetting your password. If you do not receive an email, please confirm if you entered the correct email address you registered with.')
 
-                    except:
+                    except User.DoesNotExist:
+                        messages.error(request, ' The entered email address is not registered!')
                         return HttpResponse('invalid Header')
                     return redirect(reverse('password_reset'))
     else:
@@ -168,22 +169,4 @@ def customPasswordResetConfirm(request,uidb64= None, token=None):
 
 
 
-# employee dashboard
-def dashboard(request):
-    user = request.user
-    if user is not None:
 
-        event_count = Event.objects.count()
-        context = {'event_count': event_count}
-        return render(request, 'account/dashboard.html', context)
-
-
-"""
-    def dispatch(self, request, *args, **kwargs):
-        logger.debug(f"Dispatch called with kwargs: {kwargs}")
-        self.user = self.get_user(*args, **kwargs)
-        if not self.user:
-            logger.error("User not found during dispatch.")
-        return super().dispatch(request, *args, **kwargs)
- 
-    """

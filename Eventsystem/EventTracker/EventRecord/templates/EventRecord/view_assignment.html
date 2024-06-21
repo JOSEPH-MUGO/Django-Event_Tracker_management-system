@@ -40,13 +40,14 @@
                 <td>{{ assignment.time }}</td>
                 <td>{{ assignment.employee.department }}</td>
                 <td>
-                  <button
-                    class="btn btn-success btn-sm download btn-flat"
-                    data-id="{{ assignment.id }}"
-                  >
-                    <i class="fa fa-download"></i> Report
-                  </button>
-                 
+                    {% if assignment.report %}
+                <a href="{% url 'downloadReport' report_id=assignment.report.id %}" class="btn btn-success btn-sm download btn-flat">
+                  <i class="fa fa-download"></i> Report
+                </a>
+                {% else %}
+                No Report Available
+                {% endif %}
+                </td>
                 </td>
               </tr>
               {% endfor %}

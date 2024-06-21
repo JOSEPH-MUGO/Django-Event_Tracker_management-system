@@ -1,14 +1,14 @@
-{%load static %}
+{% load static %}
 <!-- jQuery 3 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!-- Bootstrap 3.4.1 -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
 <!-- DataTables -->
 <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
-
-<!-- my scripts -->
+<!-- select2-->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<!-- My scripts -->
 <script src="{% static 'account/plugins/iCheck/icheck.min.js' %}"></script>
 <script src="{% static 'bower_components/moment/moment.js' %}"></script>
 <!--<script src="{% static 'bower_components/bootstrap/js/modal.js' %}"></script>-->
@@ -60,4 +60,14 @@
     }).parentsUntil(".sidebar-menu > .treeview-menu").addClass('active');
 
   });
+</script>
+<script>
+  $(document).ready(function() {
+    $('#id_event_type').select2();
+    $('#id_event').select2();
+    $('#department-select').select2();
+    $('#employee-select').select2();
+    $('#deparment_id').select2();
+});
+
 </script>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+{%load static%}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Report {{ report.id }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 100%;
+            margin: 0 auto;
+        }
+        .header, .content {
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .content p {
+            font-size: 14px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="box-header with-border text-center">
+          {% if report %}
+            <h3 class="box-title"><b>Department of {{ report.assignment.employee.department }}</b></h3>
+            
+            <p></p>
+            <p><b>Report for the Event: {{ report.assignment.event }}</b> held in <b>{{report.assignment.event.venue}}</b> assigned on <b>{{report.assignment.assign_date}}</b></p>
+            <p><i>Written by {{ report.assignment.employee }}</i></p>
+          {% else %}
+            <h3 class="box-title">No Event Assigned</h3>
+            <p>You have no event to write a report on.</p>
+          {% endif %}
+        </div>
+        <div class="content">
+            <h2>Report Content</h2>
+            <p>{{ report.content|safe }}</p>
+        </div>
+         {% if report.image %}
+        <div class="image">
+            <img src="{{ report.image.media.report_images }}" alt="file">
+        </div>
+    {% endif %}
+    </div>
+</body>
+</html>
