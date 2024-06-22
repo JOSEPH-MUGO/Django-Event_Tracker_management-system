@@ -22,7 +22,7 @@ def dashboard(request):
   if user.is_authenticated and user.user_type == '2':
     context = {
         'assignments': assignments,
-        'page_title':"Dashboard"
+        'page_title':"Employee Dashboard"
     }
     return render(request, 'account/employee_home.html', context)
 
