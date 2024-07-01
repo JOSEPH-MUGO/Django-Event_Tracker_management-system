@@ -31,6 +31,7 @@
               <th>Location</th>
               <th>Start date</th>
               <th>End Date</th>
+              <th>Status</th>
               <th>Action</th>
             </thead>
             <tbody>
@@ -43,6 +44,7 @@
                 <td>{{ event.location }}</td>
                 <td>{{ event.start_date }}</td>
                 <td>{{ event.end_date }}</td>
+                <td>{{ event.get_status_display}}</td>
                 <td>
                   <a href="{% url 'getAssignment' evenT_id=event.id %}" class='btn btn-info btn-sm btn-flat'>
                     <i class='fa fa-eye'></i> View
@@ -130,79 +132,77 @@
   </div>
 </div>
 
-
 <!-- Edit Event Modal -->
-<div class="modal fade" id="editmodal" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title"><b>Edit Event</b></h4>
+<div class="modal fade" id="editmodal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="editModalLabel"><b>Edit Event</b></h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" method="POST" action="{% url 'updateEvent' %}">
+          {% csrf_token %}
+          <input type="hidden" class="id" name="id" value="" />
+          <div class="form-group">
+            <label for="event_type" class="col-sm-3 control-label">Event Type</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="event_type" name="event_type">
             </div>
-            <div class="modal-body">
-                <form class="form-horizontal" method="POST" action="{% url 'updateEvent' %}">
-                    {% csrf_token %}
-                    <input type="hidden" class="id" name="id" value="" />
-                    <div class="form-group">
-                        <label for="event_type" class="col-sm-3 control-label">Category</label>
-                        <div class="col-sm-9">
-                            <select class="form-control" id="event_type" name="event_type">
-                                {% for eventcategory in category %}
-                                <option value="{{ eventcategory.id }}">{{ eventcategory.event_type }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="title" class="col-sm-3 control-label">Title</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="title" name="title" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="description" class="col-sm-3 control-label">Description</label>
-                        <div class="col-sm-9">
-                            <textarea class="form-control" id="description" name="description"></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="venue" class="col-sm-3 control-label">Venue</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="venue" name="venue" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="location" class="col-sm-3 control-label">Location</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="location" name="location" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="start_date" class="col-sm-3 control-label">Start Date</label>
-                        <div class="col-sm-9">
-                            <input type="date" class="form-control" id="startdate" name="start_date" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="end_date" class="col-sm-3 control-label">End Date</label>
-                        <div class="col-sm-9">
-                            <input type="date" class="form-control" id="end_date" name="end_date" />
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger btn-flat pull-left" data-dismiss="modal">
-                            <i class="fa fa-close"></i> Close
-                        </button>
-                        <button type="submit" class="btn btn-success btn-flat" name="edit">
-                            <i class="fa fa-check-square-o"></i> Update
-                        </button>
-                    </div>
-                </form>
+          </div>
+          <div class="form-group">
+            <label for="title" class="col-sm-3 control-label">Title</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="title" name="title">
             </div>
-        </div>
+          </div>
+          <div class="form-group">
+            <label for="description" class="col-sm-3 control-label">Description</label>
+            <div class="col-sm-9">
+              <textarea class="form-control" id="description" name="description"></textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="venue" class="col-sm-3 control-label">Venue</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="venue" name="venue">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="location" class="col-sm-3 control-label">Location</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="location" name="location">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="start_date" class="col-sm-3 control-label">Start Date</label>
+            <div class="col-sm-9">
+              <input type="date" class="form-control" id="startdate" name="start_date">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="end_date" class="col-sm-3 control-label">End Date</label>
+            <div class="col-sm-9">
+              <input type="date" class="form-control" id="end_date" name="end_date">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="status" class="col-sm-3 control-label">Status</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="status" name="status">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 
 
@@ -239,42 +239,47 @@
   </div>
 </div>
 {% endblock modal %}
-
 {% block custom_js %}
 <script>
   $(function () {
+    // View assignments modal
     $(document).on('click', '.view-assignments', function(e) {
       e.preventDefault();
       $('#view-assignments').modal('show');
       var id = $(this).data('id');
       loadAssignments(id);
     });
-    $(document).on('click', '.edit', function (e) {
-      e.preventDefault();
-      
-      $('#editmodal').modal('show');
+
+    // Edit event modal
+    $(document).on('click', '.edit', function(e) {
+      e.preventDefault();    
       var id = $(this).data('id');
       getRow(id);
+      console.log('form should be displayed')
     });
 
-    $(document).on('click', '.delete', function (e) {
+    // Delete event modal
+    $(document).on('click', '.delete', function(e) {
       e.preventDefault();
       $('#delete').modal('show');
       var id = $(this).data('id');
       getRow(id);
     });
-    setTimeout(function() {
-        $('.messages').fadeOut('slow'); 
-      }, 3000);
-  });
 
+    // Fade out messages after 3 seconds
+    setTimeout(function() {
+      $('.messages').fadeOut('slow'); 
+    }, 3000);
+  }); 
+
+  // Function to get row data
   function getRow(id) {
     $.ajax({
       type: 'GET',
       url: '{% url "getEvent" %}',
       data: { id: id },
       dataType: 'json',
-      success: function (response) {
+      success: function(response) {
         console.log(response);
         if (response.code === 200) {
           $('.id').val(response.id);
@@ -285,16 +290,20 @@
           $('#editmodal #location').val(response.location);
           $('#editmodal #startdate').val(response.start_date);
           $('#editmodal #end_date').val(response.end_date);
+          $('#editmodal #status').val(response.status);
           $('.title').html(response.title);
-        } 
-        else {
+
+          // Show the modal
+          $('#editmodal').modal('show');
+        } else {
           alert('Event not found');
         }
       },
-      error: function (xhr, status, error) {
+      error: function(xhr, status, error) {
         console.error("AJAX Error: ", status, error);
       }
     });
   }
 </script>
 {% endblock custom_js %}
+

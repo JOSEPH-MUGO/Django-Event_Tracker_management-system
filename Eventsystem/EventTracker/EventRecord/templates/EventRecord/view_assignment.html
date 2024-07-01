@@ -39,22 +39,23 @@
                 <td>{{ assignment.assign_date }}</td>
                 <td>{{ assignment.time }}</td>
                 <td>{{ assignment.employee.department }}</td>
-                <td>
-                    {% if assignment.report %}
-                <a href="{% url 'downloadReport' report_id=assignment.report.id %}" class="btn btn-success btn-sm download btn-flat">
-                  <i class="fa fa-download"></i> Report
-                </a>
-                {% else %}
-                No Report Available
-                {% endif %}
-                </td>
-                </td>
+                  <td>
+                  {% if assignment.report %}
+                    <a href="{% url 'downloadReport' report_id=assignment.report.id %}" class="btn btn-success btn-sm download btn-flat">
+                      <i class="fa fa-download"></i> Download Report
+                    </a>
+                  {% else %}
+                    No Report Available
+                  {% endif %}
+                   
+                  </td>
+               
               </tr>
               {% endfor %}
             </tbody>
           </table>
           {% else %}
-          <p>No assignment available</p>
+          <p>No employee assigned to this event</p>
           {% endif %}
         </div>
       </div>

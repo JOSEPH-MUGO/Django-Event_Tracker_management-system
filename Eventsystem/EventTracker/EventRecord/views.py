@@ -1,9 +1,9 @@
 from django.shortcuts import render,redirect,reverse,get_object_or_404
 from .forms import *
 from .models import *
-
+from django_renderpdf.views import PDFView
 from django.http import JsonResponse
-
+from administrator.views import ReportPDFView
 from django.db.models import Count
 from django.contrib import messages
 
@@ -50,7 +50,8 @@ def getEvent(request):
         context['venue'] = event.venue
         context['location'] = event.location
         context['start_date'] = event.start_date.strftime('%Y-%m-%d') 
-        context['end_date'] = event.end_date.strftime('%Y-%m-%d')      
+        context['end_date'] = event.end_date.strftime('%Y-%m-%d')  
+        context['status'] = event.status    
     except Event.DoesNotExist:
         context['code'] = 404
     return JsonResponse(context)
@@ -263,8 +264,13 @@ def deleteAssigned(request):
 def get_assignments(request, evenT_id):
     event = get_object_or_404(Event, pk=evenT_id)
     assignments = Assignment.objects.filter(event=event).select_related('employee')
+    
+    for assignment in assignments:
+        assignment.report = Report.objects.filter(assignment_id=assignment.id).first()
+
     context = {
         'event': event,
+        
         'assignments': assignments,
         'page_title': "View Event Assigment"
     }
@@ -273,9 +279,15 @@ def get_assignments(request, evenT_id):
 def getAssignments(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
     assignments = Assignment.objects.filter(employee=employee).select_related('event')
+    for assignment in assignments:
+        assignment.report = Report.objects.filter(assignment_id=assignment.id).first()
+    
+    
     context = {
         'employee': employee,
-        'assignments': assignments,
+        'assignments': assignments,        
         'page_title': "View Employee Assigment"
     }
     return render(request, 'EventRecord/view_employeeA.html', context)
+
+

@@ -10,7 +10,5 @@ urlpatterns = [
     path('employees/update', views.updateEmployee, name="updateEmployee"),
     path('get-assignments/', views.get_assignments, name='getAssignments'),
     path('download_report_pdf/<int:report_id>/', views.ReportPDFView.as_view(), name='downloadReport'),
-    #path('download_report_pdf/<int:report_id>/', views.downloadReport, name='downloadReport'),
-    
-    
+  
 ]

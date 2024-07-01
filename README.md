@@ -24,7 +24,7 @@ EventTracker is a Django-based application designed to manage events, assignment
 ## Visuals
 
 ### Login Page
-![Login Page](assets/login.png)
+![Login Page](static/images/login.png)
 
 ### Event Assignment
 ![Event Assignment](assets/event_assignment.png)
@@ -49,6 +49,9 @@ EventTracker is a Django-based application designed to manage events, assignment
 
     ```bash
     git clone https://github.com/JOSEPH-MUGO/Django-Event_Tracker_management-system.git
+    ```
+2. **Navigate to this directory:**
+    ```bash 
     cd Eventsystem
     ```
 

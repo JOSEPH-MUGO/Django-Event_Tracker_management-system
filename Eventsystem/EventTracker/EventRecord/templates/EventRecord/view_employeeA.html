@@ -40,16 +40,15 @@
                 <td>{{ assignment.event.start_date }}</td>
                 <td>{{ assignment.event.end_date }}</td>
                 <td>{{ assignment.assign_date }}</td>
-                <td>{{ assignment.time }}</td>
-                
+                <td>{{ assignment.time }}</td>             
                 <td>
-                  <button
-                    class="btn btn-success btn-sm download btn-flat"
-                    data-id="{{ assignment.id }}"
-                  >
-                    <i class="fa fa-download"></i> Report
-                  </button>
-                 
+                  {% if assignment.report %}
+                    <a href="{% url 'downloadReport' report_id=assignment.report.id %}" class="btn btn-success btn-sm download btn-flat">
+                      <i class="fa fa-download"></i> Download Report
+                    </a>
+                  {% else %}
+                    No Report Available
+                  {% endif %}
                 </td>
               </tr>
               {% endfor %}

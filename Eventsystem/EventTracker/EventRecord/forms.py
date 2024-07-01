@@ -18,7 +18,7 @@ class EventForm(FormSettings):
 
     class Meta:
         model= Event
-        fields = ['event_type','title','description','venue','location','start_date', 'end_date']
+        fields = ['event_type','title','description','venue','location','start_date', 'end_date','status']
 
 class AssignForm(forms.ModelForm):
     assign_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'placeholder': 'Select a date'}))

@@ -22,7 +22,7 @@ class AccountCheckMiddleWare(MiddlewareMixin):
                     if 'evenT_id' in view_kwargs:
                         if request.path == reverse('getAssignment', kwargs={'evenT_id': view_kwargs['evenT_id']}):
                             return None
-
+        
                     if request.path in [
                         reverse('viewEvents'),
                         reverse('getEvent'),
@@ -39,6 +39,7 @@ class AccountCheckMiddleWare(MiddlewareMixin):
                         reverse('updateAssigned'),
                         reverse('deleteAssigned'),
                         reverse('getAssignments'),
+                        
                     ]:
                         logger.debug("Access granted to admin")
                     else:
