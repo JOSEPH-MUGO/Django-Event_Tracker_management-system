@@ -41,7 +41,7 @@ EventTracker is a Django-based application designed to manage events, assignment
 ![Event Reporting](Eventsystem/EventTracker/static/images/assign.png)
 
 ### Workflow Demonstration
-![Workflow video](Eventsystem/EventTracker/static/images/system.mp4)
+![Workflow video](Eventsystem/EventTracker/static/images/system.gif)
 
 ## Installation
 
