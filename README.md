@@ -55,7 +55,7 @@ EventTracker is a Django-based application designed to manage events, assignment
     cd Eventsystem
     ```
 
-2. **Create and activate a virtual environment:**
+3. **Create and activate a virtual environment:**
 
     ```bash
     python3 -m venv venv
@@ -63,28 +63,28 @@ EventTracker is a Django-based application designed to manage events, assignment
     ```
    
 
-3. **Install dependencies:**
+4. **Install dependencies:**
 
     ```bash
     pip install -r requirements.txt
     ```
 
-4. **Configure the database:**
+5. **Configure the database:**
    Update the `DATABASES` setting in `settings.py` with your database credentials.
 
-5. **Run migrations:**
+6. **Run migrations:**
 
     ```bash
     python manage.py migrate
     ```
 
-6. **Create a superuser:**
+7. **Create a superuser:**
  Admin
     ```bash
     python3 manage.py createsuperuser
     ```
 
-7. **Start the development server:**
+8. **Start the development server:**
 
     ```bash
     python3 manage.py runserver
