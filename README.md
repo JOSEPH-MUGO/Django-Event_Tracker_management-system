@@ -155,10 +155,18 @@ EventTracker is a Django-based application designed to manage events, assignment
 
 
 
-## Contribution
+## Contributing
 
-Contributions are welcome! Please read the [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Thank you for considering contributing to my project! Contributions are welcomed and encouraged.
 
+### How to Contribute
+
+1. **Fork** the repository and clone it locally.
+2. **Set Up** your development environment.
+3. **Create** a new branch for your feature or bug fix.
+4. **Commit** your changes with descriptive messages.
+5. **Push** your branch to your fork.
+6. **Open** a pull request (PR) to our main repository.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
