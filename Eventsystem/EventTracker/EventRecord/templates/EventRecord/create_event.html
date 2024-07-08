@@ -133,14 +133,14 @@
 </div>
 
 <!-- Edit Event Modal -->
-<div class="modal fade" id="editmodal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="editLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="editModalLabel"><b>Edit Event</b></h4>
+        <h4 class="modal-title" id="editLabel"><b>Edit Event</b></h4>
       </div>
       <div class="modal-body">
         <form class="form-horizontal" method="POST" action="{% url 'updateEvent' %}">
@@ -255,6 +255,7 @@
       e.preventDefault();    
       var id = $(this).data('id');
       getRow(id);
+      $('#edit').modal('show');
       console.log('form should be displayed')
     });
 
@@ -283,18 +284,18 @@
         console.log(response);
         if (response.code === 200) {
           $('.id').val(response.id);
-          $('#editmodal #event_type').val(response.event_type);
-          $('#editmodal #title').val(response.title);
-          $('#editmodal #description').val(response.description);
-          $('#editmodal #venue').val(response.venue);
-          $('#editmodal #location').val(response.location);
-          $('#editmodal #startdate').val(response.start_date);
-          $('#editmodal #end_date').val(response.end_date);
-          $('#editmodal #status').val(response.status);
+          $('#edit #event_type').val(response.event_type);
+          $('#edit #title').val(response.title);
+          $('#edit #description').val(response.description);
+          $('#edit #venue').val(response.venue);
+          $('#edit #location').val(response.location);
+          $('#edit #startdate').val(response.start_date);
+          $('#edit #end_date').val(response.end_date);
+          $('#edit #status').val(response.status);
           $('.title').html(response.title);
 
-          // Show the modal
-          $('#editmodal').modal('show');
+         
+         
         } else {
           alert('Event not found');
         }
