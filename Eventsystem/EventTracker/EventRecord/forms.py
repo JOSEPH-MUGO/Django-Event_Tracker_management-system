@@ -6,8 +6,9 @@ from tinymce.widgets import TinyMCE
 
 class EventForm(FormSettings):
     event_type = forms.ModelChoiceField(queryset=EventCategory.objects.all(),widget=forms.Select(attrs={'class':'form-control','id':'category'}),required=True,label='Category', empty_label='Select a category')
-    start_date = forms.DateField(widget=forms.DateInput(attrs={'type':'date'}))
-    end_date = forms.DateField(widget=forms.DateInput(attrs={'type':'date'})) 
+    start_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
+    end_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
+
     title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control','placeholder': 'Enter title of the event'}))
     description = forms.CharField(
         widget=forms.Textarea(attrs={'class': 'form-control','rows': 5,'placeholder': 'write a description of the event'}))
@@ -19,6 +20,17 @@ class EventForm(FormSettings):
     class Meta:
         model= Event
         fields = ['event_type','title','description','venue','location','start_date', 'end_date','status']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        start_date = cleaned_data.get('start_date')
+        end_date = cleaned_data.get('end_date')
+        
+        if start_date and end_date:
+            if start_date > end_date:
+                raise forms.ValidationError("End date should be later than start date.")
+        
+        return cleaned_data
 
 class AssignForm(forms.ModelForm):
     assign_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'placeholder': 'Select a date'}))

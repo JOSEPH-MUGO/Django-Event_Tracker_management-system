@@ -186,10 +186,11 @@ Categories{% endblock title %} {% block content %}
   $(function () {
     $(document).on('click', '.edit', function (e) {
       e.preventDefault();
-      console.error('Event button:', id);
+      
       $('#edit').modal('show');
       var id = $(this).data('id');
       getRow(id);
+      console.log(e)
     });
 
     $(document).on('click', '.delete', function (e) {

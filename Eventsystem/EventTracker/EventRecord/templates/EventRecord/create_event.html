@@ -49,12 +49,12 @@
                   <a href="{% url 'getAssignment' evenT_id=event.id %}" class='btn btn-info btn-sm btn-flat'>
                     <i class='fa fa-eye'></i> View
                   </a>
-                  <button class='btn btn-primary btn-sm edit btn-flat' data-id='{{ event.id }}'>
+                   <a href="{% url 'editEvent' eventId=event.id %}" class='btn btn-primary btn-sm edit btn-flat'>
                     <i class='fa fa-edit'></i> Edit
-                  </button>
-                  <button class='btn btn-danger btn-sm delete btn-flat' data-id='{{ event.id }}' onclick="return confirm('Are you sure you want to delete this event?')">
+                  </a>
+                  <a href="{% url 'deleteEvent' eventId=event.id %}" class='btn btn-danger btn-sm delete btn-flat'>
                     <i class='fa fa-trash'></i> Delete
-                  </button>
+                  </a>
                 </td>
               </tr>
               {% endfor %}
@@ -72,8 +72,8 @@
 
 {% block modal %}
 <!-- Add New Event Modal -->
-{% load custom_filters %}
 
+{% load custom_filters %}
 <div class="modal fade" id="addnew">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -132,112 +132,6 @@
   </div>
 </div>
 
-<!-- Edit Event Modal -->
-<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="editLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title" id="editLabel"><b>Edit Event</b></h4>
-      </div>
-      <div class="modal-body">
-        <form class="form-horizontal" method="POST" action="{% url 'updateEvent' %}">
-          {% csrf_token %}
-          <input type="hidden" class="id" name="id" value="" />
-          <div class="form-group">
-            <label for="event_type" class="col-sm-3 control-label">Event Type</label>
-            <div class="col-sm-9">
-              <input type="text" class="form-control" id="event_type" name="event_type">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="title" class="col-sm-3 control-label">Title</label>
-            <div class="col-sm-9">
-              <input type="text" class="form-control" id="title" name="title">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="description" class="col-sm-3 control-label">Description</label>
-            <div class="col-sm-9">
-              <textarea class="form-control" id="description" name="description"></textarea>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="venue" class="col-sm-3 control-label">Venue</label>
-            <div class="col-sm-9">
-              <input type="text" class="form-control" id="venue" name="venue">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="location" class="col-sm-3 control-label">Location</label>
-            <div class="col-sm-9">
-              <input type="text" class="form-control" id="location" name="location">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="start_date" class="col-sm-3 control-label">Start Date</label>
-            <div class="col-sm-9">
-              <input type="date" class="form-control" id="startdate" name="start_date">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="end_date" class="col-sm-3 control-label">End Date</label>
-            <div class="col-sm-9">
-              <input type="date" class="form-control" id="end_date" name="end_date">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="status" class="col-sm-3 control-label">Status</label>
-            <div class="col-sm-9">
-              <input type="text" class="form-control" id="status" name="status">
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-9">
-              <button type="submit" class="btn btn-primary">Save changes</button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- Delete Modal -->
-<div class="modal fade" id="delete">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title"><b>Deleting...</b></h4>
-      </div>
-      <div class="modal-body">
-       
-        <form class="form-horizontal" method="POST" action="{% url 'deleteEvent' %}">
-          {% csrf_token %}
-          <input type="hidden" class="id" name="id" />
-          <div class="text-center">
-            <p>DELETE EVENT</p>
-            <h2 class="bold title"></h2>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal">
-              <i class="fa fa-close"></i> Close
-            </button>
-            <button type="submit" class="btn btn-danger btn-flat" name="delete">
-              <i class="fa fa-trash"></i> Delete
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
 {% endblock modal %}
 {% block custom_js %}
 <script>
@@ -250,61 +144,14 @@
       loadAssignments(id);
     });
 
-    // Edit event modal
-    $(document).on('click', '.edit', function(e) {
-      e.preventDefault();    
-      var id = $(this).data('id');
-      getRow(id);
-      $('#edit').modal('show');
-      console.log('form should be displayed')
-    });
-
-    // Delete event modal
-    $(document).on('click', '.delete', function(e) {
-      e.preventDefault();
-      $('#delete').modal('show');
-      var id = $(this).data('id');
-      getRow(id);
-    });
-
     // Fade out messages after 3 seconds
     setTimeout(function() {
       $('.messages').fadeOut('slow'); 
     }, 3000);
   }); 
 
-  // Function to get row data
-  function getRow(id) {
-    $.ajax({
-      type: 'GET',
-      url: '{% url "getEvent" %}',
-      data: { id: id },
-      dataType: 'json',
-      success: function(response) {
-        console.log(response);
-        if (response.code === 200) {
-          $('.id').val(response.id);
-          $('#edit #event_type').val(response.event_type);
-          $('#edit #title').val(response.title);
-          $('#edit #description').val(response.description);
-          $('#edit #venue').val(response.venue);
-          $('#edit #location').val(response.location);
-          $('#edit #startdate').val(response.start_date);
-          $('#edit #end_date').val(response.end_date);
-          $('#edit #status').val(response.status);
-          $('.title').html(response.title);
-
-         
-         
-        } else {
-          alert('Event not found');
-        }
-      },
-      error: function(xhr, status, error) {
-        console.error("AJAX Error: ", status, error);
-      }
-    });
-  }
+  
 </script>
+
 {% endblock custom_js %}
 

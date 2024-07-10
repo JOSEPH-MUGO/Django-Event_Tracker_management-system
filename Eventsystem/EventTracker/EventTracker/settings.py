@@ -205,14 +205,12 @@ LOGGING = {
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'  # for using Redis
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
+
 CELERY_TIMEZONE = 'Africa/Nairobi'
 
 CELERY_BEAT_SCHEDULE = {
-    'update-event-statuses-every-hour': {
-        'task': 'EventRecord.tasks.update_event_statuses',
-        'schedule': crontab(minute=0, hour='*'),  # Every hour
+    'update-event-status-every-hour': {
+        'task': 'EventRecord.tasks.update_event_status',
+        'schedule':crontab(minute=0, hour='*/1'), # Every hour
     },
 }

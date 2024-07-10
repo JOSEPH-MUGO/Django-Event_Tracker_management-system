@@ -1,27 +1,11 @@
 {% load static %}
 <!-- jQuery 3 -->
-<!--<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Bootstrap 3.4.1 -->
- 
-<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>-->
-
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <!-- DataTables -->
-<!--<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>-->
-<!-- select2-->
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<!-- My scripts -->
-<script src="{% static 'account/plugins/iCheck/icheck.min.js' %}"></script>
-<script src="{% static 'bower_components/moment/moment.js' %}"></script>
-    <!-- jQuery 3 -->
-<script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
-<script src="{% static 'bower_components/jquery-ui/jquery-ui.min.js' %}"></script>
-<script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-<!--<script src="{% static 'bower_components/bootstrap/js/modal.js' %}"></script>-->
-<!-- DataTables -->
-<script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.js' %}"></script>
-<script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.js' %}"></script>
-<script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap.min.js"></script>
 <!-- SlimScroll -->
 <script src="{% static 'bower_components/jquery-slimscroll/jquery.slimscroll.min.js' %}"></script>
 <script src="{% static 'bower_components/fastclick/lib/fastclick.js' %}"></script>
@@ -32,6 +16,8 @@
 <script src="{% static 'account/js/sb-admin-2.min.js' %}"></script>
 <script src="{% static 'account/js/demo/chart-area-demo.js' %}"></script>
 <script src="{% static 'account/js/demo/chart-pie-demo.js'%}"></script>
+<!--select2-->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
   $(function () {
@@ -42,7 +28,7 @@
       'searching'   : true,
       'ordering'    : true,
       'info'        : false,
-      'autoWidth'   : true,
+      'autoWidth'   : false,
     })
 
     $('#searchBox').on('keyup', function(){

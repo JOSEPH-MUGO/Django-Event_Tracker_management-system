@@ -22,12 +22,19 @@ class AccountCheckMiddleWare(MiddlewareMixin):
                     if 'evenT_id' in view_kwargs:
                         if request.path == reverse('getAssignment', kwargs={'evenT_id': view_kwargs['evenT_id']}):
                             return None
+                    if 'eventId' in view_kwargs:
+                        if request.path == reverse('editEvent', kwargs={'eventId': view_kwargs['eventId']}):
+                            return None
+                    if 'eventId' in view_kwargs:
+                        if request.path == reverse('deleteEvent', kwargs={'eventId': view_kwargs['eventId']}):
+                            return None
+        
         
                     if request.path in [
                         reverse('viewEvents'),
-                        reverse('getEvent'),
+                        
                         reverse('updateEvent'),
-                        reverse('deleteEvent'),
+                        
                         reverse('createEventCategory'),
                         reverse('getCategory'),
                         reverse('updateCategory'),

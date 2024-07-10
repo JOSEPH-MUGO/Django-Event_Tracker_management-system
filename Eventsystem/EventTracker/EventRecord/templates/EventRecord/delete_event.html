@@ -1,0 +1,21 @@
+{% extends 'admin/root.html' %}
+{%load static %}
+{% block content %}
+<section class="content">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-body">
+          <h2>Delete Event</h2>
+          <p>Are you sure you want to delete "{{ event.title }}" event?</p>
+          <form method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger" onclick="window.history.alert('proceed');">Delete</button>
+            <a href="{% url 'viewEvents' %}" class="btn btn-default">Cancel</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

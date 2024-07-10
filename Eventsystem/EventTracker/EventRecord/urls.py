@@ -3,10 +3,10 @@ from .import views
 
 urlpatterns = [
     #create event
-    path('event/view/', views.getEvent, name='getEvent'),
+    path('events/<int:eventId>/edit/', views.updateEvent, name='editEvent'),
     path('events/', views.viewEvents, name='viewEvents'),
     path('event/update/',views.updateEvent, name='updateEvent'),
-    path('event/delete/', views.deleteEvent, name='deleteEvent'),
+     path('event/<int:eventId>/delete/',views.deleteEvent, name='deleteEvent'),
     path('event/<int:evenT_id>/assignments', views.get_assignments, name='getAssignment'),
     path('employee/<int:employee_id>/assignments', views.getAssignments, name='getAssigned'),
    

@@ -26,7 +26,7 @@ def viewEvents(request):
     if request.method == 'POST':
         if form.is_valid():
             form = form.save(commit=False)
-            # Ensure id is handled properly if needed, although Django auto-increments IDs
+           
             form.id = request.POST.get('id', events.count() + 1)  
             form.save()
             messages.success(request, "New Event created ")
@@ -37,59 +37,46 @@ def viewEvents(request):
 
     return render(request, "EventRecord/create_event.html", context)
 
-def getEvent(request):
-    event_id = request.GET.get('id')
-    context = {}
-    try:
-        event = Event.objects.get(id=event_id)
-        context['code'] = 200
-        context['id'] = event.id
-        context['event_type'] = event.event_type.id # event_type is a ForeignKey
-        context['title'] = event.title
-        context['description'] = event.description
-        context['venue'] = event.venue
-        context['location'] = event.location
-        context['start_date'] = event.start_date.strftime('%Y-%m-%d') 
-        context['end_date'] = event.end_date.strftime('%Y-%m-%d')  
-        context['status'] = event.status    
-    except Event.DoesNotExist:
-        context['code'] = 404
-    return JsonResponse(context)
 
-def updateEvent(request ):
-    if request.method != 'POST':
-        messages.error(request, "Access denied")
+def updateEvent(request, eventId=None):
+    if eventId:
+        event = get_object_or_404(Event, pk=eventId)
+    else:
+        messages.error(request, "Event ID is required")
         return redirect(reverse('viewEvents'))
-    try:  
-        event_id =request.POST.get('id')
-        event = Event.objects.get(id=event_id)
-        form = EventForm(request.POST or None, instance=event)
 
+    if request.method == 'POST':
+        form = EventForm(request.POST, instance=event)
         if form.is_valid():
-           form.save()
-           messages.success(request, "Event updated successfully")
+            form.save()
+            messages.success(request, "Event updated successfully")
+            return redirect(reverse('viewEvents'))
         else:
             messages.error(request, "Form validation failed")
-            print(form.errors)
-    except Event.DoesNotExist:
-        messages.error(request, "Event not found")
-    except Exception as e:
-        messages.error(request, f"Unexpected Problem Occured:{str(e)}")
-    return redirect(reverse('viewEvents'))
-            
-def deleteEvent(request):
-    if request.method != 'POST':
-        messages.error(request, "Access Denied")
-        return redirect(reverse('viewEvents'))
-    try:
-        event= Event.objects.get(id=request.POST.get('id'))
-        event.delete()
-        messages.success(request, "Event delete successfully")
-    except Event.DoesNotExist:
-        messages.error(request, "Event not found")
-   
-    return redirect('viewEvents') 
+            for field in form:
+                for error in field.errors:
+                    print(f"Error in {field.label}: {error}")
+    else:
+        form = EventForm(instance=event)
 
+    return render(request, 'EventRecord/edit_event.html', {
+        'event': event,
+        'form': form,
+        'page_title': "Edit Event"
+    })
+
+def deleteEvent(request, eventId):
+    event = get_object_or_404(Event, pk=eventId)
+    
+    if request.method == 'POST':
+        event.delete()
+        messages.success(request, f"Event '{event.title}' deleted successfully")
+        return redirect(reverse('viewEvents'))
+    
+    return render(request, 'EventRecord/delete_event.html', {
+        'event': event,
+        'page_title': "Delete Event"
+    })
 
 
 #create event category views

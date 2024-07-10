@@ -12,34 +12,40 @@ class EventCategory(models.Model):
         return self.event_type
     
 class Event(models.Model):
-    StatusChoices = [ ('active', 'Active'),
+    StatusChoices = [
+        ('active', 'Active'),
         ('completed', 'Completed'),
-        ('disabled', 'Disabled'),]
-    event_type = models.ForeignKey(EventCategory,on_delete=models.CASCADE)
+        ('disabled', 'Disabled'),
+    ]
+
+    event_type = models.ForeignKey(EventCategory, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     description = models.TextField()
     venue = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
-    start_date = models.DateTimeField(auto_created=True)
+    start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    status = models.CharField(max_length=50,choices=StatusChoices,default='active')
+    status = models.CharField(max_length=50, choices=StatusChoices, default='active')
 
     def __str__(self):
         return self.title
     
-
+    def save(self, *args, **kwargs):
+        self.update_status()  # Update status before saving
+        super().save(*args, **kwargs)
+    
     def update_status(self):
-        if self.status != 'disabled': 
+        if self.status != 'disabled':
             if self.end_date <= timezone.now():
                 self.status = 'completed'
             else:
                 self.status = 'active'
-            self.save()
-
+            return True  # Return True if status was updated
+        return False  # Return False if status remains unchanged
+    
     def disable_event(self):
         self.status = 'disabled'
         self.save()
-
 class Assignment(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     department = models.ForeignKey(Department,on_delete=models.CASCADE)
