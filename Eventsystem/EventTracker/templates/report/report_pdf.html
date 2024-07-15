@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{%load static%}
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,46 +12,54 @@
             width: 100%;
             margin: 0 auto;
         }
-        .header, .content {
+        .box-header {
+            text-align: center;
             margin-bottom: 20px;
         }
-        .header h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
+        .box-title {
+            font-size: 30px;
         }
-        .content p {
-            font-size: 14px;
+        .span, p {
+            font-size: 25px;
+        }
+        .content {
+            font-size: 15px;
         }
         img {
             max-width: 100%;
-            height: auto;
+            height: 500px;
+        }
+        hr {
+            border: none;
+            border-top: 0.8px solid rgba(0, 0, 0, 0.1);
+            margin: 10px 0;
         }
     </style>
     <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}">
 </head>
 <body>
     <div class="container">
-        <div class="box-header with-border text-center">
-          {% if report %}
-            <h3 class="box-title"><b>Department of {{ report.assignment.employee.department }}</b></h3>
-            
-            <p></p>
-            <p><b>Report for the Event: {{ report.assignment.event }}</b> held in <b>{{report.assignment.event.venue}}</b> assigned on <b>{{report.assignment.assign_date}}</b></p>
-            <p><i>Written by {{ report.assignment.employee }}</i></p>
-          {% else %}
-            <h3 class="box-title">No Event Assigned</h3>
-            <p>You have no event to write a report on.</p>
-          {% endif %}
+        <div class="box-header with-border">
+            {% if report %}
+                <h3 class="box-title"><b>Department of {{ report.assignment.employee.department }}</b></h3>
+                <p></p>
+                <span class="span"><b>Report for the Event: {{ report.assignment.event }}</b> held in <b>{{ report.assignment.event.venue }}</b> assigned on <b>{{ report.assignment.assign_date }}</b></span>
+                <p><i>Written by {{ report.assignment.employee }}</i></p>
+            {% else %}
+                <h3 class="box-title">No Event Assigned</h3>
+                <span>You have no event to write a report on.</span>
+            {% endif %}
         </div>
+        <hr>
         <div class="content">
-            <h2>Report Content</h2>
             <p>{{ report.content|safe }}</p>
         </div>
-         {% if report.image %}
-        <div class="image">
-            <img src="{{ report.image.media.report_images }}" alt="file">
-        </div>
-    {% endif %}
+        <hr>
+        {% if report.image %}
+            <div class="image">
+                <img src="{{ report.image.path }}" alt="Report Image">
+            </div>
+        {% endif %}
     </div>
 </body>
 </html>

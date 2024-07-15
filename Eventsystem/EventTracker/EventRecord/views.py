@@ -3,7 +3,7 @@ from .forms import *
 from .models import *
 from django_renderpdf.views import PDFView
 from django.http import JsonResponse
-from administrator.views import ReportPDFView
+
 from django.db.models import Count
 from django.contrib import messages
 

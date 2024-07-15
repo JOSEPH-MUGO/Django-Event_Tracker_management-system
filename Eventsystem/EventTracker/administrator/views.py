@@ -1,7 +1,7 @@
 from django.shortcuts import render,reverse, redirect,get_object_or_404
 from account.forms import UserForm
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponse
 from EventRecord.models import *
 from EventRecord.forms import *
 from employee.models import Employee,Department
@@ -9,9 +9,11 @@ from employee.forms import EmployeeForm
 from django.core.mail import send_mail
 from django.urls import reverse
 from django.template.loader import get_template
-from django_renderpdf.views import PDFView
+
 import os
+from xhtml2pdf import pisa
 from django.conf import settings
+
 # Create your views here.
 
 
@@ -165,21 +167,28 @@ def get_assignments(request):
 
 
 #Download and view the pdf
-class ReportPDFView(PDFView):
-    template_name = 'report/report_pdf.html'
-    prompt_download = True
-
-    @property
-    def download_name(self):
-        return 'report.pdf'
-    def get_context_data(self, **kwargs):
-        report_id = kwargs.get('report_id')
-        report = get_object_or_404(Report, pk=report_id)
-        context = super().get_context_data(**kwargs)
-        context['report'] = report
-        return context
 
 
-   
+def downloadReport(request, report_id):
+    report = get_object_or_404(Report, pk=report_id)
+    template_path = 'report/report_pdf.html'  # Path to your HTML template
+
+    context = {
+        'report': report,
+    }
+
+    # Rendered template
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # Create a PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'filename="report_{report_id}.pdf"'
+
+    # Generate PDF
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response    
 
 
