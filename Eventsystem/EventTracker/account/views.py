@@ -124,10 +124,8 @@ def customPasswordResetView(request):
                         send_mail(subject, email, '', [
                               user.email], fail_silently=False)
                         messages.success(request, 'We have sent instructions to your email for resetting your password. If you do not receive an email, please confirm if you entered the correct email address you registered with.')
-
                     except User.DoesNotExist:
-                        messages.error(request, ' The entered email address is not registered!')
-                        return HttpResponse('invalid Header')
+                        messages.error(request, 'The entered email address is not registered!')                        
                     return redirect(reverse('password_reset'))
     else:
         form = PasswordResetForm()

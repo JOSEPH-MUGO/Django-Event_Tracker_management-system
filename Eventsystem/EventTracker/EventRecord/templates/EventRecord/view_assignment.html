@@ -16,6 +16,7 @@
           <p><strong>Location:</strong> {{ event.location }}</p>
           <p><strong>Start Date:</strong> {{ event.start_date }}</p>
           <p><strong>End Date:</strong> {{ event.end_date }}</p>
+          <p><strong>Status:</strong> {{ event.get_status_display }}</p>
 
           <h4><b>Assigned Employees</b></h4>
           
@@ -30,7 +31,7 @@
               <th>Date assigned</th>
               <th>Time assigned</th>
               <th>Department</th>
-              <th>Action</th>
+              <th>Report</th>
             </thead>
             <tbody>
               {% for assignment in assignments %}
@@ -58,6 +59,9 @@
           <p>No employee assigned to this event</p>
           {% endif %}
         </div>
+        <button type="button" class="btn btn-default btn-flat pull-left" onclick="window.history.back();">
+          <i class="fa fa-back"></i> Back
+        </button>
       </div>
       </div>
     </div>

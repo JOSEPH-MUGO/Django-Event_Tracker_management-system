@@ -24,6 +24,7 @@
               <th>Location</th>
               <th>Start Date</th>
               <th>End Date</th>
+              <th>Status</th>
               <th>Date assigned</th>
               <th>Time assigned</th>
               
@@ -39,6 +40,7 @@
                 <td>{{ assignment.event.location }}</td>
                 <td>{{ assignment.event.start_date }}</td>
                 <td>{{ assignment.event.end_date }}</td>
+                <td>{{ assignment.event.get_status_display }}</td>
                 <td>{{ assignment.assign_date }}</td>
                 <td>{{ assignment.time }}</td>             
                 <td>
@@ -57,7 +59,11 @@
           {% else %}
           <p>No assignment available for this employee</p>
           {% endif %}
+          <button type="button" class="btn btn-default btn-flat pull-left" onclick="window.history.back();">
+          <i class="fa fa-back"></i> Back
+        </button>
         </div>
+         
       </div>
     </div>
   </div>

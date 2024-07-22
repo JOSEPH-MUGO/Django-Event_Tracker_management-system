@@ -40,8 +40,8 @@
                 <td>{{ employee.phone }}</td>
                 <td>{{ employee.department }}</td>
                 <td>
-                  <a href="{% url 'getAssigned' employee_id=employee.id %}" class='btn btn-info btn-sm btn-flat'>
-                    <i class='fa fa-edit'></i> View
+                  <a href="{% url 'getAssigned' employee_id=employee.id %}" class='btn btn-info view btn-sm btn-flat'>
+                    <i class='fa fa-eye'></i> View
                   </a>
                   <button class="btn btn-primary btn-sm edit btn-flat" data-id="{{ employee.id }}">
                     <i class="fa fa-edit"></i> Edit
@@ -142,15 +142,15 @@
               <div class="col-sm-9">
                 <input type="text" class="form-control" id="edit_phone" name="phone">
               </div>
-          </div> 
+          </div>
+        
           <div class="form-group">
             <label for="event_type" class="col-sm-3 control-label">Department</label>
             <div class="col-sm-9">
               <select class="form-control" id="department" name="department">
-                {% for department in departments %}
-                <option value="" disabled selected hidden>Select an event department</option>
+                {%for department in departments%}
                 <option value="{{ department.id }}">{{ department.name }}</option>
-                {% endfor %}
+                {%endfor%}
               </select>
             </div>
           </div>
@@ -234,14 +234,16 @@
               id: id
           },
           dataType: 'json',
+
           success: function(response) {
+            console.log(response);
             if (response.code === 200){
-                $('.id').val(response.id);
+              $('.id').val(response.id);
               $('#edit_firstname').val(response.first_name);
               $('#edit_lastname').val(response.last_name);
               $('#edit_email').val(response.email);
               $('#edit_phone').val(response.phone);
-              $('#department').val(response.department);
+              $('#department').val(response.department.id);
               $('.fullname').html(response.first_name + ' ' + response.last_name);
 
             }

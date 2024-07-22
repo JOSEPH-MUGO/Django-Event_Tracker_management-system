@@ -5,6 +5,7 @@ urlpatterns = [
     #create event
     path('events/<int:eventId>/edit/', views.updateEvent, name='editEvent'),
     path('events/', views.viewEvents, name='viewEvents'),
+    path('list_events/', views.listEvents, name='listEvents'),
     path('event/update/',views.updateEvent, name='updateEvent'),
      path('event/<int:eventId>/delete/',views.deleteEvent, name='deleteEvent'),
     path('event/<int:evenT_id>/assignments', views.get_assignments, name='getAssignment'),

@@ -46,7 +46,7 @@
                 <td>{{ event.end_date }}</td>
                 <td>{{ event.get_status_display}}</td>
                 <td>
-                  <a href="{% url 'getAssignment' evenT_id=event.id %}" class='btn btn-info btn-sm btn-flat'>
+                  <a href="{% url 'getAssignment' evenT_id=event.id %}" class='btn btn-info btn-sm view btn-flat'>
                     <i class='fa fa-eye'></i> View
                   </a>
                    <a href="{% url 'editEvent' eventId=event.id %}" class='btn btn-primary btn-sm edit btn-flat'>

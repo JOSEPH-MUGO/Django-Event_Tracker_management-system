@@ -37,6 +37,14 @@ def viewEvents(request):
 
     return render(request, "EventRecord/create_event.html", context)
 
+def listEvents(request):
+    events = Event.objects.filter(status='active').order_by('-id')
+    context ={
+        'events': events,    
+        'page_title': "All Active Events"
+    }
+    return render(request, "EventRecord/event_list.html", context)
+
 
 def updateEvent(request, eventId=None):
     if eventId:

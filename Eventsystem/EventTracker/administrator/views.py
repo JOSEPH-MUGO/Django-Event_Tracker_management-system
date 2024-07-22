@@ -50,11 +50,13 @@ def admin_dashboard(request):
 
 def employees(request):
     employees = Employee.objects.all()
+    departments = Department.objects.all()
     userForm = UserForm(request.POST or None)
     employeeForm = EmployeeForm(request.POST or None)
     context = {
         'form1': userForm,
         'form2': employeeForm,
+        'departments':departments,
         'employees': employees,
         'page_title': 'Employee List'
     }

@@ -1,3 +1,4 @@
+
 from django.utils.deprecation import MiddlewareMixin
 from django.urls import reverse
 from django.shortcuts import redirect
@@ -5,76 +6,36 @@ from django.contrib import messages
 import logging
 
 logger = logging.getLogger(__name__)
-
 class AccountCheckMiddleWare(MiddlewareMixin):
     def process_view(self, request, view_func, view_args, view_kwargs):
         modulename = view_func.__module__
         user = request.user  # Who is the current user?
         
         logger.debug(f"User: {user}, Module: {modulename}, Path: {request.path}")
-        
+
+        # Exempt paths for authentication
+        exempt_paths = [
+            reverse('token_obtain_pair'),
+            reverse('token_refresh'),
+            reverse('login'),
+            reverse('password_reset'),
+            reverse('password_reset_confirm', kwargs={'uidb64': view_kwargs.get('uidb64'), 'token': view_kwargs.get('token')}),
+            reverse('password_reset_complete'),
+        ]
+
+        if any(request.path == path for path in exempt_paths) or modulename == 'django.contrib.auth.views':
+            return None
+
         if user.is_authenticated:
             if user.user_type == '1':  # Admin
-                if modulename == 'EventRecord.views':
-                    if 'employee_id' in view_kwargs:
-                        if request.path == reverse('getAssigned', kwargs={'employee_id': view_kwargs['employee_id']}):
-                            return None
-                    if 'evenT_id' in view_kwargs:
-                        if request.path == reverse('getAssignment', kwargs={'evenT_id': view_kwargs['evenT_id']}):
-                            return None
-                    if 'eventId' in view_kwargs:
-                        if request.path == reverse('editEvent', kwargs={'eventId': view_kwargs['eventId']}):
-                            return None
-                    if 'eventId' in view_kwargs:
-                        if request.path == reverse('deleteEvent', kwargs={'eventId': view_kwargs['eventId']}):
-                            return None
-        
-        
-                    if request.path in [
-                        reverse('viewEvents'),
-                        
-                        reverse('updateEvent'),
-                        
-                        reverse('createEventCategory'),
-                        reverse('getCategory'),
-                        reverse('updateCategory'),
-                        reverse('deleteCategory'),
-                        reverse('password_reset'),
-                        reverse('password_reset_confirm', kwargs={'uidb64': view_kwargs.get('uidb64'), 'token': view_kwargs.get('token')}),
-                        reverse('assignedEvent'),
-                        reverse('getAssigned'),
-                        reverse('updateAssigned'),
-                        reverse('deleteAssigned'),
-                        reverse('getAssignments'),
-                        
-                    ]:
-                        logger.debug("Access granted to admin")
-                    else:
-                        messages.error(request, "You do not have access to this resource")
-                        return redirect(reverse('admin_dashboard'))
+                logger.debug(f"Access granted to admin user: {user.email}")
+                return None
             elif user.user_type == '2':  # Employee
-                if modulename == 'employee.views':
-                    if 'assign_id' in view_kwargs:
-                        if request.path == reverse('submitReport', kwargs={'assign_id': view_kwargs['assign_id']}):
-                            return None
-                    pass
-                if modulename == 'administrator.views':
-                    messages.error(request, "You do not have access to this resource")
-                    return redirect(reverse('dashboard'))
-            else:  # None of the aforementioned? Please take the user to login page
+                logger.debug(f"Access granted to employee user: {user.email}")
+                return None
+            else:
+                logger.debug(f"Unauthorized user type: {user.user_type}")
                 return redirect(reverse('login'))
         else:
-            # If the path is login or has anything to do with authentication, pass
-            if request.path in [
-                reverse('login'),
-                reverse('password_reset'),
-                reverse('password_reset_confirm', kwargs={'uidb64': view_kwargs.get('uidb64'), 'token': view_kwargs.get('token')}),
-                reverse('password_reset_complete'),
-            ] or modulename == 'django.contrib.auth.views':
-                pass
-            elif modulename == 'administrator.views' or modulename == 'employee.views':
-                # If visitor tries to access administrator or employee functions
-                messages.error(request, "You need to be logged in to perform this operation")
-                return redirect(reverse('login'))
-            else:
-                return redirect(reverse('login'))
+            logger.debug("User not authenticated, redirecting to login.")
+            return redirect(reverse('login'))

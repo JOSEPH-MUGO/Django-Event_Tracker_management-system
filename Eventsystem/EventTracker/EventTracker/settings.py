@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'reportlab',
     'django_renderpdf',
     'tinymce',
+    'rest_framework',
+    'rest_framework_simplejwt',
     
     
     # local apps
@@ -55,6 +57,7 @@ INSTALLED_APPS = [
     'employee',
     'administrator',
     'manageCommands',
+    'apis',
     
    
 ]
@@ -213,4 +216,11 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'EventRecord.tasks.update_event_status',
         'schedule':crontab(minute=0, hour='*/1'), # Every hour
     },
+}
+
+REST_FRAMEWORK = {
+    
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
 }

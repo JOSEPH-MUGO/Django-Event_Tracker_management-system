@@ -25,13 +25,13 @@
       <li class=""><a href="{% url 'viewEvents' %}"><span class="glyphicon glyphicon-pencil"></span> <span>Events Management</span></a></li>
       <li class=""><a href="{% url 'assignedEvent' %}"><i class="fa fa-tasks"></i> <span>Assigned Events</span></a></li> 
      <li class="header">EMPLOYEE REPORTS</li>
-      <li class=""><a href="{% url 'report' %}"><i class="fa fa-black-tie"></i> <span>Reports</span></a></li> 
+      <li class=""><a href="{% url 'report' %}"><i class="fa fa-file"></i> <span>Reports</span></a></li> 
       <li class=""><a href="{% url 'logout' %}"><i class="fa fa-power-off"></i> <span>Logout</span></a></li>  
       {% endif %}
       {% if request.user.user_type == '2'%}
       <li class="header">REPORT</li>
       
-      <li class=""><a href="#"><i class="fa fa-black-tie"></i> <span>See event</span></a></li>
+      <li class=""><a href="{% url 'listEvents' %}"><i class="fa fa-eye"></i> <span>See events</span></a></li>
 
         
       <li class="header">EXIT</li>

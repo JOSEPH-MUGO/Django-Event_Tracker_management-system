@@ -23,6 +23,7 @@
             <thead style="background-color: #222d32; color: white">
               <th>Report by</th>
                <th>Event</th>
+               <th>Submitted at</th>
               <th>Action</th>
             </thead>
             <tbody>
@@ -30,11 +31,14 @@
               <tr>
                 <td>{{ report.assignment.employee }}</td>
                 <td>{{ report.assignment.event }}</td>
+                <td>{{ report.submitted_at}}</td>
+
                 <td>
                   <a href="{% url 'downloadReport' report_id=report.id %}" class="btn btn-success btn-sm download btn-flat">
-                    <i class="fa fa-download"></i> Download Report
+                    <i class="fa fa-download"></i> Read and Download Report
                   </a>
-                 
+                 <input type="checkbox" name="select">approve
+                 <input type="radio" name="select">disapprove
                 </td>
               </tr>
               {% endfor %}
