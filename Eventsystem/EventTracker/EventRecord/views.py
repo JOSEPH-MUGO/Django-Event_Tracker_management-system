@@ -3,7 +3,7 @@ from .forms import *
 from .models import *
 from django_renderpdf.views import PDFView
 from django.http import JsonResponse
-
+from django.db.models.deletion import ProtectedError
 from django.db.models import Count
 from django.contrib import messages
 
@@ -12,12 +12,13 @@ from django.contrib import messages
 # Create your views here.
 
 
+
 def viewEvents(request):
-    events = Event.objects.order_by('-id').all()
+    events = Event.objects.order_by('-id').all()  # Fetch all events
     category = EventCategory.objects.all()
-    
+
     form = EventForm(request.POST or None)
-    context ={
+    context = {
         'events': events,
         'form1': form,
         'category': category,
@@ -25,26 +26,21 @@ def viewEvents(request):
     }
     if request.method == 'POST':
         if form.is_valid():
-            form = form.save(commit=False)
-           
-            form.id = request.POST.get('id', events.count() + 1)  
             form.save()
             messages.success(request, "New Event created ")
             return redirect(reverse('viewEvents'))
         else:
-            print(form.errors)
             messages.error(request, "Oops! Form error")
 
     return render(request, "EventRecord/create_event.html", context)
 
 def listEvents(request):
     events = Event.objects.filter(status='active').order_by('-id')
-    context ={
-        'events': events,    
+    context = {
+        'events': events,
         'page_title': "All Active Events"
     }
     return render(request, "EventRecord/event_list.html", context)
-
 
 def updateEvent(request, eventId=None):
     if eventId:
@@ -73,20 +69,19 @@ def updateEvent(request, eventId=None):
         'page_title': "Edit Event"
     })
 
-def deleteEvent(request, eventId):
-    event = get_object_or_404(Event, pk=eventId)
-    
-    if request.method == 'POST':
-        event.delete()
-        messages.success(request, f"Event '{event.title}' deleted successfully")
+
+def deleteEvents(request):
+    if request.method != 'POST':
+        messages.error(request, 'Access denied')
         return redirect(reverse('viewEvents'))
-    
-    return render(request, 'EventRecord/delete_event.html', {
-        'event': event,
-        'page_title': "Delete Event"
-    })
-
-
+    try:
+        event = Event.objects.get(id = request.POST.get('id'))
+        event.delete()
+        messages.success(request, 'Event  deleted successfully')
+        return redirect(reverse('viewEvents'))
+    except Event.DoesNotExist:
+        messages.error(request, 'Event not found')
+        return redirect(reverse('viewEvents'))
 #create event category views
 def eventCategory(request):
     category = EventCategory.objects.all()
@@ -153,24 +148,17 @@ def deleteCategory(request):
     #assigning employees the events
 
 
-
 def assign_employee(request):
     assigns = Assignment.objects.all()
     if request.method == 'POST':
         department_id = request.POST.get('department')
         form = AssignForm(department_id=department_id, data=request.POST)
         if form.is_valid():
-            event = form.cleaned_data['event']
-            employee = form.cleaned_data['employee']
-            assign_date = form.cleaned_data['assign_date']
-            
-            # Check if the employee is already assigned to an event on the same date
-            if Assignment.objects.filter(employee=employee, event=event, assign_date=assign_date).exists():
-                messages.error(request, 'Employee is already assigned another event on the same date.')
-                return redirect(reverse('assignedEvent'))
-            
-            form.save()  # Ensure that assignment is only saved when form is valid
-            messages.success(request, 'Employee assigned to the event successfully.')
+            try:
+                form.save()
+                messages.success(request, 'Employee assigned to the event successfully.')
+            except ValidationError as e:
+                messages.error(request, 'Emlpoyee is assigned to another event on the same day and time')
             return redirect(reverse('assignedEvent'))
         else:
             messages.error(request, 'There was an error with your form. Please check the details.')
@@ -183,6 +171,7 @@ def assign_employee(request):
         'page_title': "Assigned Events"
     }
     return render(request, 'EventRecord/assign_event_employee.html', context)
+
 def getAssigned(request):
     assign_id = request.GET.get('id')
     context = {}
@@ -240,6 +229,7 @@ def updateAssigned(request):
     
     return redirect(reverse('assignedEvent'))
 
+
 def deleteAssigned(request):
     if request.method == 'POST':
         assign_id = request.POST.get('id')
@@ -247,13 +237,14 @@ def deleteAssigned(request):
             assignment = get_object_or_404(Assignment, id=assign_id)
             assignment.delete()
             messages.success(request, 'Assignment deleted successfully!')
+        except ProtectedError:
+            messages.error(request, 'Cannot delete this assignment because it is referenced by a report.')
         except Assignment.DoesNotExist:
             messages.error(request, 'Assignment not found.')
         return redirect(reverse('assignedEvent'))
     else:
         messages.error(request, 'Invalid request method.')
         return redirect(reverse('assignedEvent'))
-
 
 
 def get_assignments(request, evenT_id):

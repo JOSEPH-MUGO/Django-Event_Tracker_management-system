@@ -8,9 +8,9 @@ from employee.models import Employee,Department
 from employee.forms import EmployeeForm
 from django.core.mail import send_mail
 from django.urls import reverse
-from django.template.loader import get_template
+from django.template.loader import get_template, render_to_string
+from django.utils.html import strip_tags
 
-import os
 from xhtml2pdf import pisa
 from django.conf import settings
 
@@ -194,3 +194,44 @@ def downloadReport(request, report_id):
     return response    
 
 
+def batch_approve_reports(request):
+    if request.method == 'POST':
+        status = request.POST.get('status')
+        report_ids = request.POST.getlist('reports')
+
+        if not status or not report_ids:
+            messages.error(request, 'Please select a status and at least one report.')
+            return redirect('report')
+
+        for report_id in report_ids:
+            try:
+                report = Report.objects.get(id=report_id)
+                if report.status == 'approved':
+                    continue  # Skip if already approved
+
+                report.status = status
+                report.save()
+
+                if status == 'approved':
+                    # Send email notification to the report owner
+                    subject = 'Your Report Has Been Approved'
+                    email_content = render_to_string('emails/report_approval_email.html', {'report': report})
+                    plain_message = strip_tags(email_content)
+                    
+                    send_mail(subject, plain_message, '', [report.submitted_by.admin.email], fail_silently=False)
+
+            except Report.DoesNotExist:
+                continue  # Skip if report does not exist
+
+        messages.success(request, f'Reports have been {status} successfully.')
+        return redirect('report')
+    else:
+        return redirect('report')
+    
+def notifications(request):
+    notifications = Notification.objects.filter(user=request.user, is_read=False).order_by('-created_at')
+    context = {
+        'notifications': notifications,
+        'unread_notifications_count': notifications.count(),
+    }
+    return render(request, 'EventRecord/notification.html', context)

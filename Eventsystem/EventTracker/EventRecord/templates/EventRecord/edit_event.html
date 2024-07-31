@@ -73,3 +73,19 @@
   </div>
 </section>
 {% endblock content %}
+{%block custom_js%}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    {% if messages %}
+        {% for message in messages %}
+            Swal.fire({
+                title: "{{ message.tags|capfirst }}",
+                text: "{{ message }}",
+                icon: "{{ message.tags }}",
+                confirmButtonText: 'OK'
+            });
+        {% endfor %}
+    {% endif %}
+});
+</script>
+{%endblock custom_js%}

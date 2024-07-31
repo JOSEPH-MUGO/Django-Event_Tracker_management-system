@@ -6,6 +6,8 @@ from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
 import random
 import string
+from django.utils.html import strip_tags
+from django.template.loader import render_to_string
 
 class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,6 +28,9 @@ class AssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignment
         fields = '__all__'
+    
+
+
 
 class ReportSerializer(serializers.ModelSerializer):
     class Meta:

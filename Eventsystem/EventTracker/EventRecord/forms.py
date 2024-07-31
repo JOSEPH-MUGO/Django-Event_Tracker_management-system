@@ -2,6 +2,7 @@ from django import forms
 from .models import *
 from account.forms import FormSettings
 from tinymce.widgets import TinyMCE
+from django.core.exceptions import ValidationError
 
 
 class EventForm(FormSettings):
@@ -32,18 +33,19 @@ class EventForm(FormSettings):
         
         return cleaned_data
 
-class AssignForm(forms.ModelForm):
+class AssignForm(FormSettings):
     assign_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'placeholder': 'Select a date'}))
     time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time', 'class': 'form-control', 'placeholder': 'Select a time'}))
-    message =forms.CharField(widget=forms.Textarea(attrs={'class':'form-control','type':'textarea', 'rows': 3,'placeholder':'What do you expect from the employee about this event?'}))
+    message = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'type': 'textarea', 'rows': 3, 'placeholder': 'What do you expect from the employee about this event?'}))
+
     class Meta:
         model = Assignment
-        fields = ['event', 'department', 'employee', 'assign_date', 'time','message']
+        fields = ['event', 'department', 'employee', 'assign_date', 'time', 'message']
 
     def __init__(self, department_id=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['event'].queryset = Event.objects.all()
-        self.fields['event'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Select an event'},empty_label='Select a event')
+        self.fields['event'].queryset = Event.objects.filter(status='active').order_by('-id')
+        self.fields['event'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Select an event'})
         self.fields['department'].queryset = Department.objects.all()
         self.fields['department'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Select a department', 'id': 'department-select'})
         self.fields['employee'].queryset = Employee.objects.none()
@@ -51,7 +53,23 @@ class AssignForm(forms.ModelForm):
 
         if department_id:
             self.fields['employee'].queryset = Employee.objects.filter(department_id=department_id)
+        
+      
 
+    def clean(self):
+        cleaned_data = super().clean()
+        event = cleaned_data.get('event')
+        employee = cleaned_data.get('employee')
+
+        if event and employee:
+            # Check if the employee is already assigned to another event that starts on the same date
+            if Assignment.objects.filter(
+                employee=employee,
+                event__start_date=event.start_date
+            ).exclude(id=self.instance.id).exists():
+                raise ValidationError('Employee is already assigned to another event starting on the same date.')
+
+        return cleaned_data
 class EventCategoryForm(FormSettings):
     class Meta:
         model = EventCategory
@@ -63,4 +81,4 @@ class ReportForm(FormSettings):
     class Meta:
         model = Report
         fields = ['content','image']
-    
+

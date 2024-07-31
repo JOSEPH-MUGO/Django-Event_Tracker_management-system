@@ -21,6 +21,7 @@ class AccountCheckMiddleWare(MiddlewareMixin):
             reverse('password_reset'),
             reverse('password_reset_confirm', kwargs={'uidb64': view_kwargs.get('uidb64'), 'token': view_kwargs.get('token')}),
             reverse('password_reset_complete'),
+            reverse('notifications'),
         ]
 
         if any(request.path == path for path in exempt_paths) or modulename == 'django.contrib.auth.views':

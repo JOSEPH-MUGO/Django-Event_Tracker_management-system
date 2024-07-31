@@ -10,5 +10,6 @@ urlpatterns = [
     path('employees/update', views.updateEmployee, name="updateEmployee"),
     path('get-assignments/', views.get_assignments, name='getAssignments'),
     path('download_report_pdf/<int:report_id>/', views.downloadReport, name='downloadReport'),
-   
+    path('reports/batch_approve/', views.batch_approve_reports, name='batch_approve_reports'),
+    path('notifications/',views.notifications, name='notifications'),
 ]

@@ -10,5 +10,6 @@ urlpatterns = [
     path('department/delete',views.deleteDepartment, name="deleteDepartment"),
     path('get-employees-by-department/',views.getEmployeeDepartment, name='getEmployeeByDepartment'),
     path('employee/submit_report/<int:assign_id>/', views.submit_report, name='submitReport'),
-    path('reports/submitted/',views.report,name='report')
+    path('reports/submitted/',views.report,name='report'),
+    
 ]

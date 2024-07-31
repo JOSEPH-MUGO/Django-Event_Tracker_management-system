@@ -35,7 +35,8 @@
           </div>
           <!-- /.box-body -->
           <div class="box-footer">
-            <button type="submit" class="btn btn-primary pull-right" {% if not assigned %}disabled{% endif %}>Submit Report</button>
+            <button type="submit" class="btn btn-primary pull-right"
+             {% if not assigned or assignment.event.status != 'completed' %}disabled title="You can only submit a report after the event is completed."{% endif %}>Submit Report</button>
           </div>
           <!-- /.box-footer -->
         </form>

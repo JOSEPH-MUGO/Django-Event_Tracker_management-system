@@ -1,30 +1,42 @@
-from django.shortcuts import render,redirect, get_object_or_404,reverse
+from django.shortcuts import render,redirect,reverse
 from EventRecord.models import *
 from django.template.loader import render_to_string
-from django.core.files.storage import FileSystemStorage
+
 from django.conf import settings
 from django.urls import reverse
 from django.contrib import messages
 from EventRecord.forms import ReportForm
-from io import BytesIO
-from reportlab.pdfgen import canvas
-import os
-from django.utils.html import strip_tags
+from django.core.exceptions import ObjectDoesNotExist
+
 from . models import *
 from . forms import *
-from django.http import JsonResponse,HttpResponse,FileResponse
+from django.http import JsonResponse
 # Create your views here.
 
 # employee dashboard
+
 def dashboard(request):
-  user = request.user
-  assignments = Assignment.objects.filter(employee=user.employee)
-  if user.is_authenticated and user.user_type == '2':
-    context = {
-        'assignments': assignments,
-        'page_title':"Employee Dashboard"
-    }
-    return render(request, 'account/employee_home.html', context)
+    user = request.user
+    
+    # Check if the user is authenticated and is of type '2'
+    if user.is_authenticated and user.user_type == '2':
+        try:
+            # Try to fetch the related Employee object
+            employee = user.employee
+            assignments = Assignment.objects.filter(employee=employee)
+            
+            context = {
+                'assignments': assignments,
+                'page_title': "Employee Dashboard"
+            }
+            return render(request, 'account/employee_home.html', context)
+        
+        except ObjectDoesNotExist:
+            
+            messages.error(request, 'You do not have an permission to access this resource. ')
+            return redirect('login')  
+    return redirect('login')
+
 
 
 
@@ -100,8 +112,6 @@ def getEmployeeDepartment(request):
     employee_list = list(employees)
     return JsonResponse(employee_list, safe=False)
 
-
-
 def submit_report(request, assign_id=None):
     assignment = None
     assigned = False
@@ -121,15 +131,32 @@ def submit_report(request, assign_id=None):
             assigned = False
 
     if assigned:
+        # Check if a report already exists for this assignment
+        if Report.objects.filter(assignment=assignment).exists():
+            messages.error(request, 'You have already submitted a report for this event.')
+            return redirect('dashboard')  # Redirect to the appropriate URL
+        
         if request.method == 'POST':
-            report_form = ReportForm(request.POST,request.FILES)
+            report_form = ReportForm(request.POST, request.FILES)
             if report_form.is_valid():
                 report = report_form.save(commit=False)
                 report.assignment = assignment
                 report.submitted_by = assignment.employee
-                report.save()           
+                report.save()  
+
+                # Construct the notification message
+                notification_message = f"New report submitted by {assignment.employee} for assignment {assignment.event}."
+
+                # Create the notification
+                Notification.objects.create(
+                    user=request.user,  # Assuming `request.user` is the admin or relevant user
+                    message=notification_message,
+                    is_read=False
+                )
+                print(f"Notification created: {notification_message}")
+
                 messages.success(request, 'Report submitted successfully.')
-                return redirect('dashboard')  # Replace with your appropriate URL
+                return redirect('dashboard')  # Redirect to the appropriate URL
             else:
                 messages.error(request, 'Error submitting report. Please check the form.')
         else:
@@ -144,6 +171,7 @@ def submit_report(request, assign_id=None):
         'assigned': assigned
     }
     return render(request, 'report/submit_report.html', context)
+
 def report(request):
     reports = Report.objects.all()
     context ={'reports':reports,'page_title':"Submited Reports"}

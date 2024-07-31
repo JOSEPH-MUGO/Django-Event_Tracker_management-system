@@ -36,6 +36,7 @@ ALLOWED_HOSTS = ['localhost','127.0.0.1','.vercel.app','.now.sh']
 INSTALLED_APPS = [
     'adminlte3',
     'adminlte3_theme',
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     'tinymce',
     'rest_framework',
     'rest_framework_simplejwt',
+    
     
     
     # local apps
@@ -87,13 +89,21 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'EventTracker.wsgi.application'
+#WSGI_APPLICATION = 'EventTracker.wsgi.application'
+ASGI_APPLICATION = 'EventTracker.asgi.application'
 
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases

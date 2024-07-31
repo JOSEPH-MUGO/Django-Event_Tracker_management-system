@@ -1,9 +1,12 @@
 from django.dispatch import receiver
 from django.core.mail import send_mail
 from django.db.models.signals import post_save, pre_save
-from .models import Assignment
+from .models import Assignment,Report,Notification
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from account.models import User
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 @receiver(pre_save, sender=Assignment)
 def save_old_employee(sender, instance, **kwargs):
@@ -37,3 +40,15 @@ def event_mail(sender, instance, created, **kwargs):
         
         # Notify new employee of updated assignment
         send_mail(subject, plain_message, '', [employee.admin.email], fail_silently=False)
+
+@receiver(post_save, sender=Notification)
+def notification_created(sender, instance, created, **kwargs):
+    if created:
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            'public_room',
+            {
+                "type": "send_notification",
+                "message": instance.message
+            }
+        )

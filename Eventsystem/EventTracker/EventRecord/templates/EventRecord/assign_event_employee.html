@@ -11,15 +11,7 @@
             ><i class="fa fa-plus"></i> Assign employee an event</a
           >
         </div>
-          {% if messages %}
-        <ul class="messages">
-          {% for message in messages %}
-          <li{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %} id="message_{{ forloop.counter }}">
-            {{ message }}
-          </li>
-          {% endfor %}
-        </ul>
-        {% endif %}
+         
         <div class="box-body">
           {% if assigns %}
           <table
@@ -58,8 +50,7 @@
                   </button>
                   <button
                     class="btn btn-danger btn-sm delete btn-flat"
-                    data-id="{{ assigned.id }}" onclick="return confirm('Are you sure you want to delete this assignment?')"
-                  >
+                    data-id="{{ assigned.id }}" 
                     <i class="fa fa-trash"></i> Delete
                   </button>
                 </td>
@@ -211,55 +202,17 @@
   </div>
 </div>
 
-<!-- Delete Modal -->
-<div class="modal fade" id="delete">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title"><b>Deleting...</b></h4>
-      </div>
-      <div class="modal-body">
-       
-        <form class="form-horizontal" method="POST" action="{% url 'deleteAssigned' %}">
-          {% csrf_token %}
-          <input type="hidden" class="id" name="id" />
-          <div class="text-center">
-            <p>Are you sure you want to delete this event assignment?</p>
-            <h2 class="bold event"></h2>
-            <h3>assigned to</h3>
-            {%for assigned in assigns%}
-            <ul>
-              <li>{{assigned.employee}}</li>
-            </ul>
-            {%endfor%}
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal">
-              <i class="fa fa-close"></i> Close
-            </button>
-            <button type="submit" class="btn btn-danger btn-flat" name="delete">
-              <i class="fa fa-trash"></i> Delete
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
 {% endblock modal %}
 {% block custom_js %}
 <script>
   // Function to get CSRF token from cookies
   function getCookie(name) {
     var cookieValue = null;
-    if (document.cookie && document.cookie != '') {
+    if (document.cookie && document.cookie !== '') {
       var cookies = document.cookie.split(';');
       for (var i = 0; i < cookies.length; i++) {
         var cookie = jQuery.trim(cookies[i]);
-        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
           cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
           break;
         }
@@ -280,13 +233,13 @@
     }
   });
 
-  $(document).ready(function() {
+  document.addEventListener('DOMContentLoaded', function () {
     // Populate employees based on selected department
     $('#department-select').change(function() {
       var departmentId = $(this).val();
       if (departmentId) {
         $.ajax({
-          url: '{% url "getEmployeeByDepartment" %}', // Endpoint to fetch employees
+          url: '{% url "getEmployeeByDepartment" %}',
           type: 'GET',
           data: {'department_id': departmentId},
           success: function(data) {
@@ -335,17 +288,12 @@
     });
 
     // Delete button click event handler
-    $(document).on('click', '.delete', function(e) {
+    $(document).on('click', '.delete', function (e) {
       e.preventDefault();
-      $('#delete').modal('show');
       var id = $(this).data('id');
-      getRow(id);
+      var assigned = $(this).closest('tr').find('td:first').text().trim();
+      confirmDelete(id, assigned);
     });
-
-    // Hide messages after 3 seconds
-    setTimeout(function() {
-      $('.messages').fadeOut('slow');
-    }, 3000);
   });
 
   // Function to fetch data for editing
@@ -390,7 +338,7 @@
         $.each(data, function(index, item) {
           $('#employee').append('<option value="' + item.id + '">' + item.admin__first_name + ' ' + item.admin__last_name + '</option>');
         });
-        
+
         // Set the selected employee if available
         if (selectedEmployeeId) {
           $('#employee').val(selectedEmployeeId);
@@ -401,5 +349,57 @@
       }
     });
   }
+
+  // Function to confirm delete action
+function confirmDelete(id, assigned) {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: `You are about to delete ${assigned} assignment. This action cannot be undone.`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!',
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Create a form and submit it
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = '{% url "deleteAssigned" %}';
+
+      const csrfToken = document.createElement('input');
+      csrfToken.type = 'hidden';
+      csrfToken.name = 'csrfmiddlewaretoken';
+      csrfToken.value = '{{ csrf_token }}'; 
+
+      const idInput = document.createElement('input');
+      idInput.type = 'hidden';
+      idInput.name = 'id';
+      idInput.value = id;
+
+      form.appendChild(csrfToken);
+      form.appendChild(idInput);
+
+      document.body.appendChild(form);
+      form.submit();
+    }
+  });
+}
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  {% if messages %}
+    {% for message in messages %}
+      Swal.fire({
+        title: "{{ message.tags|capfirst }}",
+        text: "{{ message }}",
+        icon: "{{ message.tags }}",
+        confirmButtonText: 'OK'
+      });
+    {% endfor %}
+  {% endif %}
+});
 </script>
 {% endblock custom_js %}

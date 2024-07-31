@@ -40,6 +40,9 @@ class viewsetAssignment(viewsets.ModelViewSet):
     serializer_class = AssignmentSerializer
     permission_classes = [IsAuthenticated,IsAdminUser]
 
+   
+        
+
 class viewsetReport(viewsets.ModelViewSet):
     queryset = Report.objects.all()
     serializer_class = ReportSerializer

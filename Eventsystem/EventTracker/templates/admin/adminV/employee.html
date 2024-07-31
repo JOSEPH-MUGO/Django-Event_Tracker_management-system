@@ -11,15 +11,7 @@
           </a>
         </div>
         <div class="box-body">
-            {% if messages %}
-        <ul class="messages">
-          {% for message in messages %}
-          <li{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %} id="message_{{ forloop.counter }}">
-            {{ message }}
-          </li>
-          {% endfor %}
-        </ul>
-        {% endif %}
+          
           <table id="example1" class="table table-bordered table-hover table-striped display" >
             <thead style="background-color: #222d32; color: white">
               <tr>
@@ -196,36 +188,31 @@
 
 {% block custom_js %}
 <script>
-   $(function() {
- 
-      $(document).on('click', '.edit', function(e) {
-          e.preventDefault();
-          $('#edit').modal('show');
-          var id = $(this).data('id');
-          getRow(id);
-      });
+$(function() {
+  document.addEventListener('DOMContentLoaded', function () {
+    $(document).on('click', '.edit', function (e) {
+      e.preventDefault();
+      
+      $('#edit').modal('show');
+      var id = $(this).data('id');
+      getRow(id);
+    });
 
-      $(document).on('click', '.delete', function(e) {
-          e.preventDefault();
-          $('#delete').modal('show');
-          var id = $(this).data('id');
-          getRow(id);
-      });
-      $(document).on('click', '.view-assignments', function(e) {
+    $(document).on('click', '.delete', function (e) {
+      e.preventDefault();
+      var id = $(this).data('id');
+      var employee = $(this).closest('tr').find('td:first').text().trim();
+      confirmDelete(id, employee);
+    });
+    $(document).on('click', '.view-assignments', function(e) {
       e.preventDefault();
       $('#view-assignments').modal('show');
       var id = $(this).data('id');
       loadAssignments(id);
     });
-      setTimeout(function() {
-        $('.messages').fadeOut('slow'); // Fade out the message container
-      }, 3000);
-
-
   });
 
-  
-
+  });
   function getRow(id) {
       $.ajax({
           type: 'GET',
@@ -258,7 +245,50 @@
       });
       
   }
-  </script>
+  function confirmDelete(id, employee){
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You are about to delete employee ${employee}. This action cannot be undone. ',
+      icon: 'warning',
+      showCancelButton: 'true',
+      confirmButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel'
+    }).then((result)=>{
+      if(result.isConfirmed){
+        // create a delete form and submit it
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{% url "deleteEmployee"%}';
+
+        const csrfToken = document.createElement('input');
+        idInput.type = 'hidden';
+        idInput.name = 'id';
+        idInput.value = id;
+        
+        form.appendChild(csrfToken);
+        form.appendChild(idInput);
+
+        document.body.appendChild(form);
+        form.submit();
+      }
+    });
+  }
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    {% if messages %}
+        {% for message in messages %}
+            Swal.fire({
+                title: "{{ message.tags|capfirst }}",
+                text: "{{ message }}",
+                icon: "{{ message.tags }}",
+                confirmButtonText: 'OK'
+            });
+        {% endfor %}
+    {% endif %}
+});
+</script>
 {% endblock custom_js %}
 
 

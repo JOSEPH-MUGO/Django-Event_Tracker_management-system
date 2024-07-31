@@ -7,15 +7,7 @@
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header with-border">
-        {% if messages %}
-    <ul class="messages">
-      {% for message in messages %}
-      <li{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %} id="message_{{ forloop.counter }}">
-          {{ message }}
-      </li>
-      {% endfor %}
-    </ul>
-{% endif %}
+        
           <h3 class="box-title"><b>Assigned Events</b></h3>
         </div>
         {%if assignments %}
@@ -51,11 +43,14 @@
                 <td>{{ assignment.assign_date }}</td>
                 <td>{{ assignment.time }}</td>
                 
-                <td>
-                  <a href="{% url 'submitReport' assign_id=assignment.id %}" class='btn btn-info btn-sm btn-flat'>
-                    <i class='fa fa-pencil'></i> write report
+                <td> 
+                  <a  href="{% url 'submitReport' assign_id=assignment.id %}" class='btn btn-info btn-sm btn-flat' 
+                   {% if assignment.event.status != 'completed' %} disabled 
+                  title="You can only write a report after the event is completed."  {% endif %}> 
+                  
+                   <i class='fa fa-pencil'></i> write report
+                   
                   </a>
-                 
                 </td>
               </tr>
               {% endfor %}
@@ -72,10 +67,17 @@
 {% endblock content %}
 {% block custom_js %}
 <script>
-&(function(){
-  setTimeout(function() {
-    $('.messages').fadeOut('slow'); 
-});
+document.addEventListener("DOMContentLoaded", function() {
+    {% if messages %}
+        {% for message in messages %}
+            Swal.fire({
+                title: "{{ message.tags|capfirst }}",
+                text: "{{ message }}",
+                icon: "{{ message.tags }}",
+                confirmButtonText: 'OK'
+            });
+        {% endfor %}
+    {% endif %}
 });
 </script>
 {% endblock custom_js %}
