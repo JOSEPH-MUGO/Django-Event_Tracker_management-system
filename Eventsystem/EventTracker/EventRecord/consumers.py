@@ -1,21 +1,25 @@
 import json
-from asgiref.sync import async_to_sync
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-class NotificationConsumer(AsyncWebsocketConsumer):
+class NotifyConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.group_name = 'public_room'
+        # Join the WebSocket group
         await self.channel_layer.group_add(
-            self.group_name,
+            "public_room",  # Group name
             self.channel_name
         )
         await self.accept()
 
     async def disconnect(self, close_code):
+        # Leave the WebSocket group
         await self.channel_layer.group_discard(
-            self.group_name,
+            "public_room",
             self.channel_name
         )
 
     async def send_notification(self, event):
-        await self.send(text_data=json.dumps({ 'message': event['message'] }))
+        # Send message to WebSocket
+        message = event['message']
+        await self.send(text_data=json.dumps({
+            'message': message
+        }))

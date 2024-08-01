@@ -38,7 +38,7 @@
                   <button class="btn btn-primary btn-sm edit btn-flat" data-id="{{ employee.id }}">
                     <i class="fa fa-edit"></i> Edit
                   </button>
-                  <button class="btn btn-danger btn-sm delete btn-flat" data-id="{{ employee.id }}" onclick="return confirm('Are you sure you want to delete this employee?')">
+                  <button class="btn btn-danger btn-sm delete btn-flat" data-id="{{ employee.id }}">
                     <i class="fa fa-trash"></i> Delete
                   </button>
                 </td>
@@ -156,63 +156,37 @@
   </div>
 </div>
 
-<!-- Delete -->
-<div class="modal fade" id="delete">
-  <div class="modal-dialog">
-      <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title"><b>Deleting...</b></h4>
-          </div>
-          <div class="modal-body">
-            <form class="form-horizontal" method="POST" action="{% url 'deleteEmployee' %}">
-              <input type="hidden" class="id" name="id">
-              {% csrf_token %}
-              <div class="text-center">
-                  <p>DELETE EMPLOYEE</p>
-                  <h2 class="bold fullname"></h2>
-              </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
-            <button type="submit" class="btn btn-danger btn-flat" name="delete"><i class="fa fa-trash"></i> Delete</button>
-            </form>
-          </div>
-      </div>
-  </div>
-</div>
-
 {% endblock modal %}
 
 
 {% block custom_js %}
 <script>
-$(function() {
-  document.addEventListener('DOMContentLoaded', function () {
-    $(document).on('click', '.edit', function (e) {
-      e.preventDefault();
+   $(function() {
+ 
+      $(document).on('click', '.edit', function(e) {
+          e.preventDefault();
+          $('#edit').modal('show');
+          var id = $(this).data('id');
+          getRow(id);
+      });
+
+      $(document).on('click', '.delete', function(e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+        var employee = $(this).closest('tr').find('td:first').text().trim();
+        confirmDelete(id, employee);
+    });
+      $(document).on('click', '.view-assignments', function(e) {
+        e.preventDefault();
+        $('#view-assignments').modal('show');
+        var id = $(this).data('id');
+        loadAssignments(id);
+    });
       
-      $('#edit').modal('show');
-      var id = $(this).data('id');
-      getRow(id);
-    });
 
-    $(document).on('click', '.delete', function (e) {
-      e.preventDefault();
-      var id = $(this).data('id');
-      var employee = $(this).closest('tr').find('td:first').text().trim();
-      confirmDelete(id, employee);
-    });
-    $(document).on('click', '.view-assignments', function(e) {
-      e.preventDefault();
-      $('#view-assignments').modal('show');
-      var id = $(this).data('id');
-      loadAssignments(id);
-    });
-  });
 
   });
+
   function getRow(id) {
       $.ajax({
           type: 'GET',
@@ -245,27 +219,32 @@ $(function() {
       });
       
   }
-  function confirmDelete(id, employee){
+  function confirmDelete(id, employee) {
     Swal.fire({
       title: 'Are you sure?',
-      text: 'You are about to delete employee ${employee}. This action cannot be undone. ',
+      text: `You are about to delete employee ${employee}. This action cannot be undone.`,
       icon: 'warning',
-      showCancelButton: 'true',
+      showCancelButton: true,
       confirmButtonColor: '#d33',
       confirmButtonText: 'Yes, delete it!',
       cancelButtonText: 'Cancel'
-    }).then((result)=>{
-      if(result.isConfirmed){
-        // create a delete form and submit it
+    }).then((result) => {
+      if (result.isConfirmed) {
+      // Create a delete form and submit it
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = '{% url "deleteEmployee"%}';
+        form.action = '{% url "deleteEmployee" %}';
 
         const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = 'csrfmiddlewaretoken';
+        csrfToken.value = '{{ csrf_token }}';
+
+        const idInput = document.createElement('input');
         idInput.type = 'hidden';
         idInput.name = 'id';
         idInput.value = id;
-        
+
         form.appendChild(csrfToken);
         form.appendChild(idInput);
 
